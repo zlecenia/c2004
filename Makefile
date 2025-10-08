@@ -16,7 +16,9 @@ help:
 	@echo "  make env          - Create .env from template"
 	@echo ""
 	@echo "Development:"
-	@echo "  make dev          - Start in development mode"
+	@echo "  make dev          - Start in development mode with hot reload"
+	@echo "  make refresh      - Force refresh frontend cache"
+	@echo "  make dev-logs     - View development logs"
 	@echo "  make validate     - Validate all configs"
 	@echo "  make test         - Run tests"
 	@echo ""
@@ -73,10 +75,23 @@ validate-backend:
 
 # Development
 dev: env
-	@echo "🚀 Starting development servers..."
-	@echo "Frontend: http://localhost:$(FRONTEND_PORT)"
+	@echo "🚀 Starting development servers with hot reload..."
+	@echo "Frontend: http://localhost:8200 (dev mode)"
 	@echo "Backend:  http://localhost:$(BACKEND_PORT)"
-	@docker-compose up --build
+	@echo "📝 Files will auto-refresh on changes"
+	@docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+
+refresh:
+	@echo "🔄 Refreshing frontend cache..."
+	@echo "Rebuilding frontend with cache bust..."
+	@docker-compose build --no-cache frontend
+	@docker-compose restart frontend
+	@echo "✅ Frontend cache refreshed"
+	@echo "💡 Use Ctrl+Shift+R in browser to clear client cache"
+
+dev-logs:
+	@echo "📝 Showing development logs..."
+	@docker-compose logs -f frontend backend
 
 # Docker
 build:

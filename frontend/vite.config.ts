@@ -3,9 +3,15 @@ import { defineConfig } from 'vite';
 
 export default defineConfig({
   server: {
-    port: 5173,
+    port: 3000,
     host: true,
-    strictPort: true
+    strictPort: true,
+    hmr: {
+      port: 24678
+    },
+    watch: {
+      usePolling: true
+    }
   },
   build: {
     outDir: 'dist',

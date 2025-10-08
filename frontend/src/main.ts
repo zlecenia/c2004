@@ -2,276 +2,169 @@
 import './config/env.config'; // Validate environment on startup
 import './config/service.manifest'; // Validate service manifest
 import { moduleManager } from './modules';
-import { serviceManifest } from './config/service.manifest';
 
-// Add basic CSS
+// Add basic CSS for 1280×400px touchscreen
 const style = document.createElement('style');
 style.textContent = `
+  * {
+    box-sizing: border-box;
+  }
+
   body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     margin: 0;
-    padding: 20px;
-    background-color: #f5f5f5;
-  }
-  
-  .identification-container {
-    max-width: 600px;
-    margin: 0 auto;
-    background: white;
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-  }
-  
-  .identification-container h2 {
-    color: #333;
-    margin-bottom: 20px;
-    text-align: center;
-  }
-  
-  .identification-form {
-    margin-bottom: 30px;
-  }
-  
-  .form-group {
-    margin-bottom: 15px;
-  }
-  
-  .form-group label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: 500;
-    color: #555;
-  }
-  
-  .form-group input,
-  .form-group select {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    font-size: 14px;
-    box-sizing: border-box;
-  }
-  
-  .identify-button {
-    width: 100%;
-    padding: 12px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    font-weight: 500;
-    cursor: pointer;
-    transition: background-color 0.2s;
-  }
-  
-  .identify-button:hover:not(:disabled) {
-    background-color: #0056b3;
-  }
-  
-  .identify-button:disabled {
-    background-color: #6c757d;
-    cursor: not-allowed;
-  }
-  
-  .result-container {
-    min-height: 50px;
-  }
-  
-  .success {
-    background-color: #d4edda;
-    color: #155724;
-    padding: 15px;
-    border-radius: 4px;
-    border: 1px solid #c3e6cb;
-  }
-  
-  .success h3 {
-    margin-top: 0;
-    margin-bottom: 10px;
-  }
-  
-  .success p {
-    margin: 5px 0;
-  }
-  
-  .error {
-    background-color: #f8d7da;
-    color: #721c24;
-    padding: 15px;
-    border-radius: 4px;
-    border: 1px solid #f5c6cb;
+    padding: 0;
+    background-color: #000;
+    overflow: hidden;
+    height: 400px;
+    width: 1280px;
   }
 
-  /* New Main App Styles */
   .main-app-container {
-    min-height: 100vh;
+    width: 1280px;
+    height: 400px;
     display: flex;
     flex-direction: column;
+    background: #1a1a1a;
   }
 
-  .app-header {
+  .top-bar {
+    height: 35px;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    padding: 20px;
-    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+    flex-shrink: 0;
   }
 
-  .app-header h1 {
-    margin: 0 0 10px 0;
-    font-size: 2rem;
+  .top-bar-brand {
+    font-size: 14px;
+    font-weight: 600;
   }
 
-  .app-header p {
-    margin: 0;
+  .top-bar-submenu {
+    flex: 1;
+    margin-left: 20px;
+    font-size: 13px;
+    font-weight: 500;
     opacity: 0.9;
   }
 
-  .navigation-menu {
-    background: #f8f9fa;
-    padding: 10px 20px;
-    border-bottom: 1px solid #dee2e6;
+  .top-bar-status {
     display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 11px;
+  }
+
+  .app-layout {
+    display: flex;
+    height: 365px;
+    overflow: hidden;
+  }
+
+  .sidebar-navigation {
+    width: 120px;
+    background: #2a2a2a;
+    display: flex;
+    flex-direction: column;
+    padding: 4px;
+    gap: 2px;
+    box-shadow: 2px 0 4px rgba(0,0,0,0.2);
+    flex-shrink: 0;
+  }
+
+  .sidebar-title {
+    color: #FFF;
+    font-size: 9px;
+    font-weight: 600;
+    text-transform: uppercase;
+    margin: 0 0 6px 0;
+    padding: 4px;
+    text-align: center;
+    background: #1a1a1a;
+    border-radius: 3px;
   }
 
   .nav-btn {
-    padding: 10px 20px;
-    border: 1px solid #dee2e6;
-    background: white;
-    border-radius: 4px;
+    background: #3a3a3a;
+    border: none;
+    padding: 10px 6px;
+    border-radius: 5px;
     cursor: pointer;
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 12px;
     transition: all 0.2s;
+    text-align: center;
+    color: #ccc;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    user-select: none;
+  }
+
+  .nav-icon {
+    font-size: 16px;
+  }
+
+  .nav-text {
+    font-size: 10px;
+    font-weight: 500;
   }
 
   .nav-btn:hover {
-    background: #e9ecef;
-    border-color: #adb5bd;
+    background: #4a4a4a;
+    color: white;
   }
 
   .nav-btn.active {
-    background: #007bff;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
     color: white;
-    border-color: #007bff;
+    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
   }
 
   .module-container {
     flex: 1;
-    padding: 20px;
+    background: #f5f5f5;
     overflow-y: auto;
-  }
-
-  .app-footer {
-    background: #f8f9fa;
-    border-top: 1px solid #dee2e6;
-    padding: 10px 20px;
-  }
-
-  .status-info {
-    display: flex;
-    gap: 20px;
-    font-size: 0.9rem;
-    color: #6c757d;
+    overflow-x: hidden;
   }
 
   .loading {
     text-align: center;
     padding: 40px;
-    font-size: 1.1rem;
-    color: #6c757d;
+    color: #666;
+    font-size: 14px;
   }
 
-  /* Demo styles */
-  .connect-filter-demo,
-  .connect-workshop-demo {
-    max-width: 800px;
-    margin: 0 auto;
+  .error {
+    background: #fee;
+    border: 1px solid #fcc;
+    padding: 12px;
+    margin: 10px;
+    border-radius: 5px;
+    color: #c33;
+    font-size: 12px;
   }
 
-  .demo-features {
-    background: #f8f9fa;
-    padding: 20px;
-    border-radius: 8px;
-    margin: 20px 0;
+  /* Scrollbar styling */
+  .module-container::-webkit-scrollbar {
+    width: 6px;
   }
 
-  .demo-config {
-    background: #fff3cd;
-    padding: 20px;
-    border-radius: 8px;
-    margin: 20px 0;
+  .module-container::-webkit-scrollbar-track {
+    background: #e0e0e0;
   }
 
-  .demo-config pre {
-    background: white;
-    padding: 15px;
-    border-radius: 4px;
-    border: 1px solid #ffeaa7;
-    max-height: 200px;
-    overflow-y: auto;
+  .module-container::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 3px;
   }
 
-  .demo-test {
-    background: #d4edda;
-    padding: 20px;
-    border-radius: 8px;
-    margin: 20px 0;
-  }
-
-  .alert {
-    padding: 15px;
-    border-radius: 4px;
-    margin: 15px 0;
-  }
-
-  .alert-success {
-    background: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
-  }
-
-  .alert-info {
-    background: #d1ecf1;
-    color: #0c5460;
-    border: 1px solid #bee5eb;
-  }
-
-  .alert-danger {
-    background: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
-  }
-
-  details {
-    margin-top: 10px;
-  }
-
-  summary {
-    cursor: pointer;
-    font-weight: 500;
-    padding: 5px;
-    background: rgba(255,255,255,0.5);
-    border-radius: 4px;
-  }
-
-  @media (max-width: 768px) {
-    .status-info {
-      flex-direction: column;
-      gap: 5px;
-    }
-    
-    .navigation-menu {
-      flex-direction: column;
-    }
-    
-    .nav-btn {
-      text-align: left;
-    }
+  .module-container::-webkit-scrollbar-thumb:hover {
+    background: #555;
   }
 `;
 document.head.appendChild(style);
@@ -301,35 +194,39 @@ function createMainApplication() {
   mainContainer.className = 'main-app-container';
   
   mainContainer.innerHTML = `
-    <div class="app-header">
-      <h1>🚀 Fleet Management System v2.0</h1>
-      <p>Migrated Components from c2002 with Executable Manifests</p>
+    <div class="top-bar">
+      <div class="top-bar-brand">🚀 ConnectDisplay</div>
+      <div class="top-bar-submenu" id="top-bar-submenu"></div>
+      <div class="top-bar-status">
+        <span>📊 <span id="module-count">4</span></span>
+        <span>✅</span>
+        <span>🕒 <span id="load-time">${new Date().toLocaleTimeString()}</span></span>
+      </div>
     </div>
     
-    <div class="navigation-menu">
-      <button class="nav-btn active" data-module="identification">
-        🔍 Identification Service
-      </button>
-      <button class="nav-btn" data-module="connect-id">
-        🏷 ConnectID (Migrated)
-      </button>
-      <button class="nav-btn" data-module="connect-filter">
-        🔎 ConnectFilter (Migrated)
-      </button>
-      <button class="nav-btn" data-module="connect-workshop">
-        🔧 ConnectWorkshop (Migrated)
-      </button>
-    </div>
-    
-    <div class="module-container" id="module-container">
-      <!-- Module content will be rendered here -->
-    </div>
-    
-    <div class="app-footer">
-      <div class="status-info">
-        <span>📊 Modules: <span id="module-count">4</span></span>
-        <span>✅ Status: All modules loaded</span>
-        <span>🕒 Loaded: <span id="load-time">${new Date().toLocaleTimeString()}</span></span>
+    <div class="app-layout">
+      <div class="sidebar-navigation">
+        <h3 class="sidebar-title">Główne menu</h3>
+        <button class="nav-btn active" data-module="connect-id">
+          <span class="nav-icon">🏷</span>
+          <span class="nav-text">ConnectID</span>
+        </button>
+        <button class="nav-btn" data-module="connect-filter">
+          <span class="nav-icon">🔎</span>
+          <span class="nav-text">ConnectFilter</span>
+        </button>
+        <button class="nav-btn" data-module="connect-workshop">
+          <span class="nav-icon">🔧</span>
+          <span class="nav-text">Workshop</span>
+        </button>
+        <button class="nav-btn" data-module="connect-test">
+          <span class="nav-icon">🧪</span>
+          <span class="nav-text">ConnectTest</span>
+        </button>
+      </div>
+      
+      <div class="module-container" id="module-container">
+        <!-- Module content will be rendered here -->
       </div>
     </div>
   `;
@@ -340,8 +237,8 @@ function createMainApplication() {
   // Setup navigation
   setupNavigation();
   
-  // Load default module (identification)
-  loadModule('identification');
+  // Load default module (connect-id)
+  loadModule('connect-id');
 }
 
 function setupNavigation() {
@@ -373,9 +270,6 @@ function loadModule(moduleName: string) {
     container.innerHTML = '<div class="loading">Loading module...</div>';
     
     switch (moduleName) {
-      case 'identification':
-        loadIdentificationModule(container);
-        break;
       case 'connect-id':
         loadConnectIdModule(container);
         break;
@@ -385,6 +279,9 @@ function loadModule(moduleName: string) {
       case 'connect-workshop':
         loadConnectWorkshopModule(container);
         break;
+      case 'connect-test':
+        loadConnectTestModule(container);
+        break;
       default:
         container.innerHTML = `<div class="error">Unknown module: ${moduleName}</div>`;
     }
@@ -393,18 +290,6 @@ function loadModule(moduleName: string) {
   }
 }
 
-function loadIdentificationModule(container: HTMLElement) {
-  import('./modules/identification/identification.module').then(async () => {
-    const module = moduleManager.getModule('identification');
-    const { IdentificationView } = await import('./modules/identification/identification.view');
-    const view = new IdentificationView(module as any);
-    
-    container.innerHTML = '';
-    container.appendChild(view.render());
-  }).catch(error => {
-    container.innerHTML = `<div class="error">Failed to load Identification module: ${error}</div>`;
-  });
-}
 
 function loadConnectIdModule(container: HTMLElement) {
   import('./modules/connect-id/connect-id.module').then(async () => {
@@ -442,88 +327,34 @@ function loadConnectFilterModule(container: HTMLElement) {
 }
 
 function loadConnectWorkshopModule(container: HTMLElement) {
-  // Create simple demo view for ConnectWorkshop
-  container.innerHTML = `
-    <div class="connect-workshop-demo">
-      <h2>🔧 ConnectWorkshop - Workshop Client</h2>
-      <p><strong>Status:</strong> ✅ Successfully migrated from c2002</p>
-      
-      <div class="demo-features">
-        <h3>📋 Migrated Features:</h3>
-        <ul>
-          <li>✅ Workshop request management</li>
-          <li>✅ Transport list handling</li>
-          <li>✅ Auto-sync with server</li>
-          <li>✅ Real-time status updates</li>
-          <li>✅ Multi-tab interface (requests, transport, dispositions, service)</li>
-        </ul>
-      </div>
-      
-      <div class="demo-config">
-        <h3>⚙️ Current Configuration:</h3>
-        <pre>${JSON.stringify(serviceManifest.getComponentConfig('connect-workshop'), null, 2)}</pre>
-      </div>
-      
-      <div class="demo-test">
-        <h3>🧪 Test Module:</h3>
-        <button id="test-workshop" class="btn btn-primary">Test Workshop Functions</button>
-        <button id="force-sync" class="btn btn-secondary">Force Sync</button>
-        <div id="workshop-results" class="mt-3"></div>
-      </div>
-    </div>
-  `;
-  
-  // Add test functionality
-  const testBtn = container.querySelector('#test-workshop');
-  const syncBtn = container.querySelector('#force-sync');
-  const resultsDiv = container.querySelector('#workshop-results');
-  
-  testBtn?.addEventListener('click', async () => {
+  import('./modules/connect-workshop/connect-workshop.module').then(async () => {
     const module = moduleManager.getModule('connect-workshop');
-    const service = (module as any).getService();
+    const { ConnectWorkshopView } = await import('./modules/connect-workshop/connect-workshop.view');
+    const view = new ConnectWorkshopView(module as any);
     
-    const requests = service.getRequests();
-    const stats = service.getStatistics();
+    container.innerHTML = '';
+    const viewElement = view.render();
+    container.appendChild(viewElement);
     
-    if (resultsDiv) {
-      resultsDiv.innerHTML = `
-        <div class="alert alert-info">
-          <h4>Workshop Data:</h4>
-          <p><strong>Statistics:</strong> ${JSON.stringify(stats)}</p>
-          <p><strong>Recent Requests:</strong> ${requests.length} items</p>
-          <details>
-            <summary>Show request data</summary>
-            <pre>${JSON.stringify(requests, null, 2)}</pre>
-          </details>
-        </div>
-      `;
-    }
+    console.log('✅ ConnectWorkshop view loaded with full functionality');
+  }).catch(error => {
+    container.innerHTML = `<div class="error">Failed to load ConnectWorkshop module: ${error}</div>`;
   });
-  
-  syncBtn?.addEventListener('click', async () => {
-    const module = moduleManager.getModule('connect-workshop');
-    const service = (module as any).getService();
+}
+
+function loadConnectTestModule(container: HTMLElement) {
+  import('./modules/connect-test/connect-test.module').then(async () => {
+    const module = moduleManager.getModule('connect-test');
+    const { ConnectTestView } = await import('./modules/connect-test/connect-test.view');
+    const view = new ConnectTestView(module as any);
     
-    try {
-      await service.forceSync();
-      if (resultsDiv) {
-        resultsDiv.innerHTML = `
-          <div class="alert alert-success">
-            <h4>Sync Completed!</h4>
-            <p>Status: ${JSON.stringify(service.getSyncStatus())}</p>
-          </div>
-        `;
-      }
-    } catch (error) {
-      if (resultsDiv) {
-        resultsDiv.innerHTML = `
-          <div class="alert alert-danger">
-            <h4>Sync Failed</h4>
-            <p>Error: ${error}</p>
-          </div>
-        `;
-      }
-    }
+    container.innerHTML = '';
+    const viewElement = view.render();
+    container.appendChild(viewElement);
+    
+    console.log('✅ ConnectTest view loaded with full functionality');
+  }).catch(error => {
+    container.innerHTML = `<div class="error">Failed to load ConnectTest module: ${error}</div>`;
   });
 }
 

@@ -173,6 +173,13 @@ export class ConnectWorkshopService {
   }
 
   /**
+   * Get workshop requests (alias for view compatibility)
+   */
+  getWorkshopRequests(): WorkshopRequest[] {
+    return this.getRequests();
+  }
+
+  /**
    * Create new workshop request
    */
   async createRequest(requestData: Omit<WorkshopRequest, 'id' | 'createdAt' | 'updatedAt'>): Promise<WorkshopRequest> {
@@ -270,6 +277,8 @@ export class ConnectWorkshopService {
     completedRequests: number;
     urgentRequests: number;
     transportLists: number;
+    activeRequests: number;
+    connected: boolean;
   } {
     const requests = this.getRequests();
     
@@ -279,7 +288,9 @@ export class ConnectWorkshopService {
       inProgressRequests: requests.filter(r => r.status === 'in-progress').length,
       completedRequests: requests.filter(r => r.status === 'completed').length,
       urgentRequests: requests.filter(r => r.priority === 'urgent').length,
-      transportLists: this.transportLists.length
+      transportLists: this.transportLists.length,
+      activeRequests: requests.filter(r => r.status === 'pending' || r.status === 'in-progress').length,
+      connected: this.syncStatus.connected
     };
   }
 
