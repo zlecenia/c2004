@@ -564,7 +564,7 @@ export class ConnectIdView {
     const manualInput = container.querySelector('#manual-code-input') as HTMLInputElement;
     keys.forEach(key => {
       key.addEventListener('click', (e) => {
-        const target = e.target as HTMLElement;
+        const target = e.currentTarget as HTMLElement;
         const keyValue = target.getAttribute('data-key');
         this.handleVirtualKeyInput(keyValue, manualInput);
       });

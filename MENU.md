@@ -1,6 +1,6 @@
 # 📋 ConnectDisplay - Dokumentacja Systemu Menu
 
-## 🎯 Architektura Menu dla Ekranu 1280×400px
+## 🎯 Architektura Menu dla Ekranu 1200×400px
 
 ### Layout Główny
 
@@ -10,7 +10,7 @@
 ├──────────┬──────────┬──────────┬─────────────────────────┬──────────────┤
 │ Główne   │ Kolumna 1│ Kolumna 2│  Główna zawartość       │  Parametry   │
 │ menu     │          │          │                         │              │
-│ (120px)  │ (100px)  │ (100px)  │  (~680px)               │  (200px)     │
+│ (120px)  │ (100px)  │ (100px)  │  (~600px)               │  (200px)     │
 ├──────────┼──────────┼──────────┼─────────────────────────┼──────────────┤
 │          │          │          │                         │              │
 │ Moduły   │ Poziom 1 │ Poziom 2 │   Treść modułu          │  Parametry   │
@@ -156,23 +156,28 @@ Główne menu → Akcje → Sekcje → [Content] → [Params]
 
 **Struktura kolumn:**
 ```
-Główne menu → Sekcje → [Content] → [Params]
-   120px         100px     ~880px      200px
+Główne menu → Sekcje → Interfejs* → [Content] → [Params]
+   120px         100px     100px        ~600px      200px
+   
+*Kolumna "Interfejs" pojawia się tylko dla sekcji "Urządzenia"
 ```
 
 **Kolumna 1 - Sekcje:**
-- 🔍 Identyfikacja ✓
-- 📱 Wybór Urządzenia
+- 📱 Urządzenia ✓
 - 🧪 Testowanie
 - 📋 Raporty Urządzeń
-- 🔧 Debug
 
-**Content:**
-- Formularz testu
-- Progress bar
-- Wyniki testów
-- Raporty z historii
-- Konsola debug
+**Kolumna 2 - Interfejs (tylko dla Urządzenia):**
+- 📡 RFID
+- 📷 QR
+- 📊 Barcode
+- ⌨️ Keyboard
+- 📋 Z listy ✓ (domyślna)
+
+**Content (zależnie od sekcji):**
+- **Urządzenia**: 5 różnych widoków (RFID/QR/Barcode/Manual/List), domyślnie "Z listy"
+- **Testowanie**: Progress bar + kroki testu
+- **Raporty**: Historia raportów z statusami
 
 **Parametry:**
 - Aktywna sekcja: --
@@ -455,6 +460,38 @@ Pełny przykład znajduje się w:
 
 ## 🔄 Aktualizacje
 
+**v1.5.2** - 2025-10-08
+- ✅ ConnectTest: Usunięto sekcję "Debug" z menu
+- ✅ Domyślna metoda zmieniona na "📋 Z listy" (zamiast RFID)
+- ✅ vite.config.ts: Dodano 'nvidia' do allowedHosts
+- ✅ Uproszczono menu do 3 sekcji (Urządzenia, Testowanie, Raporty)
+
+**v1.5.1** - 2025-10-08
+- ✅ ConnectTest: Usunięto sekcję "Wybór Urządzenia" (duplikat funkcjonalności)
+- ✅ Zmieniono nazwę sekcji "Identyfikacja" → "Urządzenia"
+- ✅ Uproszczono menu do 4 sekcji (Urządzenia, Testowanie, Raporty, Debug)
+- ✅ Ikona sekcji Urządzenia zmieniona na 📱
+
+**v1.5.0** - 2025-10-08
+- ✅ ConnectTest: Dodano dynamiczną kolumnę "Interfejs" dla Identyfikacji
+- ✅ 5 metod identyfikacji: RFID, QR, Barcode, Keyboard, Z listy
+- ✅ Każda metoda ma dedykowany widok z różną funkcjonalnością
+- ✅ Kolumna "Interfejs" pokazuje się tylko dla sekcji Identyfikacja
+- ✅ Pełna treść dla wszystkich 5 sekcji w ConnectTest
+
+**v1.4.0** - 2025-10-08
+- ✅ Naprawiono krytyczne błędy event listenerów
+- ✅ main.ts: zmieniono e.target → e.currentTarget (navigation)
+- ✅ connect-id.view.ts: zmieniono e.target → e.currentTarget (virtual keyboard)
+- ✅ Utworzono EVENT_LISTENER_AUDIT.md - pełny audit
+- ✅ Wszystkie 26 przycisków zweryfikowane i działają poprawnie
+
+**v1.3.0** - 2025-10-08
+- ✅ Dostosowano rozdzielczość do 1200×400px (z 1280×400px)
+- ✅ Przeszły wszystkie testy funkcjonalności (26 przycisków)
+- ✅ Utworzono raport testowy MENU_TEST_REPORT.md
+- ✅ Zweryfikowano wszystkie event listenery i handlery
+
 **v1.2.0** - 2025-10-08
 - ✅ Dodano dynamiczne submenu w top-bar
 - ✅ Zaktualizowano ConnectFilter z kolumną akcji
@@ -481,11 +518,16 @@ Pełny przykład znajduje się w:
 | ConnectID | 2 (Identyfikacja + Interfejs) | ✅ | ✅ Kompletny |
 | ConnectFilter | 1 (Akcje) | ✅ | ✅ Kompletny |
 | ConnectWorkshop | 2 (Akcje + Sekcje) | ✅ | ✅ Kompletny |
-| ConnectTest | 1 (Sekcje) | ✅ | ✅ Kompletny |
+| ConnectTest | 1-2 (Sekcje + Interfejs*) | ✅ | ✅ Kompletny |
+
+*Kolumna "Interfejs" pokazuje się dynamicznie tylko dla sekcji Urządzenia
 
 **Wszystkie moduły gotowe do produkcji! 🎉**
 
 ---
 
 **Maintained by**: Fleet Management Team  
-**Last updated**: 2025-10-08 17:38
+**Last updated**: 2025-10-08 18:56  
+**Screen Resolution**: 1200×400px  
+**Test Report**: MENU_TEST_REPORT.md  
+**Event Listener Audit**: EVENT_LISTENER_AUDIT.md

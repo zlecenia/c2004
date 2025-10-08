@@ -17,11 +17,11 @@ style.textContent = `
     background-color: #000;
     overflow: hidden;
     height: 400px;
-    width: 1280px;
+    width: 1200px;
   }
 
   .main-app-container {
-    width: 1280px;
+    width: 1200px;
     height: 400px;
     display: flex;
     flex-direction: column;
@@ -246,7 +246,7 @@ function setupNavigation() {
   
   navButtons.forEach(button => {
     button.addEventListener('click', (e) => {
-      const target = e.target as HTMLElement;
+      const target = e.currentTarget as HTMLElement;
       const moduleName = target.getAttribute('data-module');
       
       if (moduleName) {
