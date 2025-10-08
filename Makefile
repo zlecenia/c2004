@@ -124,7 +124,7 @@ test-identify:
 	@curl -s -X POST http://localhost:$(BACKEND_PORT)/api/v1/identification/identify \
 		-H "Content-Type: application/json" \
 		-d '{"type":"user","value":"RFID-12345","method":"rfid"}' | \
-		python -m json.tool
+		python3 -m json.tool
 
 # Health checks
 health:
@@ -132,7 +132,7 @@ health:
 	@docker-compose ps
 	@echo ""
 	@echo "Health endpoints:"
-	@curl -s http://localhost:$(BACKEND_PORT)/api/v1/health | python -m json.tool
+	@curl -s http://localhost:$(BACKEND_PORT)/api/v1/health | python3 -m json.tool
 
 # Maintenance
 clean:

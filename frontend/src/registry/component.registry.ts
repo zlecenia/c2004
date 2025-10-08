@@ -28,6 +28,30 @@ export const COMPONENT_REGISTRY = {
     status: 'production',
     exports: ['AppShell'],
     dependencies: ['vue']
+  },
+  'connect-id': {
+    path: '/static/common/components/connect-id/2.1.0/ConnectId.js',
+    version: '2.1.0',
+    type: 'vanilla',
+    status: 'production',
+    exports: ['ConnectIdModule'],
+    dependencies: ['universal-connectid']
+  },
+  'connect-filter': {
+    path: '/static/common/components/connect-filter/1.0.0/ConnectFilter.js',
+    version: '1.0.0',
+    type: 'vanilla',
+    status: 'production',
+    exports: ['ConnectFilterModule'],
+    dependencies: []
+  },
+  'connect-workshop': {
+    path: '/static/common/components/connect-workshop/1.0.0/ConnectWorkshop.js',
+    version: '1.0.0',
+    type: 'vanilla',
+    status: 'production',
+    exports: ['ConnectWorkshopModule'],
+    dependencies: []
   }
 } as const satisfies Record<string, Component>;
 

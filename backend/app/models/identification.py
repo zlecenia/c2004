@@ -24,9 +24,9 @@ class IdentificationRequest(BaseModel):
     
     @validator('value')
     def validate_value(cls, v, values):
-        # Custom validation based on type
-        if 'type' in values:
-            if values['type'] == IdentificationType.RFID and not v.startswith('RFID'):
+        # Custom validation based on method
+        if 'method' in values:
+            if values['method'] == IdentificationMethod.RFID and not v.startswith('RFID'):
                 raise ValueError('RFID value must start with "RFID"')
         return v
     

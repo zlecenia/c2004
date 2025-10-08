@@ -48,10 +48,41 @@ export class IdentificationServiceManifest {
     'app-shell': {
       version: '0.1.0',
       enabled: true
+    },
+    'connect-id': {
+      version: '2.1.0',
+      enabled: true,
+      configuration: {
+        enableRFID: env.VITE_ENABLE_RFID,
+        enableQR: env.VITE_ENABLE_QR,
+        enableBarcode: env.VITE_ENABLE_BARCODE,
+        enableManual: env.VITE_ENABLE_MANUAL,
+        continuousMode: false,
+        historyPersistence: true,
+        keyboardShortcuts: true
+      }
+    },
+    'connect-filter': {
+      version: '1.0.0',
+      enabled: true,
+      configuration: {
+        itemsPerPage: 20,
+        enableAdvancedFilters: true,
+        enableExport: true
+      }
+    },
+    'connect-workshop': {
+      version: '1.0.0',
+      enabled: true,
+      configuration: {
+        autoSync: true,
+        syncInterval: 30000,
+        enableNotifications: true
+      }
     }
   };
   
-  readonly modules = ['identification'];
+  readonly modules = ['identification', 'connect-id', 'connect-filter', 'connect-workshop'];
   
   /**
    * Validate manifest structure and component availability

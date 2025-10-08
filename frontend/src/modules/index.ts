@@ -1,9 +1,15 @@
 // frontend/src/modules/index.ts
 import { Module } from './module.interface';
 import { IdentificationModule } from './identification/identification.module';
+import { ConnectIdModule } from './connect-id/connect-id.module';
+import { ConnectFilterModule } from './connect-filter/connect-filter.module';
+import { ConnectWorkshopModule } from './connect-workshop/connect-workshop.module';
 
 export const MODULE_REGISTRY = {
-  identification: IdentificationModule
+  identification: IdentificationModule,
+  'connect-id': ConnectIdModule,
+  'connect-filter': ConnectFilterModule,
+  'connect-workshop': ConnectWorkshopModule
 } as const;
 
 export class ModuleManager {
