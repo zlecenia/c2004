@@ -25,7 +25,7 @@
 - **Lewa strona**: Nazwa systemu "🚀 ConnectDisplay"
 - **Środek**: Dynamiczny submenu (zmienia się zależnie od aktywnego modułu)
   - ConnectID: "🔍 Universal Identification"
-  - ConnectFilter: "🔎 Advanced Search & Filtering"
+  - ConnectData: "📊 Data Management & Analytics"
   - ConnectWorkshop: "🔧 Workshop Client"
   - ConnectTest: "🧪 Test Module"
 - **Prawa strona**: Status (liczba modułów, status, czas)
@@ -90,32 +90,41 @@ Główne menu → Identyfikacja → Interfejs → [Content] → [Params]
 
 ---
 
-### 2. ConnectFilter - Filtrowanie i Wyszukiwanie
+### 2. ConnectData - Zarządzanie Danymi
 
 **Struktura kolumn:**
 ```
-Główne menu → Akcje → [Content] → [Params]
-   120px       100px     ~880px      200px
+Główne menu → Objekty → Akcje → [Content] → [Params]
+   120px       100px     100px      ~600px      200px
 ```
 
-**Kolumna 1 - Akcje:**
+**Kolumna 1 - Objekty:**
+- 👥 Użytkownicy ✓
+- 🧪 Scenariusze Testowe
+- 📱 Urządzenia  
+- 👥 Grupy
+- 🏭 Magazyny
+- 🏢 Klienci
+
+**Kolumna 2 - Akcje:**
 - 🔍 Szukaj ✓
 - 🗑️ Wyczyść
+- ➕ Dodaj
+- ✏️ Edytuj
+- ❌ Usuń
 - 📊 Export
-- 💾 Zapisz Filtr
-- 📂 Wczytaj
 
-**Content:**
-- Search input z przyciskiem
-- Filtry kompaktowe (Typ, Status)
-- Lista wyników z kartami
-- Szczegóły wybranego elementu
+**Content (dynamiczny):**
+- Tytuł z ikoną obiektu (np. "👥 Użytkownicy - Zarządzanie")
+- Pole wyszukiwania (placeholder dostosowany do obiektu)
+- Filtry specyficzne dla obiektu (np. role dla użytkowników)
+- Lista wyników z akcjami w kartach (Edytuj, Profil)
 
 **Parametry:**
 - Znaleziono: X elementów
-- Wybrany typ: --
-- Status filtra: Aktywny
-- Ostatnie wyszukiwanie
+- Obiekt: Aktualnie wybrany
+- Akcja: Aktualna operacja
+- Szybkie Akcje (3 przyciski kontekstowe)
 
 ---
 
@@ -460,6 +469,14 @@ Pełny przykład znajduje się w:
 
 ## 🔄 Aktualizacje
 
+**v1.6.0** - 2025-10-08
+- ✅ ConnectFilter → ConnectData: Kompletna transformacja modułu
+- ✅ Dodano kolumnę "Objekty" (Użytkownicy, Scenariusze, Urządzenia, Grupy, Magazyny, Klienci)
+- ✅ Rozszerzono kolumnę "Akcje" (Szukaj, Wyczyść, Dodaj, Edytuj, Usuń, Export)
+- ✅ Dynamiczny content i tytuły w top-bar
+- ✅ Przeniesienie content-header → top-bar-section-title dla wszystkich modułów
+- ✅ Nowa struktura 2-kolumnowa z pełną funkcjonalnością CRUD
+
 **v1.5.2** - 2025-10-08
 - ✅ ConnectTest: Usunięto sekcję "Debug" z menu
 - ✅ Domyślna metoda zmieniona na "📋 Z listy" (zamiast RFID)
@@ -516,7 +533,7 @@ Pełny przykład znajduje się w:
 | Moduł | Kolumny | Submenu | Status |
 |-------|---------|---------|--------|
 | ConnectID | 2 (Identyfikacja + Interfejs) | ✅ | ✅ Kompletny |
-| ConnectFilter | 1 (Akcje) | ✅ | ✅ Kompletny |
+| ConnectData | 2 (Objekty + Akcje) | ✅ | ✅ Kompletny |
 | ConnectWorkshop | 2 (Akcje + Sekcje) | ✅ | ✅ Kompletny |
 | ConnectTest | 1-2 (Sekcje + Interfejs*) | ✅ | ✅ Kompletny |
 
@@ -527,7 +544,7 @@ Pełny przykład znajduje się w:
 ---
 
 **Maintained by**: Fleet Management Team  
-**Last updated**: 2025-10-08 18:56  
+**Last updated**: 2025-10-08 19:37  
 **Screen Resolution**: 1200×400px  
 **Test Report**: MENU_TEST_REPORT.md  
 **Event Listener Audit**: EVENT_LISTENER_AUDIT.md

@@ -220,8 +220,8 @@ function createMainApplication() {
           <span class="nav-text">ConnectID</span>
         </button>
         <button class="nav-btn" data-module="connect-filter">
-          <span class="nav-icon">📊</span>
-          <span class="nav-text">ConnectData</span>
+          <span class="nav-icon">🔎</span>
+          <span class="nav-text">ConnectFilter</span>
         </button>
         <button class="nav-btn" data-module="connect-workshop">
           <span class="nav-icon">🔧</span>
@@ -282,7 +282,7 @@ function loadModule(moduleName: string) {
         loadConnectIdModule(container);
         break;
       case 'connect-filter':
-        loadConnectDataModule(container);
+        loadConnectFilterModule(container);
         break;
       case 'connect-workshop':
         loadConnectWorkshopModule(container);
@@ -318,19 +318,19 @@ function loadConnectIdModule(container: HTMLElement) {
   });
 }
 
-function loadConnectDataModule(container: HTMLElement) {
+function loadConnectFilterModule(container: HTMLElement) {
   import('./modules/connect-filter/connect-filter.module').then(async () => {
     const module = moduleManager.getModule('connect-filter');
-    const { ConnectDataView } = await import('./modules/connect-filter/connect-filter.view');
-    const view = new ConnectDataView(module as any);
+    const { ConnectFilterView } = await import('./modules/connect-filter/connect-filter.view');
+    const view = new ConnectFilterView(module as any);
     
     container.innerHTML = '';
     const viewElement = view.render();
     container.appendChild(viewElement);
     
-    console.log('✅ ConnectData view loaded with full functionality');
+    console.log('✅ ConnectFilter view loaded with full functionality');
   }).catch(error => {
-    container.innerHTML = `<div class="error">Failed to load ConnectData module: ${error}</div>`;
+    container.innerHTML = `<div class="error">Failed to load ConnectFilter module: ${error}</div>`;
   });
 }
 

@@ -1,0 +1,126 @@
+# Makefile.fleet - Fleet Management System
+.PHONY: help setup migrate build up down logs health clean
+
+PROJECT_NAME := fleet-management-system
+COMPOSE_FILE := docker-compose.fleet.yml
+
+help:
+	@echo "╔════════════════════════════════════════════╗"
+	@echo "║  🚀 Fleet Management System               ║"
+	@echo "╚════════════════════════════════════════════╝"
+	@echo ""
+	@echo "📦 Setup:"
+	@echo "  make setup          - Initial setup"
+	@echo "  make migrate        - Migrate from ConnectDisplay"
+	@echo ""
+	@echo "🐳 Docker:"
+	@echo "  make build          - Build all services"
+	@echo "  make up             - Start all services"
+	@echo "  make down           - Stop all services"
+	@echo "  make restart        - Restart all services"
+	@echo ""
+	@echo "📊 Services:"
+	@echo "  make logs-fdm       - Fleet Data Manager logs"
+	@echo "  make logs-fwm       - Fleet Workshop Manager logs"
+	@echo "  make logs-display   - Connect Display logs"
+	@echo "  make logs-cdn       - CDN logs"
+	@echo ""
+	@echo "🏥 Health & Maintenance:"
+	@echo "  make health         - Check all services"
+	@echo "  make clean          - Clean containers and volumes"
+	@echo ""
+	@echo "🔧 Development:"
+	@echo "  make dev-fdm        - Start FDM in dev mode"
+	@echo "  make dev-fwm        - Start FWM in dev mode"
+	@echo ""
+
+setup:
+	@echo "📦 Setting up Fleet Management System..."
+	@echo "Creating .env file..."
+	@if [ ! -f ".env" ]; then \
+		cp .env.example .env 2>/dev/null || \
+		echo "# Fleet Management System Environment\nPOSTGRES_PASSWORD=fleet_password_change_in_production\nSECRET_KEY_FDM=dev-secret-key-fdm\nSECRET_KEY_FWM=dev-secret-key-fwm" > .env; \
+	fi
+	@echo "Creating shared directories..."
+	@mkdir -p shared/{types,components,utils}
+	@mkdir -p static
+	@echo "✅ Setup complete!"
+
+migrate:
+	@echo "🔄 Migrating from ConnectDisplay to Fleet Management System..."
+	@echo "Current structure preserved in backend/ and frontend/"
+	@echo "New structure created in services/"
+	@echo ""
+	@echo "Next steps:"
+	@echo "1. Review docker-compose.fleet.yml"
+	@echo "2. Update .env with your settings"
+	@echo "3. Run: make build"
+	@echo "4. Run: make up"
+
+build:
+	@echo "🏗️  Building services..."
+	@docker-compose -f $(COMPOSE_FILE) build --no-cache
+
+up: 
+	@echo "🚀 Starting Fleet Management System..."
+	@docker-compose -f $(COMPOSE_FILE) up -d
+	@echo ""
+	@echo "✅ Services started:"
+	@echo "  🎯 Connect Display:       http://localhost:8100"
+	@echo "  📊 Fleet Data Manager:    http://localhost:8200/docs"
+	@echo "  🔧 Fleet Workshop Mgr:    http://localhost:8201/docs"
+	@echo "  📁 CDN:                   http://localhost:9000"
+	@echo "  🗄️  PostgreSQL:            localhost:5432"
+	@echo "  ⚡ Redis:                 localhost:6379"
+	@echo ""
+
+down:
+	@echo "🛑 Stopping services..."
+	@docker-compose -f $(COMPOSE_FILE) down
+
+restart: down up
+
+logs-fdm:
+	@docker-compose -f $(COMPOSE_FILE) logs -f fleet-data-manager
+
+logs-fwm:
+	@docker-compose -f $(COMPOSE_FILE) logs -f fleet-workshop-manager
+
+logs-display:
+	@docker-compose -f $(COMPOSE_FILE) logs -f connect-display
+
+logs-cdn:
+	@docker-compose -f $(COMPOSE_FILE) logs -f cdn
+
+health:
+	@echo "🏥 Checking Fleet Management System health..."
+	@echo ""
+	@echo "🔍 Services status:"
+	@docker-compose -f $(COMPOSE_FILE) ps
+	@echo ""
+	@echo "🔍 API Health checks:"
+	@curl -s http://localhost:8200/api/v1/health | jq '.' 2>/dev/null || echo "❌ Fleet Data Manager: Unavailable"
+	@curl -s http://localhost:8201/api/v1/health | jq '.' 2>/dev/null || echo "❌ Fleet Workshop Manager: Unavailable"
+	@curl -s http://localhost:9000/health 2>/dev/null && echo "✅ CDN: Healthy" || echo "❌ CDN: Unavailable"
+	@echo ""
+
+clean:
+	@echo "🧹 Cleaning up..."
+	@docker-compose -f $(COMPOSE_FILE) down -v
+	@docker system prune -f
+	@echo "✅ Cleanup complete!"
+
+dev-fdm:
+	@echo "🔧 Starting Fleet Data Manager in development mode..."
+	@cd services/backend/fleet-data-manager && \
+		python -m uvicorn app.main:app --host 0.0.0.0 --port 8200 --reload
+
+dev-fwm:
+	@echo "🔧 Starting Fleet Workshop Manager in development mode..."
+	@cd services/backend/fleet-workshop-manager && \
+		python -m uvicorn app.main:app --host 0.0.0.0 --port 8201 --reload
+
+# Quick commands for backwards compatibility
+start: up
+stop: down
+status: health

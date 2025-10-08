@@ -1,0 +1,833 @@
+import { ConnectFilterModule } from './connect-filter.module';
+
+export class ConnectFilterView {
+  private module: ConnectFilterModule;
+
+  constructor(module: ConnectFilterModule) {
+    this.module = module;
+  }
+
+  render(): HTMLElement {
+    const container = document.createElement('div');
+    container.className = 'connect-filter-page';
+    
+    container.innerHTML = `
+      <div class="connect-filter-container">
+        <div class="header-section">
+          <h1>🔎 ConnectFilter - Advanced Search & Filtering</h1>
+          <div class="header-actions">
+            <button id="clear-all-filters" class="btn btn-outline-secondary">🗑️ Clear All</button>
+            <button id="export-results" class="btn btn-success">📊 Export</button>
+          </div>
+        </div>
+
+        <div class="main-content">
+          <div class="left-panel">
+            <div class="search-section">
+              <h3>🔍 Search Criteria</h3>
+              
+              <!-- Text Search -->
+              <div class="form-group">
+                <label for="text-search">Text Search:</label>
+                <div class="input-group">
+                  <input type="text" id="text-search" class="form-control" placeholder="Search devices, users, groups...">
+                  <button id="search-btn" class="btn btn-primary">🔍 Search</button>
+                </div>
+              </div>
+
+              <!-- Filters -->
+              <div class="filters-section">
+                <h4>🎯 Filters</h4>
+                
+                <div class="form-group">
+                  <label for="type-filter">Type:</label>
+                  <select id="type-filter" class="form-select">
+                    <option value="">All Types</option>
+                    <option value="device">📱 Device</option>
+                    <option value="user">👤 User</option>
+                    <option value="group">📦 Group</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="status-filter">Status:</label>
+                  <select id="status-filter" class="form-select">
+                    <option value="">All Statuses</option>
+                    <option value="active">✅ Active</option>
+                    <option value="inactive">❌ Inactive</option>
+                    <option value="pending">⏳ Pending</option>
+                    <option value="maintenance">🔧 Maintenance</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="location-filter">Location:</label>
+                  <select id="location-filter" class="form-select">
+                    <option value="">All Locations</option>
+                    <option value="warehouse">🏭 Warehouse</option>
+                    <option value="office">🏢 Office</option>
+                    <option value="field">🌍 Field</option>
+                    <option value="maintenance">🔧 Maintenance Bay</option>
+                  </select>
+                </div>
+
+                <div class="form-group">
+                  <label for="group-filter">Group:</label>
+                  <select id="group-filter" class="form-select">
+                    <option value="">All Groups</option>
+                    <option value="tech">👨‍💻 Technical</option>
+                    <option value="operations">⚙️ Operations</option>
+                    <option value="safety">🦺 Safety</option>
+                    <option value="management">👔 Management</option>
+                  </select>
+                </div>
+
+                <!-- Date Range -->
+                <div class="form-group">
+                  <label>Date Range:</label>
+                  <div class="date-range">
+                    <input type="date" id="date-from" class="form-control">
+                    <span>to</span>
+                    <input type="date" id="date-to" class="form-control">
+                  </div>
+                </div>
+
+                <!-- Advanced Filters Toggle -->
+                <div class="advanced-toggle">
+                  <button id="advanced-toggle" class="btn btn-outline-info btn-sm">⚙️ Advanced Filters</button>
+                </div>
+
+                <div id="advanced-filters" class="advanced-filters" style="display: none;">
+                  <div class="form-group">
+                    <label for="tags-filter">Tags:</label>
+                    <input type="text" id="tags-filter" class="form-control" placeholder="Enter tags separated by commas">
+                  </div>
+                  
+                  <div class="form-group">
+                    <label for="custom-field">Custom Field:</label>
+                    <input type="text" id="custom-field" class="form-control" placeholder="Custom search field">
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="right-panel">
+            <div class="results-section">
+              <div class="results-header">
+                <h3>📋 Search Results</h3>
+                <div class="results-stats">
+                  <span class="badge bg-primary" id="results-count">0 results</span>
+                  <div class="results-controls">
+                    <label for="items-per-page">Per page:</label>
+                    <select id="items-per-page" class="form-select form-select-sm">
+                      <option value="10">10</option>
+                      <option value="20" selected>20</option>
+                      <option value="50">50</option>
+                      <option value="100">100</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <div class="results-table-container">
+                <table class="table table-striped" id="results-table">
+                  <thead>
+                    <tr>
+                      <th><input type="checkbox" id="select-all"></th>
+                      <th class="sortable" data-field="name">Name <span class="sort-icon">↕️</span></th>
+                      <th class="sortable" data-field="type">Type <span class="sort-icon">↕️</span></th>
+                      <th class="sortable" data-field="status">Status <span class="sort-icon">↕️</span></th>
+                      <th class="sortable" data-field="location">Location <span class="sort-icon">↕️</span></th>
+                      <th class="sortable" data-field="lastSeen">Last Seen <span class="sort-icon">↕️</span></th>
+                      <th>Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="results-tbody">
+                    <!-- Results will be populated here -->
+                  </tbody>
+                </table>
+              </div>
+
+              <div class="pagination-container">
+                <nav>
+                  <ul class="pagination" id="pagination">
+                    <!-- Pagination will be generated here -->
+                  </ul>
+                </nav>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Edit Modal -->
+        <div id="edit-modal" class="modal" tabindex="-1">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h5 class="modal-title">✏️ Edit Item</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+              </div>
+              <div class="modal-body">
+                <form id="edit-form">
+                  <div class="form-group">
+                    <label for="edit-name">Name:</label>
+                    <input type="text" id="edit-name" class="form-control" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="edit-type">Type:</label>
+                    <select id="edit-type" class="form-select">
+                      <option value="device">📱 Device</option>
+                      <option value="user">👤 User</option>
+                      <option value="group">📦 Group</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="edit-status">Status:</label>
+                    <select id="edit-status" class="form-select">
+                      <option value="active">✅ Active</option>
+                      <option value="inactive">❌ Inactive</option>
+                      <option value="pending">⏳ Pending</option>
+                      <option value="maintenance">🔧 Maintenance</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="edit-location">Location:</label>
+                    <select id="edit-location" class="form-select">
+                      <option value="warehouse">🏭 Warehouse</option>
+                      <option value="office">🏢 Office</option>
+                      <option value="field">🌍 Field</option>
+                      <option value="maintenance">🔧 Maintenance Bay</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="edit-tags">Tags:</label>
+                    <input type="text" id="edit-tags" class="form-control" placeholder="Comma separated tags">
+                  </div>
+                  <div class="form-group">
+                    <label for="edit-notes">Notes:</label>
+                    <textarea id="edit-notes" class="form-control" rows="3"></textarea>
+                  </div>
+                </form>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" id="save-changes" class="btn btn-primary">💾 Save Changes</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+
+    // Add CSS styles
+    this.addStyles();
+
+    // Setup event listeners
+    this.setupEventListeners(container);
+
+    // Initial load of data
+    this.loadInitialData();
+
+    return container;
+  }
+
+  private addStyles(): void {
+    const style = document.createElement('style');
+    style.textContent = `
+      .connect-filter-page {
+        padding: 20px;
+        max-width: 1400px;
+        margin: 0 auto;
+      }
+
+      .connect-filter-container {
+        background: white;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      }
+
+      .header-section {
+        background: linear-gradient(135deg, #17a2b8 0%, #138496 100%);
+        color: white;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .header-section h1 {
+        margin: 0;
+        font-size: 1.5rem;
+      }
+
+      .header-actions {
+        display: flex;
+        gap: 10px;
+      }
+
+      .main-content {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        gap: 20px;
+        padding: 20px;
+        min-height: 600px;
+      }
+
+      .left-panel {
+        background: #f8f9fa;
+        border-radius: 8px;
+        padding: 20px;
+      }
+
+      .search-section h3 {
+        margin-bottom: 20px;
+        color: #495057;
+        border-bottom: 2px solid #dee2e6;
+        padding-bottom: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      .form-group label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: 500;
+        color: #495057;
+      }
+
+      .form-control, .form-select {
+        width: 100%;
+        padding: 8px 12px;
+        border: 1px solid #ced4da;
+        border-radius: 4px;
+        font-size: 14px;
+      }
+
+      .input-group {
+        display: flex;
+      }
+
+      .input-group .form-control {
+        border-top-right-radius: 0;
+        border-bottom-right-radius: 0;
+      }
+
+      .input-group .btn {
+        border-top-left-radius: 0;
+        border-bottom-left-radius: 0;
+      }
+
+      .filters-section {
+        margin-top: 30px;
+      }
+
+      .filters-section h4 {
+        color: #495057;
+        margin-bottom: 15px;
+      }
+
+      .date-range {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .date-range span {
+        color: #6c757d;
+        font-size: 14px;
+      }
+
+      .advanced-toggle {
+        margin-top: 20px;
+        text-align: center;
+      }
+
+      .advanced-filters {
+        margin-top: 15px;
+        padding: 15px;
+        background: #e9ecef;
+        border-radius: 4px;
+      }
+
+      .right-panel {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .results-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #dee2e6;
+      }
+
+      .results-header h3 {
+        margin: 0;
+        color: #495057;
+      }
+
+      .results-stats {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+      }
+
+      .results-controls {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+
+      .results-controls label {
+        margin: 0;
+        color: #6c757d;
+      }
+
+      .form-select-sm {
+        width: auto;
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .results-table-container {
+        flex: 1;
+        overflow: auto;
+        margin-bottom: 20px;
+      }
+
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0;
+      }
+
+      .table th,
+      .table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+      }
+
+      .table th {
+        background: #f8f9fa;
+        font-weight: 600;
+        color: #495057;
+      }
+
+      .table-striped tbody tr:nth-of-type(odd) {
+        background-color: #f8f9fa;
+      }
+
+      .sortable {
+        cursor: pointer;
+        user-select: none;
+      }
+
+      .sortable:hover {
+        background: #e9ecef;
+      }
+
+      .sort-icon {
+        font-size: 12px;
+        opacity: 0.5;
+      }
+
+      .badge {
+        padding: 4px 8px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .bg-primary {
+        background: #007bff;
+        color: white;
+      }
+
+      .bg-success {
+        background: #28a745;
+        color: white;
+      }
+
+      .bg-warning {
+        background: #ffc107;
+        color: #212529;
+      }
+
+      .bg-danger {
+        background: #dc3545;
+        color: white;
+      }
+
+      .pagination {
+        display: flex;
+        justify-content: center;
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
+
+      .pagination li {
+        margin: 0 2px;
+      }
+
+      .pagination a {
+        display: block;
+        padding: 8px 12px;
+        text-decoration: none;
+        border: 1px solid #dee2e6;
+        color: #007bff;
+        border-radius: 4px;
+      }
+
+      .pagination a:hover {
+        background: #e9ecef;
+      }
+
+      .pagination .active a {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+      }
+
+      .btn {
+        padding: 8px 16px;
+        border: 1px solid transparent;
+        border-radius: 4px;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-block;
+        font-size: 14px;
+        font-weight: 500;
+        transition: all 0.2s;
+      }
+
+      .btn-primary {
+        background: #007bff;
+        color: white;
+        border-color: #007bff;
+      }
+
+      .btn-primary:hover {
+        background: #0056b3;
+        border-color: #004085;
+      }
+
+      .btn-success {
+        background: #28a745;
+        color: white;
+        border-color: #28a745;
+      }
+
+      .btn-outline-secondary {
+        color: #6c757d;
+        border-color: #6c757d;
+        background: transparent;
+      }
+
+      .btn-outline-info {
+        color: #17a2b8;
+        border-color: #17a2b8;
+        background: transparent;
+      }
+
+      .btn-sm {
+        padding: 4px 8px;
+        font-size: 12px;
+      }
+
+      .modal {
+        display: none;
+        position: fixed;
+        z-index: 1000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.5);
+      }
+
+      .modal.show {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-dialog {
+        background: white;
+        border-radius: 8px;
+        width: 90%;
+        max-width: 500px;
+        max-height: 90vh;
+        overflow: auto;
+      }
+
+      .modal-header {
+        padding: 15px 20px;
+        border-bottom: 1px solid #dee2e6;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+
+      .modal-title {
+        margin: 0;
+        font-size: 1.2rem;
+        color: #495057;
+      }
+
+      .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.5rem;
+        cursor: pointer;
+        padding: 0;
+        width: 30px;
+        height: 30px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .modal-body {
+        padding: 20px;
+        max-height: 400px;
+        overflow-y: auto;
+      }
+
+      .modal-footer {
+        padding: 15px 20px;
+        border-top: 1px solid #dee2e6;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+      }
+
+      @media (max-width: 768px) {
+        .main-content {
+          grid-template-columns: 1fr;
+        }
+        
+        .left-panel {
+          margin-bottom: 20px;
+        }
+      }
+    `;
+    document.head.appendChild(style);
+  }
+
+  private setupEventListeners(container: HTMLElement): void {
+    // Search functionality
+    const searchBtn = container.querySelector('#search-btn');
+    const textSearch = container.querySelector('#text-search') as HTMLInputElement;
+    
+    searchBtn?.addEventListener('click', () => {
+      this.performSearch();
+    });
+
+    textSearch?.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        this.performSearch();
+      }
+    });
+
+    // Filter changes
+    const filters = ['type-filter', 'status-filter', 'location-filter', 'group-filter'];
+    filters.forEach(filterId => {
+      const filter = container.querySelector(`#${filterId}`);
+      filter?.addEventListener('change', () => {
+        this.performSearch();
+      });
+    });
+
+    // Advanced filters toggle
+    const advancedToggle = container.querySelector('#advanced-toggle');
+    const advancedFilters = container.querySelector('#advanced-filters');
+    
+    advancedToggle?.addEventListener('click', () => {
+      const isVisible = (advancedFilters as HTMLElement)?.style.display !== 'none';
+      if (advancedFilters) {
+        (advancedFilters as HTMLElement).style.display = isVisible ? 'none' : 'block';
+        (advancedToggle as HTMLElement).textContent = isVisible ? '⚙️ Advanced Filters' : '🔼 Hide Advanced';
+      }
+    });
+
+    // Items per page
+    const itemsPerPage = container.querySelector('#items-per-page');
+    itemsPerPage?.addEventListener('change', () => {
+      this.performSearch();
+    });
+
+    // Clear all filters
+    const clearAllBtn = container.querySelector('#clear-all-filters');
+    clearAllBtn?.addEventListener('click', () => {
+      this.clearAllFilters();
+    });
+
+    // Export results
+    const exportBtn = container.querySelector('#export-results');
+    exportBtn?.addEventListener('click', () => {
+      this.exportResults();
+    });
+
+    // Modal handlers
+    const modal = container.querySelector('#edit-modal');
+    const saveBtn = container.querySelector('#save-changes');
+    const closeBtn = container.querySelector('.btn-close');
+    
+    closeBtn?.addEventListener('click', () => {
+      modal?.classList.remove('show');
+    });
+
+    saveBtn?.addEventListener('click', () => {
+      this.saveChanges();
+    });
+
+    // Sort headers
+    const sortHeaders = container.querySelectorAll('.sortable');
+    sortHeaders.forEach(header => {
+      header.addEventListener('click', (e) => {
+        const field = (e.target as HTMLElement).getAttribute('data-field');
+        if (field) {
+          this.sortBy(field);
+        }
+      });
+    });
+  }
+
+  private async loadInitialData(): Promise<void> {
+    try {
+      console.log('🔍 Loading initial ConnectFilter data...');
+      await this.performSearch();
+    } catch (error) {
+      console.error('Error loading initial data:', error);
+    }
+  }
+
+  private async performSearch(): Promise<void> {
+    try {
+      const service = this.module.getService();
+      const filters = this.getFilters();
+      
+      console.log('🔍 Performing search with filters:', filters);
+      const results = await service.performSearch(filters);
+      
+      this.displayResults(results);
+      this.updateResultsCount(results.length);
+      
+    } catch (error) {
+      console.error('Search error:', error);
+    }
+  }
+
+  private getFilters(): any {
+    const textSearch = (document.getElementById('text-search') as HTMLInputElement)?.value;
+    const typeFilter = (document.getElementById('type-filter') as HTMLSelectElement)?.value;
+    const statusFilter = (document.getElementById('status-filter') as HTMLSelectElement)?.value;
+    const locationFilter = (document.getElementById('location-filter') as HTMLSelectElement)?.value;
+    const groupFilter = (document.getElementById('group-filter') as HTMLSelectElement)?.value;
+    
+    return {
+      textSearch: textSearch || '',
+      type: typeFilter || '',
+      status: statusFilter || '',
+      location: locationFilter || '',
+      group: groupFilter || ''
+    };
+  }
+
+  private displayResults(results: any[]): void {
+    const tbody = document.getElementById('results-tbody');
+    if (!tbody) return;
+
+    tbody.innerHTML = results.map(item => `
+      <tr>
+        <td><input type="checkbox" value="${item.id}"></td>
+        <td>${item.name}</td>
+        <td>${this.getTypeIcon(item.type)} ${item.type}</td>
+        <td><span class="badge ${this.getStatusBadgeClass(item.status)}">${item.status}</span></td>
+        <td>${item.location}</td>
+        <td>${item.lastSeen}</td>
+        <td>
+          <button class="btn btn-sm btn-outline-primary" onclick="this.editItem('${item.id}')">✏️</button>
+          <button class="btn btn-sm btn-outline-danger" onclick="this.deleteItem('${item.id}')">🗑️</button>
+        </td>
+      </tr>
+    `).join('');
+  }
+
+  private getTypeIcon(type: string): string {
+    const icons = {
+      'device': '📱',
+      'user': '👤',
+      'group': '📦'
+    };
+    return icons[type as keyof typeof icons] || '❓';
+  }
+
+  private getStatusBadgeClass(status: string): string {
+    const classes = {
+      'active': 'bg-success',
+      'inactive': 'bg-danger',
+      'pending': 'bg-warning',
+      'maintenance': 'bg-primary'
+    };
+    return classes[status as keyof typeof classes] || 'bg-secondary';
+  }
+
+  private updateResultsCount(count: number): void {
+    const badge = document.getElementById('results-count');
+    if (badge) {
+      badge.textContent = `${count} results`;
+    }
+  }
+
+  private clearAllFilters(): void {
+    // Clear all filter inputs
+    const inputs = document.querySelectorAll('#text-search, #type-filter, #status-filter, #location-filter, #group-filter, #date-from, #date-to, #tags-filter, #custom-field');
+    inputs.forEach(input => {
+      if (input instanceof HTMLInputElement || input instanceof HTMLSelectElement) {
+        input.value = '';
+      }
+    });
+    
+    // Perform search with cleared filters
+    this.performSearch();
+  }
+
+  private exportResults(): void {
+    const service = this.module.getService();
+    try {
+      const exportData = service.exportResults();
+      console.log('📊 Export completed:', exportData);
+      
+      // Show notification
+      alert('✅ Results exported successfully! Check console for data.');
+    } catch (error) {
+      console.error('Export error:', error);
+      alert('❌ Export failed. Check console for details.');
+    }
+  }
+
+  private sortBy(field: string): void {
+    console.log(`📊 Sorting by: ${field}`);
+    // Implement sorting logic here
+    this.performSearch();
+  }
+
+  private saveChanges(): void {
+    console.log('💾 Saving changes...');
+    const modal = document.getElementById('edit-modal');
+    modal?.classList.remove('show');
+    
+    // Refresh results
+    this.performSearch();
+  }
+}
