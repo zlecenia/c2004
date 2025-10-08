@@ -4,6 +4,7 @@ export class ConnectTestView {
   private module: ConnectTestModule;
   private currentSection: string = 'identification';
   private currentMethod: string = 'list';
+  private currentProtocol: string = 'service';
 
   constructor(module: ConnectTestModule) {
     this.module = module;
@@ -39,7 +40,7 @@ export class ConnectTestView {
           </button>
         </div>
 
-        <!-- Column 2: Interface (shown only for Identification) -->
+        <!-- Column 2A: Interface (shown only for Identification) -->
         <div class="menu-column" id="interface-column" style="display: block;">
           <h3 class="column-title">Interfejs</h3>
           <button class="method-item" data-method="rfid">
@@ -61,6 +62,27 @@ export class ConnectTestView {
           <button class="method-item active" data-method="list">
             <span class="menu-icon">📋</span>
             <span class="menu-label">Z listy</span>
+          </button>
+        </div>
+
+        <!-- Column 2B: Protocols (shown only for Testing) -->
+        <div class="menu-column" id="protocols-column" style="display: none;">
+          <h3 class="column-title">Protokoły</h3>
+          <button class="protocol-item active" data-protocol="service">
+            <span class="menu-icon">🔧</span>
+            <span class="menu-label">Serwis</span>
+          </button>
+          <button class="protocol-item" data-protocol="scenario-c20">
+            <span class="menu-icon">🧪</span>
+            <span class="menu-label">Scenariusz C20</span>
+          </button>
+          <button class="protocol-item" data-protocol="notes">
+            <span class="menu-icon">📝</span>
+            <span class="menu-label">Uwagi</span>
+          </button>
+          <button class="protocol-item" data-protocol="create-report">
+            <span class="menu-icon">📋</span>
+            <span class="menu-label">Stwórz Raport</span>
           </button>
         </div>
 

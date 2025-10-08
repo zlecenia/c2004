@@ -165,10 +165,13 @@ Główne menu → Akcje → Sekcje → [Content] → [Params]
 
 **Struktura kolumn:**
 ```
-Główne menu → Sekcje → Interfejs* → [Content] → [Params]
-   120px         100px     100px        ~600px      200px
+Główne menu → Sekcje → Interfejs*/Protokoły* → [Content] → [Params/Sensory]
+   120px         100px        100px           ~600px       200px
    
-*Kolumna "Interfejs" pojawia się tylko dla sekcji "Urządzenia"
+*Kolumna 2 zmienia się dynamicznie:
+- "Interfejs" dla sekcji "Urządzenia" 
+- "Protokoły" dla sekcji "Testowanie"
+- Brak dla sekcji "Raporty"
 ```
 
 **Kolumna 1 - Sekcje:**
@@ -176,22 +179,31 @@ Główne menu → Sekcje → Interfejs* → [Content] → [Params]
 - 🧪 Testowanie
 - 📋 Raporty Urządzeń
 
-**Kolumna 2 - Interfejs (tylko dla Urządzenia):**
+**Kolumna 2A - Interfejs (tylko dla Urządzenia):**
 - 📡 RFID
 - 📷 QR
 - 📊 Barcode
 - ⌨️ Keyboard
 - 📋 Z listy ✓ (domyślna)
 
+**Kolumna 2B - Protokoły (tylko dla Testowanie):**
+- 🔧 Serwis ✓ (urządzenie, komponent)
+- 🧪 Scenariusz C20 (urządzenie, scenariusz)
+- 📝 Uwagi (urządzenie)
+- 📋 Stwórz Raport (użytkownik)
+
 **Content (zależnie od sekcji):**
 - **Urządzenia**: 5 różnych widoków (RFID/QR/Barcode/Manual/List), domyślnie "Z listy"
-- **Testowanie**: Progress bar + kroki testu
+- **Testowanie**: Formularz protokołu + progress bar, domyślnie "Serwis"
 - **Raporty**: Historia raportów z statusami
 
-**Parametry:**
-- Aktywna sekcja: --
-- Status: Oczekuje
-- Ostatni test: --
+**Right Panel (zależnie od sekcji):**
+- **Urządzenia**: Parametry identyfikacji
+- **Testowanie**: **Sensory Ciśnienia** (odczyt w czasie rzeczywistym)
+  - 🔴 Ciśnienie Niskie: -- mbar
+  - 🟡 Ciśnienie Średnie: -- mbar  
+  - 🟢 Ciśnienie Wysokie: -- mbar
+- **Raporty**: Statystyki raportów
 
 ---
 
