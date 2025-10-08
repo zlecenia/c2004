@@ -13,3 +13,11 @@ jako pierwsze komponenty zmigruj
 bazując na projekcie z folderu /home/tom/github/zlecenia/c2002 zrob migracje do aktualnego folderu ./ zastosowaniem wskazówek z pliku ./ARCHITEKTURA.md
 
 jako pierwsze komponenty zmigruj 
+
+
+
+
+dodaj drugą kolumne menu w Raporty: Planowane, Wykonane
+Wykonane mają być te, które są aktualne a w planowanych ma być widok kalendarza z podmenu na podział tygodnie, miesiące lata z widokiem kalendarzy w roznych skalach
+
+

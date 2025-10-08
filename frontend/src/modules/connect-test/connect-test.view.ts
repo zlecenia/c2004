@@ -5,6 +5,7 @@ export class ConnectTestView {
   private currentSection: string = 'identification';
   private currentMethod: string = 'list';
   private currentProtocol: string = 'service';
+  private currentScenarioType: string = 'usage';
 
   constructor(module: ConnectTestModule) {
     this.module = module;
@@ -65,7 +66,32 @@ export class ConnectTestView {
           </button>
         </div>
 
-        <!-- Column 2B: Protocols (shown only for Testing) -->
+        <!-- Column 2B: Scenario Types (shown only for Testing) -->
+        <div class="menu-column" id="scenario-types-column" style="display: none;">
+          <h3 class="column-title">Typ Scenariusza</h3>
+          <button class="scenario-type-item active" data-scenario-type="usage">
+            <span class="menu-icon">🔄</span>
+            <span class="menu-label">Po użyciu</span>
+          </button>
+          <button class="scenario-type-item" data-scenario-type="6months">
+            <span class="menu-icon">📅</span>
+            <span class="menu-label">Po 6 miesiącach</span>
+          </button>
+          <button class="scenario-type-item" data-scenario-type="yearly">
+            <span class="menu-icon">📆</span>
+            <span class="menu-label">Roczny</span>
+          </button>
+          <button class="scenario-type-item" data-scenario-type="emergency">
+            <span class="menu-icon">🚨</span>
+            <span class="menu-label">Awaryjny</span>
+          </button>
+          <button class="scenario-type-item" data-scenario-type="preventive">
+            <span class="menu-icon">🛡️</span>
+            <span class="menu-label">Prewencyjny</span>
+          </button>
+        </div>
+
+        <!-- Column 3: Protocols (shown only for Testing) -->
         <div class="menu-column" id="protocols-column" style="display: none;">
           <h3 class="column-title">Protokoły</h3>
           <button class="protocol-item active" data-protocol="service">
@@ -90,7 +116,6 @@ export class ConnectTestView {
           <div class="content-body">
             <!-- Identification Section -->
             <div id="identification-content" class="section-content active">
-              <h3 id="identification-title">📱 Urządzenia - Z listy</h3>
               
               <!-- RFID Method -->
               <div id="rfid-method" class="method-content">
@@ -171,39 +196,123 @@ export class ConnectTestView {
 
             <!-- Testing Section -->
             <div id="testing-content" class="section-content">
-              <h3>🧪 Testowanie</h3>
-              <div class="test-progress">
-                <div class="progress-header">
-                  <span>Test w trakcie...</span>
-                  <span id="progress-percent">0%</span>
-                </div>
-                <div class="progress-bar">
-                  <div class="progress-fill" style="width: 0%"></div>
+              <!-- Service Protocol -->
+              <div id="service-protocol" class="protocol-content active">
+                <div class="protocol-form">
+                  <h4>🔧 Protokół Serwisu</h4>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Urządzenie:</label>
+                      <select class="form-select">
+                        <option>PSS-7000 #12345</option>
+                        <option>PSS-5000 #67890</option>
+                        <option>PSS-3000 #11111</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Komponent:</label>
+                      <select class="form-select">
+                        <option>Pompa główna</option>
+                        <option>Zawór bezpieczeństwa</option>
+                        <option>Czujnik ciśnienia</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label>Opis czynności serwisowych:</label>
+                    <textarea class="form-textarea" rows="4" placeholder="Opisz wykonane czynności..."></textarea>
+                  </div>
+                  <button class="btn-submit-protocol">💾 Zapisz Protokół Serwisu</button>
                 </div>
               </div>
-              <div class="test-steps">
-                <div class="test-step">
-                  <span class="step-icon">⏳</span>
-                  <span class="step-name">Test szczelności</span>
-                  <span class="step-status">Oczekuje</span>
-                </div>
-                <div class="test-step">
-                  <span class="step-icon">⏳</span>
-                  <span class="step-name">Test przepływu</span>
-                  <span class="step-status">Oczekuje</span>
-                </div>
-                <div class="test-step">
-                  <span class="step-icon">⏳</span>
-                  <span class="step-name">Test funkcjonalny</span>
-                  <span class="step-status">Oczekuje</span>
+
+              <!-- Scenario C20 Protocol -->
+              <div id="scenario-c20-protocol" class="protocol-content">
+                <div class="protocol-form">
+                  <h4>🧪 Protokół Scenariusz C20</h4>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Urządzenie:</label>
+                      <select class="form-select">
+                        <option>PSS-7000 #12345</option>
+                        <option>PSS-5000 #67890</option>
+                        <option>PSS-3000 #11111</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Scenariusz:</label>
+                      <select class="form-select">
+                        <option>Test ciśnienia wysokiego</option>
+                        <option>Test przepływu</option>
+                        <option>Test szczelności</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="test-progress">
+                    <div class="progress-header">
+                      <span>Postęp testu C20...</span>
+                      <span id="c20-progress-percent">0%</span>
+                    </div>
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 0%"></div>
+                    </div>
+                  </div>
+                  <button class="btn-start-c20">▶️ Rozpocznij Test C20</button>
                 </div>
               </div>
-              <button class="btn-start-test">▶️ Rozpocznij Test</button>
+
+              <!-- Notes Protocol -->
+              <div id="notes-protocol" class="protocol-content">
+                <div class="protocol-form">
+                  <h4>📝 Protokół Uwag</h4>
+                  <div class="form-group">
+                    <label>Urządzenie:</label>
+                    <select class="form-select">
+                      <option>PSS-7000 #12345</option>
+                      <option>PSS-5000 #67890</option>
+                      <option>PSS-3000 #11111</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Uwagi i obserwacje:</label>
+                    <textarea class="form-textarea" rows="6" placeholder="Wprowadź uwagi, obserwacje, zalecenia..."></textarea>
+                  </div>
+                  <button class="btn-submit-protocol">📝 Zapisz Uwagi</button>
+                </div>
+              </div>
+
+              <!-- Create Report Protocol -->
+              <div id="create-report-protocol" class="protocol-content">
+                <div class="protocol-form">
+                  <h4>📋 Stwórz Raport</h4>
+                  <div class="form-group">
+                    <label>Użytkownik odpowiedzialny:</label>
+                    <select class="form-select">
+                      <option>Jan Kowalski (Technik)</option>
+                      <option>Anna Nowak (Manager)</option>
+                      <option>Piotr Wiśniewski (Operator)</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Typ raportu:</label>
+                    <select class="form-select">
+                      <option>Raport okresowy</option>
+                      <option>Raport serwisowy</option>
+                      <option>Raport testowy</option>
+                      <option>Raport awarii</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Podsumowanie:</label>
+                    <textarea class="form-textarea" rows="4" placeholder="Krótkie podsumowanie raportu..."></textarea>
+                  </div>
+                  <button class="btn-generate-report">📊 Generuj Raport</button>
+                </div>
+              </div>
             </div>
 
             <!-- Reports Section -->
             <div id="reports-content" class="section-content">
-              <h3>📋 Raporty Urządzeń</h3>
               <div class="reports-list">
                 <div class="report-card">
                   <div class="report-header">
@@ -228,7 +337,6 @@ export class ConnectTestView {
 
             <!-- Debug Section -->
             <div id="debug-content" class="section-content">
-              <h3>🔧 Debug</h3>
               <div class="debug-console">
                 <div class="console-output">
                   <div class="log-entry info">[18:15:00] System initialized</div>
@@ -246,11 +354,63 @@ export class ConnectTestView {
         </div>
 
         <div class="right-panel">
-          <div class="params-section">
+          <!-- Identification Parameters -->
+          <div id="identification-params" class="params-section">
             <h3 class="params-title">Status</h3>
             <div class="param-item">
               <span class="param-label">Aktywna sekcja:</span>
               <span class="param-value" id="active-section">Urządzenia</span>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Metoda:</span>
+              <span class="param-value" id="active-method">Z listy</span>
+            </div>
+          </div>
+
+          <!-- Testing Sensors -->
+          <div id="testing-sensors" class="params-section" style="display: none;">
+            <h3 class="params-title">Sensory Ciśnienia</h3>
+            <div class="sensor-item low-pressure">
+              <div class="sensor-icon">🔴</div>
+              <div class="sensor-info">
+                <span class="sensor-label">Ciśnienie Niskie</span>
+                <span class="sensor-value" id="pressure-low">-- mbar</span>
+              </div>
+            </div>
+            <div class="sensor-item medium-pressure">
+              <div class="sensor-icon">🟡</div>
+              <div class="sensor-info">
+                <span class="sensor-label">Ciśnienie Średnie</span>
+                <span class="sensor-value" id="pressure-medium">-- mbar</span>
+              </div>
+            </div>
+            <div class="sensor-item high-pressure">
+              <div class="sensor-icon">🟢</div>
+              <div class="sensor-info">
+                <span class="sensor-label">Ciśnienie Wysokie</span>
+                <span class="sensor-value" id="pressure-high">-- mbar</span>
+              </div>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Protokół:</span>
+              <span class="param-value" id="active-protocol">Serwis</span>
+            </div>
+          </div>
+
+          <!-- Reports Parameters -->
+          <div id="reports-params" class="params-section" style="display: none;">
+            <h3 class="params-title">Statystyki</h3>
+            <div class="param-item">
+              <span class="param-label">Łącznie raportów:</span>
+              <span class="param-value">24</span>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Pozytywne:</span>
+              <span class="param-value">18</span>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Negatywne:</span>
+              <span class="param-value">6</span>
             </div>
           </div>
         </div>
@@ -293,9 +453,19 @@ export class ConnectTestView {
       .method-content.active { display: block; }
       
       /* Method Items */
-      .method-item { width: 100%; padding: 10px; background: #3a3a3a; border: none; color: white; cursor: pointer; display: flex; align-items: center; gap: 10px; border-radius: 4px; margin-bottom: 6px; transition: all 0.2s; }
-      .method-item:hover { background: #4a4a4a; }
-      .method-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+      .method-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
+      .method-item:hover { background: #4a4a4a; color: white; }
+      .method-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+
+      /* Scenario Type Items */
+      .scenario-type-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
+      .scenario-type-item:hover { background: #4a4a4a; color: white; }
+      .scenario-type-item.active { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; }
+
+      /* Protocol Items */
+      .protocol-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
+      .protocol-item:hover { background: #4a4a4a; color: white; }
+      .protocol-item.active { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
 
       /* Test Form */
       .test-form { background: #f8f9fa; padding: 15px; border-radius: 5px; }
@@ -363,6 +533,26 @@ export class ConnectTestView {
       .log-entry.error { color: #f00; }
       .console-actions { display: flex; gap: 8px; }
       .btn-console { flex: 1; padding: 6px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; }
+
+      /* Protocol Content */
+      .protocol-content { display: none; }
+      .protocol-content.active { display: block; }
+      .protocol-form { background: #f8f9fa; padding: 20px; border-radius: 8px; }
+      .protocol-form h4 { margin: 0 0 20px 0; font-size: 14px; color: #333; font-weight: 600; }
+      .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
+      .form-row .form-group { flex: 1; }
+      .form-textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; font-family: inherit; resize: vertical; }
+      .btn-submit-protocol, .btn-start-c20, .btn-generate-report { width: 100%; padding: 12px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; margin-top: 10px; }
+
+      /* Sensors */
+      .sensor-item { display: flex; align-items: center; gap: 10px; background: #3a3a3a; padding: 10px; margin-bottom: 8px; border-radius: 6px; }
+      .sensor-icon { font-size: 20px; }
+      .sensor-info { flex: 1; }
+      .sensor-label { display: block; font-size: 10px; color: #999; margin-bottom: 2px; }
+      .sensor-value { font-size: 14px; color: #fff; font-weight: 600; }
+      .low-pressure { border-left: 3px solid #dc3545; }
+      .medium-pressure { border-left: 3px solid #ffc107; }
+      .high-pressure { border-left: 3px solid #28a745; }
     `;
     document.head.appendChild(style);
   }
@@ -387,6 +577,29 @@ export class ConnectTestView {
         if (method) this.switchMethod(method, container);
       });
     });
+
+    // Scenario type buttons (for Testing)
+    const scenarioTypeItems = container.querySelectorAll('[data-scenario-type]');
+    scenarioTypeItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const scenarioType = target.getAttribute('data-scenario-type');
+        if (scenarioType) this.switchScenarioType(scenarioType, container);
+      });
+    });
+
+    // Protocol buttons (for Testing)
+    const protocolItems = container.querySelectorAll('[data-protocol]');
+    protocolItems.forEach(item => {
+      item.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const protocol = target.getAttribute('data-protocol');
+        if (protocol) this.switchProtocol(protocol, container);
+      });
+    });
+
+    // Start pressure simulation for testing section
+    this.startPressureSimulation();
   }
 
   private switchSection(section: string, container: HTMLElement): void {
@@ -409,14 +622,36 @@ export class ConnectTestView {
       activeContent.classList.add('active');
     }
 
-    // Show/hide Interface column (only for Identification)
+    // Show/hide columns based on section
     const interfaceColumn = container.querySelector('#interface-column') as HTMLElement;
-    if (interfaceColumn) {
+    const scenarioTypesColumn = container.querySelector('#scenario-types-column') as HTMLElement;
+    const protocolsColumn = container.querySelector('#protocols-column') as HTMLElement;
+    
+    if (interfaceColumn && scenarioTypesColumn && protocolsColumn) {
       if (section === 'identification') {
         interfaceColumn.style.display = 'block';
+        scenarioTypesColumn.style.display = 'none';
+        protocolsColumn.style.display = 'none';
+      } else if (section === 'testing') {
+        interfaceColumn.style.display = 'none';
+        scenarioTypesColumn.style.display = 'block';
+        protocolsColumn.style.display = 'block';
       } else {
         interfaceColumn.style.display = 'none';
+        scenarioTypesColumn.style.display = 'none';
+        protocolsColumn.style.display = 'none';
       }
+    }
+
+    // Show/hide right panel sections
+    const identificationParams = container.querySelector('#identification-params') as HTMLElement;
+    const testingSensors = container.querySelector('#testing-sensors') as HTMLElement;  
+    const reportsParams = container.querySelector('#reports-params') as HTMLElement;
+
+    if (identificationParams && testingSensors && reportsParams) {
+      identificationParams.style.display = section === 'identification' ? 'block' : 'none';
+      testingSensors.style.display = section === 'testing' ? 'block' : 'none';
+      reportsParams.style.display = section === 'reports' ? 'block' : 'none';
     }
 
     const titles: any = {
@@ -454,18 +689,105 @@ export class ConnectTestView {
       activeMethod.classList.add('active');
     }
 
-    // Update identification title
+    // Update top-bar
     const methodTitles: any = {
       'rfid': 'RFID',
-      'qr': 'QR Code',
+      'qr': 'QR Code', 
       'barcode': 'Barcode',
       'manual': 'Keyboard',
       'list': 'Z listy'
     };
 
-    const idTitle = container.querySelector('#identification-title');
-    if (idTitle) {
-      idTitle.textContent = `📱 Urządzenia - ${methodTitles[method]}`;
+    const topBarTitle = document.getElementById('top-bar-section-title');
+    if (topBarTitle) topBarTitle.textContent = `ConnectTest - Urządzenia - ${methodTitles[method]}`;
+
+    // Update params
+    const activeMethodParam = container.querySelector('#active-method');
+    if (activeMethodParam) activeMethodParam.textContent = methodTitles[method];
+  }
+
+  private switchScenarioType(scenarioType: string, container: HTMLElement): void {
+    this.currentScenarioType = scenarioType;
+
+    // Update scenario type menu active state
+    container.querySelectorAll('[data-scenario-type]').forEach(item => {
+      item.classList.remove('active');
+      if (item.getAttribute('data-scenario-type') === scenarioType) item.classList.add('active');
+    });
+
+    this.updateTestingTopBar();
+  }
+
+  private switchProtocol(protocol: string, container: HTMLElement): void {
+    this.currentProtocol = protocol;
+
+    // Update protocol menu active state
+    container.querySelectorAll('[data-protocol]').forEach(item => {
+      item.classList.remove('active');
+      if (item.getAttribute('data-protocol') === protocol) item.classList.add('active');
+    });
+
+    // Hide all protocol contents
+    container.querySelectorAll('.protocol-content').forEach(content => {
+      content.classList.remove('active');
+    });
+
+    // Show selected protocol
+    const activeProtocol = container.querySelector(`#${protocol}-protocol`);
+    if (activeProtocol) {
+      activeProtocol.classList.add('active');
     }
+
+    this.updateTestingTopBar();
+
+    // Update params
+    const protocolTitles: any = {
+      'service': 'Serwis',
+      'scenario-c20': 'Scenariusz C20',
+      'notes': 'Uwagi',
+      'create-report': 'Stwórz Raport'
+    };
+
+    const activeProtocolParam = document.querySelector('#active-protocol');
+    if (activeProtocolParam) activeProtocolParam.textContent = protocolTitles[protocol];
+  }
+
+  private updateTestingTopBar(): void {
+    const scenarioTypeTitles: any = {
+      'usage': 'Po użyciu',
+      '6months': 'Po 6 miesiącach',
+      'yearly': 'Roczny',
+      'emergency': 'Awaryjny',
+      'preventive': 'Prewencyjny'
+    };
+
+    const protocolTitles: any = {
+      'service': 'Serwis',
+      'scenario-c20': 'Scenariusz C20',
+      'notes': 'Uwagi',
+      'create-report': 'Stwórz Raport'
+    };
+
+    const topBarTitle = document.getElementById('top-bar-section-title');
+    if (topBarTitle) {
+      topBarTitle.textContent = `ConnectTest - Testowanie - ${scenarioTypeTitles[this.currentScenarioType]} - ${protocolTitles[this.currentProtocol]}`;
+    }
+  }
+
+  private startPressureSimulation(): void {
+    setInterval(() => {
+      // Simulate real-time pressure readings
+      const lowPressure = (Math.random() * 100 + 50).toFixed(1);
+      const mediumPressure = (Math.random() * 500 + 200).toFixed(1);
+      const highPressure = (Math.random() * 1000 + 800).toFixed(1);
+
+      const lowElement = document.getElementById('pressure-low');
+      const mediumElement = document.getElementById('pressure-medium');
+      const highElement = document.getElementById('pressure-high');
+
+      if (lowElement) lowElement.textContent = `${lowPressure} mbar`;
+      if (mediumElement) mediumElement.textContent = `${mediumPressure} mbar`;
+      if (highElement) highElement.textContent = `${highPressure} mbar`;
+    }, 2000);
   }
 }

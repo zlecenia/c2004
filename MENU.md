@@ -94,11 +94,11 @@ Główne menu → Identyfikacja → Interfejs → [Content] → [Params]
 
 **Struktura kolumn:**
 ```
-Główne menu → Objekty → Akcje → [Content] → [Params]
+Główne menu → Obiekty → Akcje → [Content] → [Params]
    120px       100px     100px      ~600px      200px
 ```
 
-**Kolumna 1 - Objekty:**
+**Kolumna 1 - Obiekty:**
 - 👥 Użytkownicy ✓
 - 🧪 Scenariusze Testowe
 - 📱 Urządzenia  
@@ -165,13 +165,13 @@ Główne menu → Akcje → Sekcje → [Content] → [Params]
 
 **Struktura kolumn:**
 ```
-Główne menu → Sekcje → Interfejs*/Protokoły* → [Content] → [Params/Sensory]
-   120px         100px        100px           ~600px       200px
+Główne menu → Sekcje → Interfejs*/Typ Sc.* → Protokoły* → [Content] → [Params/Sensory]
+   120px         100px      100px           100px       ~500px       200px
    
-*Kolumna 2 zmienia się dynamicznie:
-- "Interfejs" dla sekcji "Urządzenia" 
-- "Protokoły" dla sekcji "Testowanie"
-- Brak dla sekcji "Raporty"
+*Kolumny zmieniają się dynamicznie:
+- "Urządzenia": tylko Interfejs (1 dodatkowa kolumna)
+- "Testowanie": Typ Scenariusza + Protokoły (2 dodatkowe kolumny)  
+- "Raporty": brak dodatkowych kolumn
 ```
 
 **Kolumna 1 - Sekcje:**
@@ -186,7 +186,14 @@ Główne menu → Sekcje → Interfejs*/Protokoły* → [Content] → [Params/Se
 - ⌨️ Keyboard
 - 📋 Z listy ✓ (domyślna)
 
-**Kolumna 2B - Protokoły (tylko dla Testowanie):**
+**Kolumna 2B - Typ Scenariusza (tylko dla Testowanie):**
+- 🔄 Po użyciu ✓ (domyślny)
+- 📅 Po 6 miesiącach
+- 📆 Roczny
+- 🚨 Awaryjny
+- 🛡️ Prewencyjny
+
+**Kolumna 3 - Protokoły (tylko dla Testowanie):**
 - 🔧 Serwis ✓ (urządzenie, komponent)
 - 🧪 Scenariusz C20 (urządzenie, scenariusz)
 - 📝 Uwagi (urządzenie)
@@ -194,7 +201,7 @@ Główne menu → Sekcje → Interfejs*/Protokoły* → [Content] → [Params/Se
 
 **Content (zależnie od sekcji):**
 - **Urządzenia**: 5 różnych widoków (RFID/QR/Barcode/Manual/List), domyślnie "Z listy"
-- **Testowanie**: Formularz protokołu + progress bar, domyślnie "Serwis"
+- **Testowanie**: Formularz protokołu + progress bar, domyślnie "Po użyciu + Serwis"
 - **Raporty**: Historia raportów z statusami
 
 **Right Panel (zależnie od sekcji):**
@@ -481,9 +488,38 @@ Pełny przykład znajduje się w:
 
 ## 🔄 Aktualizacje
 
+**v1.9.0** - 2025-10-08
+- ✅ ConnectWorkshop: Usunięto content-header, pełna kontrola przez top-bar-section-title
+- 🔥 **REWOLUCJA GŁÓWNEGO MENU**: Usunięto ConnectID z głównego menu
+- ✅ Przeniesiono opcje identyfikacji bezpośrednio do głównego menu:
+  - 👤 **Użytkownik** (identyfikacja użytkowników)
+  - 📱 **Urządzenie** (identyfikacja urządzeń) 
+  - 🧪 **Typ Testu** (identyfikacja testów)
+- ✅ Bezpośredni dostęp bez dodatkowego poziomu nawigacji
+- ✅ Główne menu ma teraz 6 opcji zamiast 4
+- ✅ ConnectID: Usunięto kolumnę "Identyfikacja" (redundantną z głównym menu)
+- ✅ ConnectID: Szerokość kolumny Interfejs zwiększona do 120px
+
+**v1.8.0** - 2025-10-08
+- ✅ ConnectTest: Dodano kolumnę "Typ Scenariusza" przed kolumną "Protokoły"
+- ✅ 5 typów scenariuszy: Po użyciu, Po 6 miesiącach, Roczny, Awaryjny, Prewencyjny
+- ✅ Nowa struktura 3-kolumnowa dla sekcji "Testowanie"
+- ✅ Top-bar title format: "ConnectTest - Testowanie - [Typ] - [Protokół]"
+- ✅ Usunięto wszystkie nagłówki h3 z content-body we wszystkich modułach
+- ✅ ConnectID: Usunięto content-header, pełna kontrola przez top-bar-section-title
+- ✅ Kompletna kontrola tytułów przez top-bar-section-title we wszystkich modułach
+
+**v1.7.0** - 2025-10-08
+- ✅ ConnectTest: Dodano kolumnę "Protokoły" dla sekcji "Testowanie"
+- ✅ 4 nowe protokoły: Serwis, Scenariusz C20, Uwagi, Stwórz Raport
+- ✅ Sensory ciśnienia w czasie rzeczywistym (niskie, średnie, wysokie)
+- ✅ Usunięto content-header z wszystkich sekcji (tytuły tylko w top-bar)
+- ✅ Dynamiczne przełączanie kolumn i right panel
+- ✅ Zapamiętywanie ostatnio wybranej opcji z trzeciej kolumny
+
 **v1.6.0** - 2025-10-08
 - ✅ ConnectFilter → ConnectData: Kompletna transformacja modułu
-- ✅ Dodano kolumnę "Objekty" (Użytkownicy, Scenariusze, Urządzenia, Grupy, Magazyny, Klienci)
+- ✅ Dodano kolumnę "Obiekty" (Użytkownicy, Scenariusze, Urządzenia, Grupy, Magazyny, Klienci)
 - ✅ Rozszerzono kolumnę "Akcje" (Szukaj, Wyczyść, Dodaj, Edytuj, Usuń, Export)
 - ✅ Dynamiczny content i tytuły w top-bar
 - ✅ Przeniesienie content-header → top-bar-section-title dla wszystkich modułów
@@ -542,21 +578,32 @@ Pełny przykład znajduje się w:
 
 ## 📊 Status Implementacji
 
+### 🏠 **Główne Menu (6 opcji bezpośrednio):**
+| Opcja | Ikona | Typ | Status |
+|-------|-------|-----|--------|
+| **Użytkownik** | 👤 | ConnectID/user | ✅ Kompletny |
+| **Urządzenie** | 📱 | ConnectID/device | ✅ Kompletny |  
+| **Typ Testu** | 🧪 | ConnectID/test | ✅ Kompletny |
+| **ConnectData** | 📊 | Connect-Filter | ✅ Kompletny |
+| **Workshop** | 🔧 | Connect-Workshop | ✅ Kompletny |
+| **ConnectTest** | 🧪 | Connect-Test | ✅ Kompletny |
+
+### 🏗️ **Moduły z kolumnami:**
 | Moduł | Kolumny | Submenu | Status |
 |-------|---------|---------|--------|
-| ConnectID | 2 (Identyfikacja + Interfejs) | ✅ | ✅ Kompletny |
-| ConnectData | 2 (Objekty + Akcje) | ✅ | ✅ Kompletny |
+| ConnectID | 1 (tylko Interfejs) | ✅ | ✅ Kompletny |
+| ConnectData | 2 (Obiekty + Akcje) | ✅ | ✅ Kompletny |
 | ConnectWorkshop | 2 (Akcje + Sekcje) | ✅ | ✅ Kompletny |
-| ConnectTest | 1-2 (Sekcje + Interfejs*) | ✅ | ✅ Kompletny |
+| ConnectTest | 1-3 (Sekcje + Interfejs*/Typ Sc.* + Protokoły*) | ✅ | ✅ Kompletny |
 
-*Kolumna "Interfejs" pokazuje się dynamicznie tylko dla sekcji Urządzenia
+*Kolumny zmieniają się dynamicznie: "Interfejs" dla Urządzenia, "Typ Sc." + "Protokoły" dla Testowanie
 
 **Wszystkie moduły gotowe do produkcji! 🎉**
 
 ---
 
 **Maintained by**: Fleet Management Team  
-**Last updated**: 2025-10-08 19:37  
+**Last updated**: 2025-10-08 20:56  
 **Screen Resolution**: 1200×400px  
 **Test Report**: MENU_TEST_REPORT.md  
 **Event Listener Audit**: EVENT_LISTENER_AUDIT.md

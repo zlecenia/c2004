@@ -5,6 +5,8 @@ export class ConnectIdView {
   private module: ConnectIdModule;
   private currentType: string = 'device';
   private currentMethod: string = 'rfid';
+  private currentScenarioType: string = 'usage';
+  private currentProtocol: string = 'service';
 
   constructor(module: ConnectIdModule) {
     this.module = module;
@@ -24,21 +26,7 @@ export class ConnectIdView {
     
     container.innerHTML = `
       <div class="compact-layout">
-        <!-- Column 1: Identification Type -->
-        <div class="menu-column">
-          <h3 class="column-title">Identyfikacja</h3>
-          <button class="menu-item" data-type="user">
-            <span class="menu-icon">👤</span>
-            <span class="menu-label">Użytkownika</span>
-          </button>
-          <button class="menu-item active" data-type="device">
-            <span class="menu-icon">📱</span>
-            <span class="menu-label">Urządzenia</span>
-          </button>
-          
-        </div>
-
-        <!-- Column 2: Interface Method -->
+        <!-- Column 1: Interface Method -->
         <div class="menu-column">
           <h3 class="column-title">Interfejs</h3>
           <button class="method-item active" data-method="rfid">
@@ -57,14 +45,60 @@ export class ConnectIdView {
             <span class="menu-icon">⌨️</span>
             <span class="menu-label">Keyboard</span>
           </button>
+          <button class="method-item" data-method="list">
+            <span class="menu-icon">📋</span>
+            <span class="menu-label">Z listy</span>
+          </button>
+        </div>
+
+        <!-- Column 2: Scenario Types (shown only for test type with list method) -->
+        <div class="menu-column" id="scenario-types-column" style="display: none;">
+          <h3 class="column-title">Typ Scenariusza</h3>
+          <button class="scenario-type-item active" data-scenario-type="usage">
+            <span class="menu-icon">🔄</span>
+            <span class="menu-label">Po użyciu</span>
+          </button>
+          <button class="scenario-type-item" data-scenario-type="6months">
+            <span class="menu-icon">📅</span>
+            <span class="menu-label">Po 6 miesiącach</span>
+          </button>
+          <button class="scenario-type-item" data-scenario-type="yearly">
+            <span class="menu-icon">📆</span>
+            <span class="menu-label">Roczny</span>
+          </button>
+          <button class="scenario-type-item" data-scenario-type="emergency">
+            <span class="menu-icon">🚨</span>
+            <span class="menu-label">Awaryjny</span>
+          </button>
+          <button class="scenario-type-item" data-scenario-type="preventive">
+            <span class="menu-icon">🛡️</span>
+            <span class="menu-label">Prewencyjny</span>
+          </button>
+        </div>
+
+        <!-- Column 3: Protocols (shown only for test type with list method) -->
+        <div class="menu-column" id="protocols-column" style="display: none;">
+          <h3 class="column-title">Protokoły</h3>
+          <button class="protocol-item active" data-protocol="service">
+            <span class="menu-icon">🔧</span>
+            <span class="menu-label">Serwis</span>
+          </button>
+          <button class="protocol-item" data-protocol="scenario-c20">
+            <span class="menu-icon">🧪</span>
+            <span class="menu-label">Scenariusz C20</span>
+          </button>
+          <button class="protocol-item" data-protocol="notes">
+            <span class="menu-icon">📝</span>
+            <span class="menu-label">Uwagi</span>
+          </button>
+          <button class="protocol-item" data-protocol="create-report">
+            <span class="menu-icon">📋</span>
+            <span class="menu-label">Stwórz Raport</span>
+          </button>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
-          <div class="content-header">
-            <h2 id="content-title">Identyfikacja Urządzenia - RFID</h2>
-          </div>
-
           <div class="content-body">
             <!-- RFID Panel -->
             <div id="rfid-content" class="method-content active">
@@ -151,6 +185,241 @@ export class ConnectIdView {
                 </div>
               </div>
             </div>
+
+            <!-- List Panel -->
+            <div id="list-content" class="method-content">
+              <!-- User List -->
+              <div id="user-list" class="list-type-content">
+                <h4>Ostatnio zalogowani użytkownicy:</h4>
+                <div class="device-card selectable">
+                  <div class="device-icon">👤</div>
+                  <div class="device-info">
+                    <div class="device-name">Jan Kowalski</div>
+                    <div class="device-meta">Manager | Ostatnie logowanie: 10:30</div>
+                  </div>
+                  <button class="btn-login-user" data-user="jan.kowalski">🔑 Zaloguj</button>
+                </div>
+                <div class="device-card selectable">
+                  <div class="device-icon">👤</div>
+                  <div class="device-info">
+                    <div class="device-name">Anna Nowak</div>
+                    <div class="device-meta">Technik | Ostatnie logowanie: 09:15</div>
+                  </div>
+                  <button class="btn-login-user" data-user="anna.nowak">🔑 Zaloguj</button>
+                </div>
+                <div class="device-card selectable">
+                  <div class="device-icon">👤</div>
+                  <div class="device-info">
+                    <div class="device-name">Piotr Wiśniewski</div>
+                    <div class="device-meta">Operator | Ostatnie logowanie: 08:45</div>
+                  </div>
+                  <button class="btn-login-user" data-user="piotr.wisniewski">🔑 Zaloguj</button>
+                </div>
+                
+                <!-- Login Form -->
+                <div id="login-form" class="login-form" style="display: none;">
+                  <h4>Zaloguj się jako: <span id="selected-user"></span></h4>
+                  <div class="password-input">
+                    <input type="password" id="password-input" class="password-field" placeholder="Wprowadź hasło...">
+                    <button id="password-submit" class="btn-submit">🔓 Zaloguj</button>
+                  </div>
+                  <div class="virtual-keyboard-login">
+                    <div class="keyboard-row">
+                      <button class="key-login" data-key="1">1</button>
+                      <button class="key-login" data-key="2">2</button>
+                      <button class="key-login" data-key="3">3</button>
+                      <button class="key-login" data-key="4">4</button>
+                      <button class="key-login" data-key="5">5</button>
+                      <button class="key-login" data-key="6">6</button>
+                      <button class="key-login" data-key="7">7</button>
+                      <button class="key-login" data-key="8">8</button>
+                      <button class="key-login" data-key="9">9</button>
+                      <button class="key-login" data-key="0">0</button>
+                    </div>
+                    <div class="keyboard-row">
+                      <button class="key-login" data-key="Q">Q</button>
+                      <button class="key-login" data-key="W">W</button>
+                      <button class="key-login" data-key="E">E</button>
+                      <button class="key-login" data-key="R">R</button>
+                      <button class="key-login" data-key="T">T</button>
+                      <button class="key-login" data-key="Y">Y</button>
+                      <button class="key-login" data-key="U">U</button>
+                      <button class="key-login" data-key="I">I</button>
+                      <button class="key-login" data-key="O">O</button>
+                      <button class="key-login" data-key="P">P</button>
+                    </div>
+                    <div class="keyboard-row">
+                      <button class="key-login" data-key="A">A</button>
+                      <button class="key-login" data-key="S">S</button>
+                      <button class="key-login" data-key="D">D</button>
+                      <button class="key-login" data-key="F">F</button>
+                      <button class="key-login" data-key="G">G</button>
+                      <button class="key-login" data-key="H">H</button>
+                      <button class="key-login" data-key="J">J</button>
+                      <button class="key-login" data-key="K">K</button>
+                      <button class="key-login" data-key="L">L</button>
+                      <button class="key-login key-special" data-key="CLEAR">⌫</button>
+                    </div>
+                    <div class="keyboard-row">
+                      <button class="key-login" data-key="Z">Z</button>
+                      <button class="key-login" data-key="X">X</button>
+                      <button class="key-login" data-key="C">C</button>
+                      <button class="key-login" data-key="V">V</button>
+                      <button class="key-login" data-key="B">B</button>
+                      <button class="key-login" data-key="N">N</button>
+                      <button class="key-login" data-key="M">M</button>
+                      <button class="key-login key-wide" data-key="ENTER">🔓 LOGIN</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Device List -->
+              <div id="device-list" class="list-type-content">
+                <h4>Wybierz urządzenie:</h4>
+                <div class="device-card selectable">
+                  <div class="device-icon">📱</div>
+                  <div class="device-info">
+                    <div class="device-name">PSS-7000 #12345</div>
+                    <div class="device-meta">RFID: RF123456 | Status: Aktywny</div>
+                  </div>
+                  <button class="btn-select-device">Wybierz</button>
+                </div>
+                <div class="device-card selectable">
+                  <div class="device-icon">📱</div>
+                  <div class="device-info">
+                    <div class="device-name">PSS-5000 #67890</div>
+                    <div class="device-meta">RFID: RF789012 | Status: Aktywny</div>
+                  </div>
+                  <button class="btn-select-device">Wybierz</button>
+                </div>
+                <div class="device-card selectable">
+                  <div class="device-icon">📱</div>
+                  <div class="device-info">
+                    <div class="device-name">PSS-3000 #11111</div>
+                    <div class="device-meta">RFID: RF111111 | Status: Konserwacja</div>
+                  </div>
+                  <button class="btn-select-device">Wybierz</button>
+                </div>
+              </div>
+
+              <!-- Test Protocols Content -->
+              <div id="test-protocols" class="list-type-content">
+                <!-- Service Protocol -->
+                <div id="service-protocol" class="protocol-content active">
+                  <div class="protocol-form">
+                    <h4>🔧 Protokół Serwisu</h4>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label>Urządzenie:</label>
+                        <select class="form-select">
+                          <option>PSS-7000 #12345</option>
+                          <option>PSS-5000 #67890</option>
+                          <option>PSS-3000 #11111</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label>Komponent:</label>
+                        <select class="form-select">
+                          <option>Pompa główna</option>
+                          <option>Zawór bezpieczeństwa</option>
+                          <option>Czujnik ciśnienia</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="form-group">
+                      <label>Opis czynności serwisowych:</label>
+                      <textarea class="form-textarea" rows="4" placeholder="Opisz wykonane czynności..."></textarea>
+                    </div>
+                    <button class="btn-submit-protocol">💾 Zapisz Protokół Serwisu</button>
+                  </div>
+                </div>
+
+                <!-- Scenario C20 Protocol -->
+                <div id="scenario-c20-protocol" class="protocol-content">
+                  <div class="protocol-form">
+                    <h4>🧪 Protokół Scenariusz C20</h4>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label>Urządzenie:</label>
+                        <select class="form-select">
+                          <option>PSS-7000 #12345</option>
+                          <option>PSS-5000 #67890</option>
+                          <option>PSS-3000 #11111</option>
+                        </select>
+                      </div>
+                      <div class="form-group">
+                        <label>Scenariusz:</label>
+                        <select class="form-select">
+                          <option>Test ciśnienia wysokiego</option>
+                          <option>Test przepływu</option>
+                          <option>Test szczelności</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="test-progress">
+                      <div class="progress-header">
+                        <span>Postęp testu C20...</span>
+                        <span id="c20-progress-percent">0%</span>
+                      </div>
+                      <div class="progress-bar">
+                        <div class="progress-fill" style="width: 0%"></div>
+                      </div>
+                    </div>
+                    <button class="btn-start-c20">▶️ Rozpocznij Test C20</button>
+                  </div>
+                </div>
+
+                <!-- Notes Protocol -->
+                <div id="notes-protocol" class="protocol-content">
+                  <div class="protocol-form">
+                    <h4>📝 Protokół Uwag</h4>
+                    <div class="form-group">
+                      <label>Urządzenie:</label>
+                      <select class="form-select">
+                        <option>PSS-7000 #12345</option>
+                        <option>PSS-5000 #67890</option>
+                        <option>PSS-3000 #11111</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Uwagi i obserwacje:</label>
+                      <textarea class="form-textarea" rows="6" placeholder="Wprowadź uwagi, obserwacje, zalecenia..."></textarea>
+                    </div>
+                    <button class="btn-submit-protocol">📝 Zapisz Uwagi</button>
+                  </div>
+                </div>
+
+                <!-- Create Report Protocol -->
+                <div id="create-report-protocol" class="protocol-content">
+                  <div class="protocol-form">
+                    <h4>📋 Stwórz Raport</h4>
+                    <div class="form-group">
+                      <label>Użytkownik odpowiedzialny:</label>
+                      <select class="form-select">
+                        <option>Jan Kowalski (Technik)</option>
+                        <option>Anna Nowak (Manager)</option>
+                        <option>Piotr Wiśniewski (Operator)</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Typ raportu:</label>
+                      <select class="form-select">
+                        <option>Raport okresowy</option>
+                        <option>Raport serwisowy</option>
+                        <option>Raport testowy</option>
+                        <option>Raport awarii</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Podsumowanie:</label>
+                      <textarea class="form-textarea" rows="4" placeholder="Krótkie podsumowanie raportu..."></textarea>
+                    </div>
+                    <button class="btn-generate-report">📊 Generuj Raport</button>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -211,7 +480,7 @@ export class ConnectIdView {
 
       /* Menu Columns */
       .menu-column {
-        width: 100px;
+        width: 120px;
         background: #2a2a2a;
         padding: 6px 4px;
         overflow-y: auto;
@@ -275,18 +544,6 @@ export class ConnectIdView {
         overflow: hidden;
       }
 
-      .content-header {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-        padding: 10px 15px;
-        flex-shrink: 0;
-      }
-
-      .content-header h2 {
-        margin: 0;
-        font-size: 14px;
-        font-weight: 600;
-      }
 
       .content-body {
         flex: 1;
@@ -414,7 +671,7 @@ export class ConnectIdView {
 
       /* Right Panel */
       .right-panel {
-        
+        width: 220px;
         background: #2a2a2a;
         padding: 10px;
         overflow-y: auto;
@@ -531,23 +788,65 @@ export class ConnectIdView {
         background: #ccc;
         border-radius: 2px;
       }
+
+      /* Device List */
+      .device-list-select h4 { margin: 0 0 15px 0; font-size: 14px; color: #333; }
+      .device-card { display: flex; align-items: center; gap: 10px; background: white; border: 1px solid #e0e0e0; border-radius: 6px; padding: 12px; margin-bottom: 8px; transition: all 0.2s; }
+      .device-card:hover { border-color: #667eea; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2); }
+      .device-icon { font-size: 24px; }
+      .device-info { flex: 1; }
+      .device-name { font-size: 14px; font-weight: 600; color: #333; margin-bottom: 2px; }
+      .device-meta { font-size: 11px; color: #666; }
+      .btn-select-device { padding: 6px 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; }
+
+      /* Scenario Type Items */
+      .scenario-type-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
+      .scenario-type-item:hover { background: #4a4a4a; color: white; }
+      .scenario-type-item.active { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; }
+
+      /* Protocol Items */
+      .protocol-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
+      .protocol-item:hover { background: #4a4a4a; color: white; }
+      .protocol-item.active { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
+
+      /* List Type Content */
+      .list-type-content { display: none; }
+      .list-type-content.active { display: block; }
+
+      /* Login Form */
+      .login-form { background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 15px; }
+      .login-form h4 { margin: 0 0 15px 0; font-size: 14px; color: #333; }
+      .password-input { display: flex; gap: 10px; margin-bottom: 15px; }
+      .password-field { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+      .btn-login-user { padding: 6px 12px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; }
+
+      /* Virtual Keyboard for Login */
+      .virtual-keyboard-login { max-width: 600px; }
+      .key-login { min-width: 40px; height: 35px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.1s; user-select: none; }
+      .key-login:active { background: #28a745; color: white; transform: scale(0.95); }
+
+      /* Protocol Forms */
+      .protocol-content { display: none; }
+      .protocol-content.active { display: block; }
+      .protocol-form { background: #f8f9fa; padding: 20px; border-radius: 8px; }
+      .protocol-form h4 { margin: 0 0 20px 0; font-size: 14px; color: #333; font-weight: 600; }
+      .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
+      .form-group { flex: 1; }
+      .form-group label { display: block; margin-bottom: 5px; font-size: 11px; font-weight: 600; color: #666; }
+      .form-select, .form-textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
+      .form-textarea { resize: vertical; font-family: inherit; }
+      .btn-submit-protocol, .btn-start-c20, .btn-generate-report { width: 100%; padding: 12px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; margin-top: 10px; }
+
+      /* Progress Bar */
+      .test-progress { margin: 15px 0; }
+      .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; color: #666; }
+      .progress-bar { background: #e9ecef; height: 8px; border-radius: 4px; overflow: hidden; }
+      .progress-fill { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); height: 100%; transition: width 0.3s; }
     `;
     document.head.appendChild(style);
   }
 
   private setupEventListeners(container: HTMLElement): void {
-    // Type selection
-    const typeButtons = container.querySelectorAll('.menu-item');
-    typeButtons.forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const target = e.currentTarget as HTMLElement;
-        const type = target.getAttribute('data-type');
-        if (type) {
-          this.switchType(type, container);
-        }
-      });
-    });
-
     // Method selection
     const methodButtons = container.querySelectorAll('.method-item');
     methodButtons.forEach(btn => {
@@ -558,6 +857,61 @@ export class ConnectIdView {
           this.switchMethod(method, container);
         }
       });
+    });
+
+    // Scenario type buttons
+    const scenarioTypeButtons = container.querySelectorAll('.scenario-type-item');
+    scenarioTypeButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const scenarioType = target.getAttribute('data-scenario-type');
+        if (scenarioType) {
+          this.switchScenarioType(scenarioType, container);
+        }
+      });
+    });
+
+    // Protocol buttons
+    const protocolButtons = container.querySelectorAll('.protocol-item');
+    protocolButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const protocol = target.getAttribute('data-protocol');
+        if (protocol) {
+          this.switchProtocol(protocol, container);
+        }
+      });
+    });
+
+    // Login user buttons
+    const loginButtons = container.querySelectorAll('.btn-login-user');
+    loginButtons.forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const user = target.getAttribute('data-user');
+        if (user) {
+          this.showLoginForm(user);
+        }
+      });
+    });
+
+    // Virtual keyboard for login
+    const loginKeys = container.querySelectorAll('.key-login');
+    const passwordInput = container.querySelector('#password-input') as HTMLInputElement;
+    loginKeys.forEach(key => {
+      key.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const keyValue = target.getAttribute('data-key');
+        this.handleLoginKeyInput(keyValue, passwordInput);
+      });
+    });
+
+    // Password submit
+    const passwordSubmit = container.querySelector('#password-submit');
+    passwordSubmit?.addEventListener('click', () => {
+      if (passwordInput && passwordInput.value) {
+        this.handleLogin(passwordInput.value);
+      }
     });
 
     // Virtual keyboard
@@ -618,18 +972,18 @@ export class ConnectIdView {
 
     // Update title in top-bar
     const titles = {
-      'user': 'Identyfikacja Użytkownika',
-      'device': 'Identyfikacja Urządzenia',
-      'test': 'Identyfikacja Testu'
+      'user': 'Użytkownik',
+      'device': 'Urządzenia', 
+      'test': 'Testu'
     };
     const topBarTitle = document.getElementById('top-bar-section-title');
     if (topBarTitle) {
-      topBarTitle.textContent = `${titles[type as keyof typeof titles]} - ${this.currentMethod.toUpperCase()}`;
+      topBarTitle.textContent = `ConnectID - Identyfikacja ${titles[type as keyof typeof titles]} - ${this.currentMethod.toUpperCase()}`;
     }
 
     const typeValue = container.querySelector('#type-value');
     if (typeValue) {
-      typeValue.textContent = titles[type as keyof typeof titles].replace('Identyfikacja ', '');
+      typeValue.textContent = titles[type as keyof typeof titles];
     }
   }
 
@@ -653,11 +1007,11 @@ export class ConnectIdView {
       activePanel.classList.add('active');
     }
 
-    // Update title in top-bar
-    const topBarTitle = document.getElementById('top-bar-section-title');
-    if (topBarTitle) {
-      topBarTitle.textContent = `Identyfikacja ${this.getTypeName()} - ${method.toUpperCase()}`;
-    }
+    // Update columns visibility
+    this.updateColumnsVisibility(container);
+
+    // Update top-bar title
+    this.updateTopBarTitle();
 
     const methodValue = container.querySelector('#method-value');
     if (methodValue) {
@@ -671,9 +1025,133 @@ export class ConnectIdView {
     }
   }
 
+  private switchScenarioType(scenarioType: string, container: HTMLElement): void {
+    this.currentScenarioType = scenarioType;
+
+    // Update scenario type menu active state
+    container.querySelectorAll('.scenario-type-item').forEach(item => {
+      item.classList.remove('active');
+      if (item.getAttribute('data-scenario-type') === scenarioType) item.classList.add('active');
+    });
+
+    this.updateTopBarTitle();
+  }
+
+  private switchProtocol(protocol: string, container: HTMLElement): void {
+    this.currentProtocol = protocol;
+
+    // Update protocol menu active state
+    container.querySelectorAll('.protocol-item').forEach(item => {
+      item.classList.remove('active');
+      if (item.getAttribute('data-protocol') === protocol) item.classList.add('active');
+    });
+
+    // Update protocol content if in test mode
+    if (this.currentType === 'test' && this.currentMethod === 'list') {
+      this.updateProtocolContent(container);
+    }
+
+    this.updateTopBarTitle();
+  }
+
+  private updateColumnsVisibility(container: HTMLElement): void {
+    const scenarioTypesColumn = container.querySelector('#scenario-types-column') as HTMLElement;
+    const protocolsColumn = container.querySelector('#protocols-column') as HTMLElement;
+    
+    if (scenarioTypesColumn && protocolsColumn) {
+      // Show extra columns only for test type with list method
+      if (this.currentType === 'test' && this.currentMethod === 'list') {
+        scenarioTypesColumn.style.display = 'block';
+        protocolsColumn.style.display = 'block';
+      } else {
+        scenarioTypesColumn.style.display = 'none';
+        protocolsColumn.style.display = 'none';
+      }
+    }
+
+    // Update list content based on type and method
+    this.updateListContent(container);
+  }
+
+  private updateListContent(container: HTMLElement): void {
+    const userList = container.querySelector('#user-list') as HTMLElement;
+    const deviceList = container.querySelector('#device-list') as HTMLElement;
+    const testProtocols = container.querySelector('#test-protocols') as HTMLElement;
+
+    if (userList && deviceList && testProtocols) {
+      // Hide all list types first
+      userList.classList.remove('active');
+      deviceList.classList.remove('active');
+      testProtocols.classList.remove('active');
+
+      // Show appropriate list based on current type
+      if (this.currentMethod === 'list') {
+        if (this.currentType === 'user') {
+          userList.classList.add('active');
+        } else if (this.currentType === 'device') {
+          deviceList.classList.add('active');
+        } else if (this.currentType === 'test') {
+          testProtocols.classList.add('active');
+          // Also update protocol content
+          this.updateProtocolContent(container);
+        }
+      }
+    }
+  }
+
+  private updateProtocolContent(container: HTMLElement): void {
+    // Hide all protocol contents
+    container.querySelectorAll('.protocol-content').forEach(content => {
+      content.classList.remove('active');
+    });
+
+    // Show selected protocol content
+    const activeProtocol = container.querySelector(`#${this.currentProtocol}-protocol`);
+    if (activeProtocol) {
+      activeProtocol.classList.add('active');
+    }
+  }
+
+  private updateTopBarTitle(): void {
+    const methodTitles: any = {
+      'rfid': 'RFID',
+      'qr': 'QR Code',
+      'barcode': 'Barcode', 
+      'manual': 'Keyboard',
+      'list': 'Z listy'
+    };
+
+    const scenarioTypeTitles: any = {
+      'usage': 'Po użyciu',
+      '6months': 'Po 6 miesiącach',
+      'yearly': 'Roczny',
+      'emergency': 'Awaryjny',
+      'preventive': 'Prewencyjny'
+    };
+
+    const protocolTitles: any = {
+      'service': 'Serwis',
+      'scenario-c20': 'Scenariusz C20',
+      'notes': 'Uwagi',
+      'create-report': 'Stwórz Raport'
+    };
+
+    const topBarTitle = document.getElementById('top-bar-section-title');
+    if (topBarTitle) {
+      let title = `ConnectID - Identyfikacja ${this.getTypeName()} - ${methodTitles[this.currentMethod]}`;
+      
+      // Add scenario type and protocol for test type with list method
+      if (this.currentType === 'test' && this.currentMethod === 'list') {
+        title += ` - ${scenarioTypeTitles[this.currentScenarioType]} - ${protocolTitles[this.currentProtocol]}`;
+      }
+      
+      topBarTitle.textContent = title;
+    }
+  }
+
   private getTypeName(): string {
     const names = {
-      'user': 'Użytkownika',
+      'user': 'Użytkownik',
       'device': 'Urządzenia',
       'test': 'Testu'
     };
@@ -761,6 +1239,64 @@ export class ConnectIdView {
     if (pressureValue) {
       const pressure = (Math.random() * 10 - 5).toFixed(1);
       pressureValue.textContent = `${pressure} mbar`;
+    }
+  }
+
+  private showLoginForm(user: string): void {
+    const loginForm = document.getElementById('login-form');
+    const selectedUserSpan = document.getElementById('selected-user');
+    const passwordInput = document.getElementById('password-input') as HTMLInputElement;
+    
+    if (loginForm && selectedUserSpan) {
+      selectedUserSpan.textContent = user.replace('.', ' ').replace(/\b\w/g, l => l.toUpperCase());
+      loginForm.style.display = 'block';
+      if (passwordInput) {
+        passwordInput.value = '';
+        passwordInput.focus();
+      }
+    }
+  }
+
+  private handleLoginKeyInput(key: string | null, input: HTMLInputElement): void {
+    if (!key || !input) return;
+
+    if (key === 'CLEAR') {
+      input.value = '';
+    } else if (key === 'ENTER') {
+      if (input.value) {
+        this.handleLogin(input.value);
+      }
+    } else {
+      input.value += key;
+    }
+  }
+
+  private handleLogin(password: string): void {
+    const selectedUserSpan = document.getElementById('selected-user');
+    const userName = selectedUserSpan?.textContent || 'Unknown';
+    
+    // Simple password validation (in real app, this would be secure)
+    if (password.length >= 4) {
+      this.showNotification(`✅ Zalogowano jako ${userName}`, 'success');
+      this.updateLastResult(`LOGIN: ${userName}`, true);
+      
+      // Hide login form
+      const loginForm = document.getElementById('login-form');
+      if (loginForm) loginForm.style.display = 'none';
+    } else {
+      this.showNotification(`❌ Nieprawidłowe hasło`, 'error');
+    }
+  }
+
+  // Public method to set initial type from main menu
+  public setInitialType(type: string): void {
+    this.currentType = type;
+    
+    // Find container from DOM
+    const container = document.querySelector('.connect-id-compact');
+    if (container) {
+      this.updateColumnsVisibility(container as HTMLElement);
+      this.updateTopBarTitle();
     }
   }
 }

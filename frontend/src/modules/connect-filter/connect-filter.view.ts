@@ -25,7 +25,7 @@ export class ConnectDataView {
       <div class="compact-layout">
         <!-- Column 1: Objects -->
         <div class="menu-column">
-          <h3 class="column-title">Objekty</h3>
+          <h3 class="column-title">Obiekty</h3>
           <button class="object-item active" data-object="users">
             <span class="menu-icon">👥</span>
             <span class="menu-label">Użytkownicy</span>
@@ -59,10 +59,6 @@ export class ConnectDataView {
             <span class="menu-icon">🔍</span>
             <span class="menu-label">Szukaj</span>
           </button>
-          <button class="menu-item" data-action="clear">
-            <span class="menu-icon">🗑️</span>
-            <span class="menu-label">Wyczyść</span>
-          </button>
           <button class="menu-item" data-action="add">
             <span class="menu-icon">➕</span>
             <span class="menu-label">Dodaj</span>
@@ -70,10 +66,6 @@ export class ConnectDataView {
           <button class="menu-item" data-action="edit">
             <span class="menu-icon">✏️</span>
             <span class="menu-label">Edytuj</span>
-          </button>
-          <button class="menu-item" data-action="delete">
-            <span class="menu-icon">❌</span>
-            <span class="menu-label">Usuń</span>
           </button>
           <button class="menu-item" data-action="export">
             <span class="menu-icon">📊</span>
@@ -83,54 +75,193 @@ export class ConnectDataView {
 
         <div class="main-content">
           <div class="content-body">
-            <h3 id="object-content-title">👥 Użytkownicy - Zarządzanie</h3>
             
-            <div class="search-compact">
-              <input type="text" id="text-search" class="search-input" placeholder="Szukaj użytkowników...">
-              <button id="search-btn" class="btn-search">🔍</button>
-            </div>
-            
-            <div class="filters-compact">
-              <select id="role-filter" class="filter-select">
-                <option value="">Wszystkie role</option>
-                <option value="admin">👑 Administrator</option>
-                <option value="manager">👔 Manager</option>
-                <option value="operator">👤 Operator</option>
-                <option value="technician">🔧 Technik</option>
-              </select>
+            <!-- Search Content -->
+            <div id="search-content" class="action-content active">
+              <div class="search-compact">
+                <input type="text" id="text-search" class="search-input" placeholder="Szukaj użytkowników...">
+                <button id="search-btn" class="btn-search">🔍</button>
+              </div>
               
-              <select id="status-filter" class="filter-select">
-                <option value="">Wszystkie statusy</option>
-                <option value="active">✅ Aktywny</option>
-                <option value="inactive">❌ Nieaktywny</option>
-                <option value="pending">⏳ Oczekujący</option>
-              </select>
+              <div class="filters-compact">
+                <select id="role-filter" class="filter-select">
+                  <option value="">Wszystkie role</option>
+                  <option value="admin">👑 Administrator</option>
+                  <option value="manager">👔 Manager</option>
+                  <option value="operator">👤 Operator</option>
+                  <option value="technician">🔧 Technik</option>
+                </select>
+                
+                <select id="status-filter" class="filter-select">
+                  <option value="">Wszystkie statusy</option>
+                  <option value="active">✅ Aktywny</option>
+                  <option value="inactive">❌ Nieaktywny</option>
+                  <option value="pending">⏳ Oczekujący</option>
+                </select>
+              </div>
+
+              <div class="results-list" id="results-list">
+                <div class="result-card">
+                  <div class="card-icon">👤</div>
+                  <div class="card-content">
+                    <div class="card-title">Jan Kowalski</div>
+                    <div class="card-info">Role: 👔 Manager | Status: ✅ Aktywny | Email: jan@fleet.local</div>
+                  </div>
+                  <div class="card-actions">
+                    <button class="btn-card-action" title="Edytuj">✏️</button>
+                    <button class="btn-card-action" title="Profil">👤</button>
+                  </div>
+                </div>
+                <div class="result-card">
+                  <div class="card-icon">👤</div>
+                  <div class="card-content">
+                    <div class="card-title">Anna Nowak</div>
+                    <div class="card-info">Role: 🔧 Technik | Status: ✅ Aktywny | Email: anna@fleet.local</div>
+                  </div>
+                  <div class="card-actions">
+                    <button class="btn-card-action" title="Edytuj">✏️</button>
+                    <button class="btn-card-action" title="Profil">👤</button>
+                  </div>
+                </div>
+              </div>
             </div>
 
-            <div class="results-list" id="results-list">
-              <div class="result-card">
-                <div class="card-icon">👤</div>
-                <div class="card-content">
-                  <div class="card-title">Jan Kowalski</div>
-                  <div class="card-info">Role: 👔 Manager | Status: ✅ Aktywny | Email: jan@fleet.local</div>
+            <!-- Add Content -->
+            <div id="add-content" class="action-content">
+              <div class="form-container">
+                <h4>➕ Dodaj Nowy Użytkownik</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Imię i nazwisko:</label>
+                    <input type="text" class="form-input" placeholder="Jan Kowalski">
+                  </div>
+                  <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" class="form-input" placeholder="jan@fleet.local">
+                  </div>
                 </div>
-                <div class="card-actions">
-                  <button class="btn-card-action" title="Edytuj">✏️</button>
-                  <button class="btn-card-action" title="Profil">👤</button>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Rola:</label>
+                    <select class="form-select">
+                      <option>👑 Administrator</option>
+                      <option>👔 Manager</option>
+                      <option>👤 Operator</option>
+                      <option>🔧 Technik</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Status:</label>
+                    <select class="form-select">
+                      <option>✅ Aktywny</option>
+                      <option>❌ Nieaktywny</option>
+                      <option>⏳ Oczekujący</option>
+                    </select>
+                  </div>
                 </div>
-              </div>
-              <div class="result-card">
-                <div class="card-icon">👤</div>
-                <div class="card-content">
-                  <div class="card-title">Anna Nowak</div>
-                  <div class="card-info">Role: 🔧 Technik | Status: ✅ Aktywny | Email: anna@fleet.local</div>
-                </div>
-                <div class="card-actions">
-                  <button class="btn-card-action" title="Edytuj">✏️</button>
-                  <button class="btn-card-action" title="Profil">👤</button>
-                </div>
+                <button class="btn-submit">💾 Zapisz Użytkownika</button>
               </div>
             </div>
+
+            <!-- Edit Content -->
+            <div id="edit-content" class="action-content">
+              <div class="form-container">
+                <h4>✏️ Edytuj Użytkownika</h4>
+                <div class="form-group">
+                  <label>Wybierz użytkownika:</label>
+                  <select class="form-select">
+                    <option>👤 Jan Kowalski</option>
+                    <option>👤 Anna Nowak</option>
+                  </select>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Imię i nazwisko:</label>
+                    <input type="text" class="form-input" value="Jan Kowalski">
+                  </div>
+                  <div class="form-group">
+                    <label>Email:</label>
+                    <input type="email" class="form-input" value="jan@fleet.local">
+                  </div>
+                </div>
+                <button class="btn-submit">💾 Zapisz Zmiany</button>
+              </div>
+            </div>
+
+            <!-- Delete Content -->
+            <div id="delete-content" class="action-content">
+              <div class="form-container">
+                <h4>❌ Usuń Użytkownika</h4>
+                <div class="delete-warning">
+                  <p>⚠️ Operacja nieodwracalna!</p>
+                  <select class="form-select">
+                    <option>👤 Wybierz użytkownika...</option>
+                    <option>👤 Jan Kowalski</option>
+                    <option>👤 Anna Nowak</option>
+                  </select>
+                </div>
+                <button class="btn-delete">🗑️ Usuń Trwale</button>
+              </div>
+            </div>
+
+            <!-- Export Content -->
+            <div id="export-content" class="action-content">
+              <div class="form-container">
+                <h4>📊 Eksport i Archiwizacja Danych</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Operacja:</label>
+                    <select class="form-select" id="export-operation">
+                      <option value="export">📊 Eksport do pliku</option>
+                      <option value="archive">📦 Archiwizacja danych</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Format/Nośnik:</label>
+                    <select class="form-select">
+                      <option>📄 CSV</option>
+                      <option>📗 Excel</option>
+                      <option>📋 JSON</option>
+                      <option>💾 Lokalny dysk C:\</option>
+                      <option>🖥️ Sieć LAN</option>
+                      <option>☁️ Cloud Storage</option>
+                      <option>💽 USB Drive</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Zakres danych:</label>
+                    <select class="form-select">
+                      <option>📊 Wszystkie dane</option>
+                      <option>🔍 Wyniki wyszukiwania</option>
+                      <option>📅 Ostatni miesiąc</option>
+                      <option>📆 Ostatnie 3 miesiące</option>
+                      <option>🗓️ Ostatnie 6 miesięcy</option>
+                      <option>📅 Ostatni rok</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label>Okres (dla archiwizacji):</label>
+                    <select class="form-select">
+                      <option>🎯 Wybierz zakres dat</option>
+                      <option>📅 Ostatni miesiąc</option>
+                      <option>📆 Ostatnie 3 miesiące</option>
+                      <option>🗓️ Ostatnie 6 miesięcy</option>
+                      <option>📅 Ostatni rok</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="archive-options">
+                  <label><input type="checkbox" checked> Kompresuj dane (ZIP)</label>
+                  <label><input type="checkbox"> Szyfruj archiwum</label>
+                  <label><input type="checkbox"> Usuń oryginały po archiwizacji</label>
+                  <label><input type="checkbox"> Weryfikuj integralność danych</label>
+                </div>
+                <button class="btn-submit">💾 Wykonaj Operację</button>
+              </div>
+            </div>
+
           </div>
         </div>
 
@@ -188,8 +319,6 @@ export class ConnectDataView {
       .main-content { flex: 1; display: flex; flex-direction: column; background: white; overflow: hidden; }
       .content-body { flex: 1; padding: 15px; overflow-y: auto; }
       
-      /* Object Content Title */
-      #object-content-title { margin: 0 0 15px 0; font-size: 14px; font-weight: 600; color: #333; border-bottom: 2px solid #28a745; padding-bottom: 8px; }
       .search-compact { display: flex; gap: 8px; margin-bottom: 10px; }
       .search-input { flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
       .btn-search { padding: 8px 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 4px; cursor: pointer; }
@@ -213,6 +342,26 @@ export class ConnectDataView {
       .param-label { font-size: 10px; color: #999; }
       .param-value { font-size: 13px; color: #fff; font-weight: 600; }
       .quick-action-btn { width: 100%; padding: 8px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 4px; cursor: pointer; margin-bottom: 6px; font-size: 10px; font-weight: 500; }
+
+      /* Action Content */
+      .action-content { display: none; }
+      .action-content.active { display: block; }
+      
+      /* Form Styles */
+      .form-container { background: #f8f9fa; padding: 20px; border-radius: 8px; }
+      .form-container h4 { margin: 0 0 20px 0; font-size: 14px; color: #333; font-weight: 600; }
+      .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
+      .form-group { flex: 1; }
+      .form-group label { display: block; margin-bottom: 5px; font-size: 11px; font-weight: 600; color: #666; }
+      .form-input, .form-select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
+      .btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+      .btn-delete { width: 100%; padding: 12px; background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+      .btn-archive { width: 100%; padding: 12px; background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+      .delete-warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
+      .delete-warning p { margin: 0 0 10px 0; color: #856404; font-weight: 600; }
+      .archive-options { margin: 15px 0; }
+      .archive-options label { display: block; margin-bottom: 8px; font-size: 12px; cursor: pointer; }
+      .archive-options input[type="checkbox"] { margin-right: 8px; }
     `;
     document.head.appendChild(style);
   }
@@ -276,19 +425,6 @@ export class ConnectDataView {
     const selectedObject = container.querySelector('#selected-object');
     if (selectedObject) selectedObject.textContent = objectTitles[object];
 
-    // Update content title
-    const contentTitle = container.querySelector('#object-content-title');
-    if (contentTitle) {
-      const icons: any = {
-        'users': '👥',
-        'test-scenarios': '🧪', 
-        'devices': '📱',
-        'groups': '👥',
-        'warehouses': '🏭',
-        'clients': '🏢'
-      };
-      contentTitle.textContent = `${icons[object]} ${objectTitles[object]} - Zarządzanie`;
-    }
 
     // Update search placeholder
     const searchInput = container.querySelector('#text-search') as HTMLInputElement;
@@ -325,11 +461,9 @@ export class ConnectDataView {
 
     const actionTitles: any = {
       'search': 'Szukaj',
-      'clear': 'Wyczyść',
       'add': 'Dodaj',
       'edit': 'Edytuj', 
-      'delete': 'Usuń',
-      'export': 'Export'
+      'export': 'Eksport i Archiwizacja'
     };
 
     const topBarTitle = document.getElementById('top-bar-section-title');
@@ -341,13 +475,22 @@ export class ConnectDataView {
     const selectedAction = container.querySelector('#selected-action');
     if (selectedAction) selectedAction.textContent = actionTitles[action];
 
+    // Hide all action contents
+    container.querySelectorAll('.action-content').forEach(content => {
+      content.classList.remove('active');
+    });
+
+    // Show selected action content
+    const activeContent = container.querySelector(`#${action}-content`);
+    if (activeContent) {
+      activeContent.classList.add('active');
+    }
+
     const messages: any = {
       'search': '🔍 Wyszukiwanie...',
-      'clear': '🗑️ Czyszczenie danych...',
       'add': '➕ Dodawanie nowego rekordu...',
       'edit': '✏️ Edytowanie...',
-      'delete': '❌ Usuwanie...',
-      'export': '📊 Eksportowanie danych...'
+      'export': '📊 Eksport i archiwizacja danych...'
     };
     console.log(messages[action]);
   }

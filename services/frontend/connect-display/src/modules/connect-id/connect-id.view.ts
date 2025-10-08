@@ -29,7 +29,7 @@ export class ConnectIdView {
           <h3 class="column-title">Identyfikacja</h3>
           <button class="menu-item" data-type="user">
             <span class="menu-icon">👤</span>
-            <span class="menu-label">Użytkownika</span>
+            <span class="menu-label">Użytkownik</span>
           </button>
           <button class="menu-item active" data-type="device">
             <span class="menu-icon">📱</span>
@@ -673,7 +673,7 @@ export class ConnectIdView {
 
   private getTypeName(): string {
     const names = {
-      'user': 'Użytkownika',
+      'user': 'Użytkownik',
       'device': 'Urządzenia',
       'test': 'Testu'
     };
