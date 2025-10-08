@@ -1,5 +1,10 @@
 # backend/app/config/settings.py
-from pydantic import BaseSettings, Field, validator, AnyHttpUrl
+try:
+    from pydantic_settings import BaseSettings
+except ImportError:
+    from pydantic import BaseSettings
+    
+from pydantic import Field, validator
 from typing import List, Optional
 import secrets
 

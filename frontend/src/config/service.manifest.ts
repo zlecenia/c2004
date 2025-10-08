@@ -94,7 +94,10 @@ export class IdentificationServiceManifest {
    */
   isFeatureEnabled(feature: string): boolean {
     const config = this.components['universal-connectid']?.configuration;
-    return config?.[`enable${feature}`] === true;
+    if (!config) return false;
+    
+    const key = `enable${feature}` as keyof typeof config;
+    return config[key] === true;
   }
   
   toJSON(): ServiceManifest {

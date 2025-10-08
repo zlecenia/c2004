@@ -3,12 +3,13 @@ export class IdentificationService {
   private config: any;
   private initialized: boolean = false;
 
-  constructor(config: any) {
+  constructor(config?: any) {
     this.config = config;
   }
 
   async initialize(): Promise<void> {
     console.log('🔧 Initializing IdentificationService...');
+    console.log('Config:', this.config);
     
     // Initialize service logic here
     // For example: connect to APIs, set up event listeners, etc.
