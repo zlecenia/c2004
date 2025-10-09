@@ -1,5 +1,6 @@
 // frontend/src/modules/connect-workshop/connect-workshop.view.ts - Compact 1280x400px version
 import { ConnectWorkshopModule } from './connect-workshop.module';
+import { IconComponent } from '../../components/icon.component';
 
 export class ConnectWorkshopView {
   private currentAction: string = 'sync';
@@ -27,19 +28,19 @@ export class ConnectWorkshopView {
         <div class="menu-column">
           <h3 class="column-title">Obiekty</h3>
           <button class="section-item active" data-section="requests">
-            <span class="menu-icon">📋</span>
+            <span class="menu-icon">${IconComponent.render('clipboard-check', { size: 18 })}</span>
             <span class="menu-label">Zgłoszenia</span>
           </button>
           <button class="section-item" data-section="services">
-            <span class="menu-icon">⚙️</span>
+            <span class="menu-icon">${IconComponent.render('settings', { size: 18 })}</span>
             <span class="menu-label">Serwisy</span>
           </button>
           <button class="section-item" data-section="transport">
-            <span class="menu-icon">🚚</span>
+            <span class="menu-icon">${IconComponent.render('wrench', { size: 18 })}</span>
             <span class="menu-label">Transport</span>
           </button>
           <button class="section-item" data-section="dispositions">
-            <span class="menu-icon">📦</span>
+            <span class="menu-icon">${IconComponent.render('hard-drive', { size: 18 })}</span>
             <span class="menu-label">Dyspozycje</span>
           </button>
         </div>
@@ -48,23 +49,23 @@ export class ConnectWorkshopView {
         <div class="menu-column">
           <h3 class="column-title">Akcje</h3>
           <button class="menu-item active" data-action="search">
-            <span class="menu-icon">🔍</span>
+            <span class="menu-icon">${IconComponent.render('search', { size: 18 })}</span>
             <span class="menu-label">Szukaj</span>
           </button>
           <button class="menu-item" data-action="new-request">
-            <span class="menu-icon">➕</span>
+            <span class="menu-icon">${IconComponent.render('plus', { size: 18 })}</span>
             <span class="menu-label">Zgłoszenie</span>
           </button>
           <button class="menu-item" data-action="export">
-            <span class="menu-icon">📊</span>
+            <span class="menu-icon">${IconComponent.render('bar-chart', { size: 18 })}</span>
             <span class="menu-label">Export</span>
           </button>
           <button class="menu-item" data-action="import">
-            <span class="menu-icon">📥</span>
+            <span class="menu-icon">${IconComponent.render('download', { size: 18 })}</span>
             <span class="menu-label">Import</span>
           </button>
           <button class="menu-item" data-action="sync">
-            <span class="menu-icon">🔄</span>
+            <span class="menu-icon">${IconComponent.render('refresh', { size: 18 })}</span>
             <span class="menu-label">Sync</span>
           </button>
         </div>
@@ -428,7 +429,7 @@ export class ConnectWorkshopView {
       }
 
       .menu-label {
-        font-size: 10px;
+        font-size: 12px;
         font-weight: 500;
         text-align: center;
       }
@@ -780,12 +781,17 @@ export class ConnectWorkshopView {
   }
 
   private setupEventListeners(container: HTMLElement): void {
+    console.log('🔧 ConnectWorkshop: Setting up event listeners');
+    
     // Actions
     const actionButtons = container.querySelectorAll('[data-action]');
+    console.log(`🔧 ConnectWorkshop: Found ${actionButtons.length} action buttons`);
+    
     actionButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
         const target = e.currentTarget as HTMLElement;
         const action = target.getAttribute('data-action');
+        console.log(`🔧 ConnectWorkshop: Action clicked: ${action}`);
         if (action) {
           this.handleAction(action, container);
         }
@@ -794,10 +800,13 @@ export class ConnectWorkshopView {
 
     // Sections
     const sectionButtons = container.querySelectorAll('[data-section]');
+    console.log(`🔧 ConnectWorkshop: Found ${sectionButtons.length} section buttons`);
+    
     sectionButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
         const target = e.currentTarget as HTMLElement;
         const section = target.getAttribute('data-section');
+        console.log(`🔧 ConnectWorkshop: Section clicked: ${section}`);
         if (section) {
           this.switchSection(section, container);
         }
@@ -810,8 +819,32 @@ export class ConnectWorkshopView {
     this.updateSearchResults(container, this.currentSection);
   }
 
+  // Public methods for URL routing support
+  public setInitialSection(section: string): void {
+    console.log(`🔧 ConnectWorkshop: Setting initial section from URL: ${section}`);
+    const container = document.querySelector('.connect-workshop-compact');
+    if (container) {
+      this.switchSection(section, container as HTMLElement);
+    }
+  }
+
+  public setInitialAction(action: string): void {
+    console.log(`🔧 ConnectWorkshop: Setting initial action from URL: ${action}`);
+    const container = document.querySelector('.connect-workshop-compact');
+    if (container) {
+      this.handleAction(action, container as HTMLElement);
+    }
+  }
+
   private handleAction(action: string, container: HTMLElement): void {
     this.currentAction = action;
+
+    // Update URL hash with action
+    const currentHash = window.location.hash.slice(2); // Remove '#/'
+    const [moduleName, section] = currentHash.split('/');
+    const newSection = section || this.currentSection;
+    window.location.hash = `#/${moduleName}/${newSection}/${action}`;
+    console.log(`🔧 ConnectWorkshop: Updated URL to: ${window.location.hash}`);
 
     // Update active state
     container.querySelectorAll('[data-action]').forEach(item => {
@@ -884,7 +917,14 @@ export class ConnectWorkshopView {
   }
 
   private switchSection(section: string, container: HTMLElement): void {
+    console.log(`🔧 ConnectWorkshop: Switching to section: ${section}`);
     this.currentSection = section;
+
+    // Update URL hash with section
+    const currentHash = window.location.hash.slice(2); // Remove '#/'
+    const [moduleName] = currentHash.split('/');
+    window.location.hash = `#/${moduleName}/${section}`;
+    console.log(`🔧 ConnectWorkshop: Updated URL to: ${window.location.hash}`);
 
     // Update section menu
     container.querySelectorAll('[data-section]').forEach(item => {
@@ -991,6 +1031,7 @@ export class ConnectWorkshopView {
   }
 
   private updateActionFormsContext(container: HTMLElement, _action: string): void {
+    console.log(`🔧 ConnectWorkshop: Updating forms context for action: ${_action}, section: ${this.currentSection}`);
     const sectionTitles: any = {
       'requests': 'Zgłoszenia',
       'services': 'Serwisy',

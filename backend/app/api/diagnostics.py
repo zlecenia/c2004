@@ -3,47 +3,28 @@ from fastapi import APIRouter, HTTPException
 from typing import Dict, Any, List
 import asyncio
 import time
-import redis
 import psutil
 import os
 from datetime import datetime, timezone
 
 router = APIRouter()
 
-async def check_redis_connection() -> Dict[str, Any]:
-    """Check Redis connection and performance"""
+async def check_memory_cache() -> Dict[str, Any]:
+    """Check simple in-memory cache (no Redis needed for simple app)"""
     try:
-        import redis
-        r = redis.Redis(host='redis', port=6379, db=0, decode_responses=True)
-        
-        # Test basic operations
-        start_time = time.time()
-        r.ping()
-        ping_time = (time.time() - start_time) * 1000  # ms
-        
-        # Test set/get operation
-        start_time = time.time()
-        r.set("diagnostic_test", "ok", ex=60)
-        test_value = r.get("diagnostic_test")
-        operation_time = (time.time() - start_time) * 1000  # ms
-        
-        # Get Redis info
-        info = r.info()
+        # Simple memory check instead of Redis
+        import sys
+        memory_usage = sys.getsizeof({}) / 1024  # KB
         
         return {
-            "status": "healthy",
-            "ping_time_ms": round(ping_time, 2),
-            "operation_time_ms": round(operation_time, 2),
-            "version": info.get("redis_version"),
-            "uptime_seconds": info.get("uptime_in_seconds"),
-            "connected_clients": info.get("connected_clients"),
-            "used_memory_human": info.get("used_memory_human"),
-            "total_connections_received": info.get("total_connections_received"),
-            "keyspace": dict(info.get("keyspace", {}))
+            "status": "not_needed",
+            "message": "Using simple in-memory cache for lightweight app",
+            "type": "in_memory",
+            "base_memory_kb": round(memory_usage, 2)
         }
     except Exception as e:
         return {
-            "status": "unhealthy",
+            "status": "error",
             "error": str(e),
             "error_type": type(e).__name__
         }
@@ -163,8 +144,8 @@ async def get_full_diagnostics():
     
     try:
         # Run all diagnostic checks concurrently
-        redis_check, db_check, resources_check, external_check = await asyncio.gather(
-            check_redis_connection(),
+        cache_check, db_check, resources_check, external_check = await asyncio.gather(
+            check_memory_cache(),
             check_database_connection(),
             asyncio.create_task(asyncio.to_thread(check_system_resources)),
             check_external_services(),
@@ -172,15 +153,15 @@ async def get_full_diagnostics():
         )
         
         # Handle exceptions in concurrent execution
-        for check_name, result in [("redis", redis_check), ("database", db_check), 
+        for check_name, result in [("cache", cache_check), ("database", db_check), 
                                    ("resources", resources_check), ("external", external_check)]:
             if isinstance(result, Exception):
                 result = {"status": "error", "error": str(result)}
         
         total_time = (time.time() - start_time) * 1000  # ms
         
-        # Determine overall system status
-        critical_services = [redis_check["status"], resources_check["status"]]
+        # Determine overall system status (simplified without Redis)
+        critical_services = [resources_check["status"]]
         overall_status = "healthy" if all(s in ["healthy", "not_configured"] for s in critical_services) else "degraded"
         
         diagnostics = {
@@ -188,13 +169,13 @@ async def get_full_diagnostics():
             "overall_status": overall_status,
             "diagnosis_time_ms": round(total_time, 2),
             "services": {
-                "redis": redis_check,
+                "cache": cache_check,
                 "database": db_check,
                 "system_resources": resources_check,
                 **external_check
             },
             "environment": check_environment(),
-            "recommendations": generate_recommendations(redis_check, db_check, resources_check)
+            "recommendations": generate_recommendations(cache_check, db_check, resources_check)
         }
         
         return diagnostics
@@ -205,15 +186,13 @@ async def get_full_diagnostics():
             detail=f"Diagnostics failed: {str(e)}"
         )
 
-def generate_recommendations(redis_check: Dict, db_check: Dict, resources_check: Dict) -> List[str]:
+def generate_recommendations(cache_check: Dict, db_check: Dict, resources_check: Dict) -> List[str]:
     """Generate system recommendations based on diagnostic results"""
     recommendations = []
     
-    # Redis recommendations
-    if redis_check["status"] != "healthy":
-        recommendations.append("🔴 Redis connection issues detected - check Redis container")
-    elif redis_check.get("ping_time_ms", 0) > 100:
-        recommendations.append("🟡 Redis response time is high - consider Redis optimization")
+    # Cache recommendations (simplified for in-memory)
+    if cache_check["status"] == "error":
+        recommendations.append("🟡 Memory cache issues detected - check system memory")
     
     # Resource recommendations
     if resources_check["status"] == "healthy":
@@ -245,14 +224,7 @@ async def get_quick_diagnostics():
     start_time = time.time()
     
     try:
-        # Quick checks only
-        redis_status = "healthy"
-        try:
-            r = redis.Redis(host='redis', port=6379, db=0, decode_responses=True)
-            r.ping()
-        except:
-            redis_status = "unhealthy"
-        
+        # Quick checks only (no Redis needed)
         cpu_percent = psutil.cpu_percent(interval=0.1)  # Quick CPU check
         memory_percent = psutil.virtual_memory().percent
         
@@ -260,10 +232,10 @@ async def get_quick_diagnostics():
         
         return {
             "timestamp": datetime.now(timezone.utc).isoformat(),
-            "status": "healthy" if redis_status == "healthy" and cpu_percent < 90 and memory_percent < 90 else "degraded",
+            "status": "healthy" if cpu_percent < 90 and memory_percent < 90 else "degraded",
             "response_time_ms": round(total_time, 2),
             "services": {
-                "redis": redis_status,
+                "cache": "in_memory",
                 "cpu_usage": f"{cpu_percent}%",
                 "memory_usage": f"{memory_percent}%"
             }

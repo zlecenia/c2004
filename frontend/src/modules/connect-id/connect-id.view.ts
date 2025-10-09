@@ -1,6 +1,7 @@
 // frontend/src/modules/connect-id/connect-id.view.ts - Compact 1280x400px version
 import { ConnectIdModule } from './connect-id.module';
 import { VirtualKeyboard } from '../../components/virtual-keyboard.component';
+import { IconComponent } from '../../components/icon.component';
 
 export class ConnectIdView {
   // private module: ConnectIdModule; // Reserved for future use
@@ -10,6 +11,7 @@ export class ConnectIdView {
   private currentProtocol: string = 'service';
   private manualKeyboard: VirtualKeyboard | null = null;
   private passwordKeyboard: VirtualKeyboard | null = null;
+  private eventListenersSetup: boolean = false; // Prevent duplicate listeners
 
   constructor(_module: ConnectIdModule) {
     // Module parameter reserved for future use
@@ -33,23 +35,23 @@ export class ConnectIdView {
         <div class="menu-column">
           <h3 class="column-title">Interfejs</h3>
           <button class="method-item active" data-method="rfid">
-            <span class="menu-icon">📡</span>
+            <span class="menu-icon">${IconComponent.render('smartphone', { size: 18 })}</span>
             <span class="menu-label">RFID</span>
           </button>
           <button class="method-item" data-method="qr">
-            <span class="menu-icon">📷</span>
+            <span class="menu-icon">${IconComponent.render('qr-code', { size: 18 })}</span>
             <span class="menu-label">QR</span>
           </button>
           <button class="method-item" data-method="barcode">
-            <span class="menu-icon">📊</span>
+            <span class="menu-icon">${IconComponent.render('barcode', { size: 18 })}</span>
             <span class="menu-label">Barcode</span>
           </button>
           <button class="method-item" data-method="manual">
-            <span class="menu-icon">⌨️</span>
+            <span class="menu-icon">${IconComponent.render('edit', { size: 18 })}</span>
             <span class="menu-label">Keyboard</span>
           </button>
           <button class="method-item" data-method="list">
-            <span class="menu-icon">📋</span>
+            <span class="menu-icon">${IconComponent.render('clipboard-check', { size: 18 })}</span>
             <span class="menu-label">Z listy</span>
           </button>
         </div>
@@ -503,7 +505,7 @@ export class ConnectIdView {
       }
 
       .menu-label {
-        font-size: 10px;
+        font-size: 12px;
         font-weight: 500;
       }
 
@@ -931,12 +933,33 @@ export class ConnectIdView {
   }
 
   private setupEventListeners(container: HTMLElement): void {
-    // Method selection
+    // Prevent duplicate event listeners
+    if (this.eventListenersSetup) {
+      console.log('🔧 ConnectID: Event listeners already setup, skipping');
+      return;
+    }
+    
+    console.log('🔧 ConnectID: Setting up event listeners');
+    
+    // Method selection with debouncing
     const methodButtons = container.querySelectorAll('.method-item');
+    console.log(`🔧 ConnectID: Found ${methodButtons.length} method buttons`);
+    
+    let lastClickTime = 0;
+    const DEBOUNCE_MS = 300; // Prevent rapid clicks
+    
     methodButtons.forEach(btn => {
       btn.addEventListener('click', (e) => {
+        const now = Date.now();
+        if (now - lastClickTime < DEBOUNCE_MS) {
+          console.log('🔧 ConnectID: Click ignored (debounced)');
+          return;
+        }
+        lastClickTime = now;
+        
         const target = e.currentTarget as HTMLElement;
         const method = target.getAttribute('data-method');
+        console.log(`🔧 ConnectID: Method clicked: ${method}`);
         if (method) {
           this.switchMethod(method, container);
         }
@@ -1055,6 +1078,10 @@ export class ConnectIdView {
         }
       }
     });
+    
+    // Mark event listeners as setup
+    this.eventListenersSetup = true;
+    console.log('🔧 ConnectID: Event listeners setup completed');
   }
 
   // Reserved for future use 

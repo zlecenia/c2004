@@ -24,8 +24,7 @@ services:
     networks:
       - identification-network
     depends_on:
-      backend:
-        condition: service_healthy
+      - backend
     healthcheck:
       test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:80/"]
       interval: 30s
@@ -56,7 +55,7 @@ services:
       - DATABASE_URL=sqlite:////data/identification.db
       - SECRET_KEY=${SECRET_KEY}
       - CORS_ORIGINS=${CORS_ORIGINS}
-      - REDIS_URL=redis://redis:6379/0
+      # No Redis needed for simple app
       - ENABLE_RFID=${ENABLE_RFID:-true}
       - ENABLE_QR=${ENABLE_QR:-true}
       - ENABLE_BARCODE=${ENABLE_BARCODE:-true}
@@ -66,9 +65,7 @@ services:
       - backend-data:/data
     networks:
       - identification-network
-    depends_on:
-      redis:
-        condition: service_healthy
+    # No dependencies needed for simple app
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/health"]
       interval: 30s
@@ -81,23 +78,7 @@ services:
       - "traefik.http.routers.backend.rule=Host(`api.identification.localhost`)"
       - "traefik.http.services.backend.loadbalancer.server.port=8000"
 
-  # Redis Cache
-  redis:
-    image: redis:7-alpine
-    container_name: identification-redis
-    ports:
-      - "${REDIS_PORT:-6379}:6379"
-    volumes:
-      - redis-data:/data
-    networks:
-      - identification-network
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 5s
-      retries: 3
-    restart: unless-stopped
-    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+  # No Redis needed for simple application
 
   # Traefik Reverse Proxy (optional, for production)
   traefik:
@@ -126,4 +107,3 @@ networks:
 volumes:
   frontend-dist:
   backend-data:
-  redis-data:

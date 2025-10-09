@@ -1,5 +1,88 @@
 # Changelog
 
+## [1.2.4] - 2025-10-09 (Simplified Architecture)
+
+### 🧹 Simplified
+- **Redis Removal** - Uproszczenie architektury dla lekkiej aplikacji
+  - 🚫 Usunięcie Redis z docker-compose.yml i docker-compose.dev.yml
+  - 🧠 Przejście na in-memory cache dla prostej aplikacji
+  - 📦 Usunięcie redis z requirements.txt (zmniejszenie zależności)
+  - 🔧 Aktualizacja diagnostyki na simple memory cache
+  - 🎯 Usunięcie portu 6379 z port-manager i .env.example
+
+### 🔧 Enhanced
+- **Simplified Diagnostics** - Diagnostyka bez Redis
+  - 📊 Cache status: "in_memory" zamiast Redis metrics
+  - ⚡ Szybsza diagnostyka bez zewnętrznych zależności
+  - 💾 Monitoring pamięci systemowej zamiast Redis memory
+  - 🎯 Lepiej dopasowane do małych aplikacji
+
+### 📦 Reduced Dependencies
+- **Backend:** Usunięcie `redis==4.6.0` dependency
+- **Docker:** Brak kontenera Redis (szybsze startowanie)
+- **Ports:** Tylko niezbędne porty (8100, 8101, 3000)
+- **Memory:** Mniejsze zużycie RAM bez Redis container
+
+### 🚀 Performance
+- **Faster Startup** - Brak oczekiwania na Redis container
+- **Less Memory Usage** - Brak Redis daemon (>50MB oszczędności)
+- **Simpler Architecture** - Łatwiejsze deployment i maintenance
+- **Quick Development** - Szybsze `make dev` bez Redis dependencies
+
+---
+
+## [1.2.3] - 2025-10-09 (Advanced Service Management)
+
+### ✨ Added
+- **Advanced Service Management** - Kompletny system zatrzymywania usług
+  - 🛑 `make stop` - zatrzymuje WSZYSTKIE usługi projektu
+  - 🐳 `make stop-docker` - zatrzymuje tylko kontenery Docker
+  - 🔌 `make stop-ports` - zatrzymuje procesy na portach projektu
+  - 🐍 `make stop-python` - zatrzymuje procesy Python związane z projektem
+  - 📊 `make status` - pokazuje status wszystkich usług
+
+- **Port Management System** - Zarządzanie portami z .env
+  - 📝 Rozszerzona konfiguracja portów w `.env.example`
+  - 🔍 Automatyczne wykrywanie procesów na portach projektu
+  - 🎯 Graceful shutdown z fallback na force kill
+  - 📊 Szczegółowy status portów i procesów
+
+- **Advanced Port Manager Script** - `scripts/port-manager.sh`
+  - 🎨 Kolorowe output z emoji dla czytelności
+  - 🔍 Wykrywanie procesów po PID i nazwie procesu
+  - 🧹 Automatyczne czyszczenie zasobów (networks, temp files)
+  - ⚡ Graceful shutdown z timeout przed force kill
+  - 📋 Multiple operation modes (stop, status, ports, docker, python)
+
+### 🔧 Enhanced
+- **Makefile Commands** - Nowe komendy zarządzania
+  - `make stop` - Complete project shutdown
+  - `make status` - Project services overview  
+  - `make docker-status` - Docker-specific status
+  - Enhanced help menu with new commands
+
+### 📦 Configuration
+- **Extended .env Configuration** - Więcej portów do zarządzania
+  ```env
+  FRONTEND_PORT=8100
+  BACKEND_PORT=8101
+  REDIS_PORT=6379
+  DEV_FRONTEND_PORT=3000
+  TRAEFIK_PORT=80
+  TRAEFIK_DASHBOARD_PORT=8080
+  VITE_DEV_PORT=5173
+  DOCS_PORT=8102
+  METRICS_PORT=8103
+  DEBUG_PORT=5678
+  ```
+
+### 🚀 Performance
+- **Smart Process Detection** - Wykrywa procesy po wzorcach nazw
+- **Resource Cleanup** - Automatyczne czyszczenie sieci i plików temp
+- **Parallel Operations** - Równoczesne zatrzymywanie różnych typów usług
+
+---
+
 ## [1.2.2] - 2025-10-09 (Diagnostics)
 
 ### ✨ Added

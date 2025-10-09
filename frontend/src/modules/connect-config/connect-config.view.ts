@@ -589,7 +589,7 @@ export class ConnectConfigView {
       .config-layout { display: flex; height: 365px; background: #f5f5f5; }
       .menu-column { width: 120px; background: #2a2a2a; padding: 8px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #1a1a1a; }
       .column-title { color: #FFF; font-size: 10px; font-weight: 600; text-transform: uppercase; margin: 0 0 8px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px; }
-      .section-item { width: 100%; background: #3a3a3a; border: none; padding: 8px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc; }
+      .section-item { width: 100%; background: #3a3a3a; border: none; padding: 5px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc; }
       .section-item:hover { background: #4a4a4a; color: white; }
       .section-item.active { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
       .menu-icon { font-size: 18px; }

@@ -33,13 +33,15 @@ help:
 	@echo "Docker:"
 	@echo "  make build        - Build Docker images"
 	@echo "  make up           - Start services"
-	@echo "  make down         - Stop services"
+	@echo "  make down         - Stop Docker Compose services"
+	@echo "  make stop         - Stop ALL project services (Docker + ports + Python)"
 	@echo "  make restart      - Restart services"
 	@echo "  make logs         - View logs"
 	@echo ""
 	@echo "Maintenance:"
 	@echo "  make clean        - Clean all data"
 	@echo "  make health       - Check service health"
+	@echo "  make status       - Show project services status"
 	@echo "  make diagnostics  - Run full system diagnostics"
 	@echo "  make quick-check  - Quick system status check"
 	@echo ""
@@ -124,6 +126,26 @@ down:
 	@echo "🛑 Stopping services..."
 	@$(COMPOSE_CMD) down
 	@echo "✅ Services stopped"
+
+stop:
+	@echo "🛑 Stopping ALL project services..."
+	@./scripts/port-manager.sh stop
+
+stop-docker:
+	@echo "🐳 Stopping Docker services only..."
+	@./scripts/port-manager.sh docker
+
+stop-ports:
+	@echo "🔌 Checking and stopping port processes..."
+	@./scripts/port-manager.sh ports
+
+stop-python:
+	@echo "🐍 Stopping Python processes only..."
+	@./scripts/port-manager.sh python
+
+status:
+	@echo "📊 Checking project services status..."
+	@./scripts/port-manager.sh status
 
 restart: down up
 
@@ -231,8 +253,8 @@ clean:
 	@docker system prune -f
 	@echo "✅ Cleanup complete"
 
-status:
-	@echo "📊 Service Status:"
+docker-status:
+	@echo "📊 Docker Service Status:"
 	@$(COMPOSE_CMD) ps
 
 # Production

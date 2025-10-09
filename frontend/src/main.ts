@@ -342,7 +342,8 @@ function loadModule(moduleName: string, moduleType?: string | null, method?: str
         loadConnectDataModule(container, method);
         break;
       case 'connect-workshop':
-        loadConnectWorkshopModule(container, method);
+        // For workshop: moduleType is section, method is action
+        loadConnectWorkshopModule(container, moduleType, method);
         break;
       case 'connect-config':
         loadConnectConfigModule(container, method);
@@ -422,7 +423,7 @@ function loadConnectDataModule(container: HTMLElement, _method?: string | null) 
   });
 }
 
-function loadConnectWorkshopModule(container: HTMLElement, _method?: string | null) {
+function loadConnectWorkshopModule(container: HTMLElement, section?: string | null, action?: string | null) {
   import('./modules/connect-workshop/connect-workshop.module').then(async () => {
     const module = moduleManager.getModule('connect-workshop');
     const { ConnectWorkshopView } = await import('./modules/connect-workshop/connect-workshop.view');
@@ -432,7 +433,17 @@ function loadConnectWorkshopModule(container: HTMLElement, _method?: string | nu
     const viewElement = view.render();
     container.appendChild(viewElement);
     
-    console.log('✅ ConnectWorkshop view loaded with full functionality');
+    // Set initial section and action from URL
+    setTimeout(() => {
+      if (section && (view as any).setInitialSection) {
+        (view as any).setInitialSection(section);
+      }
+      if (action && (view as any).setInitialAction) {
+        (view as any).setInitialAction(action);
+      }
+    }, 50);
+    
+    console.log(`✅ ConnectWorkshop view loaded - section: ${section}, action: ${action}`);
   }).catch(error => {
     container.innerHTML = `<div class="error">Failed to load ConnectWorkshop module: ${error}</div>`;
   });

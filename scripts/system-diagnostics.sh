@@ -10,9 +10,9 @@ PURPLE='\033[0;35m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
 
-# Configuration
+# Configuration  
 BACKEND_URL="http://localhost:8101"
-FRONTEND_URL="http://localhost:3000"  # Dev server port
+FRONTEND_URL="http://localhost:8200"  # Dev server port (mapped from container 3000)
 MAX_RETRIES=30
 RETRY_DELAY=2
 
@@ -84,14 +84,13 @@ get_diagnostics() {
             # Services status
             print_status "HEADER" "Services Status:"
             
-            # Redis
-            local redis_status=$(echo "$response" | jq -r '.services.redis.status // "unknown"')
-            local redis_ping=$(echo "$response" | jq -r '.services.redis.ping_time_ms // "N/A"')
-            local redis_version=$(echo "$response" | jq -r '.services.redis.version // "N/A"')
-            if [ "$redis_status" = "healthy" ]; then
-                print_status "SUCCESS" "Redis: $redis_status (${redis_ping}ms, v$redis_version)"
+            # Cache (simple in-memory for lightweight app)
+            local cache_status=$(echo "$response" | jq -r '.services.cache.status // "unknown"')
+            local cache_type=$(echo "$response" | jq -r '.services.cache.type // "unknown"')
+            if [ "$cache_status" = "not_needed" ]; then
+                print_status "INFO" "Cache: $cache_type (lightweight app - no Redis needed)"
             else
-                print_status "ERROR" "Redis: $redis_status"
+                print_status "INFO" "Cache: $cache_status"
             fi
             
             # Database
