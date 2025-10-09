@@ -26,9 +26,9 @@ Successfully migrated three core components from c2002 to the new c2004 architec
 - 🔄 Continuous scanning mode
 - ⌨️ Keyboard shortcuts
 
-### 2. ConnectFilter → connect-filter Module
+### 2. ConnectFilter → connect-data Module
 **Original**: `/home/tom/github/zlecenia/c2002/pages/connectfilter/`  
-**Migrated to**: `frontend/src/modules/connect-filter/`
+**Migrated to**: `frontend/src/modules/connect-data/`
 
 **Migration Changes:**
 - ✅ **Service-based Architecture** - Clean separation of concerns
@@ -99,8 +99,8 @@ export const COMPONENT_REGISTRY = {
     exports: ['ConnectIdModule'],
     dependencies: ['universal-connectid']
   },
-  'connect-filter': {
-    path: '/static/common/components/connect-filter/1.0.0/ConnectFilter.js',
+  'connect-data': {
+    path: '/static/common/components/connect-data/1.0.0/ConnectFilter.js',
     version: '1.0.0',
     type: 'vanilla', 
     status: 'production',
@@ -137,7 +137,7 @@ readonly components = {
       keyboardShortcuts: true
     }
   },
-  'connect-filter': {
+  'connect-data': {
     version: '1.0.0',
     enabled: true,
     configuration: {

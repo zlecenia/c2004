@@ -54,30 +54,6 @@ export class ConnectIdView {
           </button>
         </div>
 
-        <!-- Column 2: Scenario Types (shown only for test type with list method) -->
-        <div class="menu-column" id="scenario-types-column" style="display: none;">
-          <h3 class="column-title">Typ Scenariusza</h3>
-          <button class="scenario-type-item active" data-scenario-type="usage">
-            <span class="menu-icon">🔄</span>
-            <span class="menu-label">Po użyciu</span>
-          </button>
-          <button class="scenario-type-item" data-scenario-type="6months">
-            <span class="menu-icon">📅</span>
-            <span class="menu-label">Po 6 miesiącach</span>
-          </button>
-          <button class="scenario-type-item" data-scenario-type="yearly">
-            <span class="menu-icon">📆</span>
-            <span class="menu-label">Roczny</span>
-          </button>
-          <button class="scenario-type-item" data-scenario-type="emergency">
-            <span class="menu-icon">🚨</span>
-            <span class="menu-label">Awaryjny</span>
-          </button>
-          <button class="scenario-type-item" data-scenario-type="preventive">
-            <span class="menu-icon">🛡️</span>
-            <span class="menu-label">Prewencyjny</span>
-          </button>
-        </div>
 
         <!-- Column 3: Users (shown only for user type with list method) -->
         <div class="menu-column" id="users-column" style="display: none;">
@@ -85,47 +61,26 @@ export class ConnectIdView {
           <div class="users-list-menu">
             <div class="user-menu-item" data-user="jan.kowalski">
               <div class="user-info">
-                <div class="user-name">Jan Kowalski</div>
+                <div class="user-name">Jan K.</div>
                 <div class="user-role">Manager</div>
                 <div class="user-last-login">10:30</div>
               </div>
             </div>
             <div class="user-menu-item" data-user="anna.nowak">
               <div class="user-info">
-                <div class="user-name">Anna Nowak</div>
+                <div class="user-name">Anna N.</div>
                 <div class="user-role">Technik</div>
                 <div class="user-last-login">09:15</div>
               </div>
             </div>
             <div class="user-menu-item" data-user="piotr.wisniewski">
               <div class="user-info">
-                <div class="user-name">Piotr Wiśniewski</div>
+                <div class="user-name">Piotr W.</div>
                 <div class="user-role">Operator</div>
                 <div class="user-last-login">08:45</div>
               </div>
             </div>
           </div>
-        </div>
-
-        <!-- Column 4: Protocols (shown only for test type with list method) -->
-        <div class="menu-column" id="protocols-column" style="display: none;">
-          <h3 class="column-title">Protokoły</h3>
-          <button class="protocol-item active" data-protocol="service">
-            <span class="menu-icon">🔧</span>
-            <span class="menu-label">Serwis</span>
-          </button>
-          <button class="protocol-item" data-protocol="scenario-c20">
-            <span class="menu-icon">🧪</span>
-            <span class="menu-label">Scenariusz C20</span>
-          </button>
-          <button class="protocol-item" data-protocol="notes">
-            <span class="menu-icon">📝</span>
-            <span class="menu-label">Uwagi</span>
-          </button>
-          <button class="protocol-item" data-protocol="create-report">
-            <span class="menu-icon">📋</span>
-            <span class="menu-label">Stwórz Raport</span>
-          </button>
         </div>
 
         <!-- Main Content -->
@@ -189,7 +144,58 @@ export class ConnectIdView {
             <div id="list-content" class="method-content">
               <!-- User List -->
               <div id="user-list" class="list-type-content">
-               
+                <h4>Wybierz użytkownika:</h4>
+                
+                <!-- User Profiles -->
+                <div class="user-card selectable" data-user="jan.kowalski">
+                  <div class="user-avatar">👨‍💼</div>
+                  <div class="user-details">
+                    <div class="user-name">Jan Kowalski</div>
+                    <div class="user-role">Manager</div>
+                    <div class="user-meta">ID: JK001 | Ostatnio: 10:30</div>
+                  </div>
+                  <button class="btn-login-user" data-user="jan.kowalski">🔓 Zaloguj</button>
+                </div>
+
+                <div class="user-card selectable" data-user="anna.nowak">
+                  <div class="user-avatar">👩‍🔧</div>
+                  <div class="user-details">
+                    <div class="user-name">Anna Nowak</div>
+                    <div class="user-role">Technik</div>
+                    <div class="user-meta">ID: AN002 | Ostatnio: 09:15</div>
+                  </div>
+                  <button class="btn-login-user" data-user="anna.nowak">🔓 Zaloguj</button>
+                </div>
+
+                <div class="user-card selectable" data-user="piotr.wisniewski">
+                  <div class="user-avatar">👨‍🔧</div>
+                  <div class="user-details">
+                    <div class="user-name">Piotr Wiśniewski</div>
+                    <div class="user-role">Operator</div>
+                    <div class="user-meta">ID: PW003 | Ostatnio: 08:45</div>
+                  </div>
+                  <button class="btn-login-user" data-user="piotr.wisniewski">🔓 Zaloguj</button>
+                </div>
+
+                <div class="user-card selectable" data-user="katarzyna.kowalczyk">
+                  <div class="user-avatar">👩‍💻</div>
+                  <div class="user-details">
+                    <div class="user-name">Katarzyna Kowalczyk</div>
+                    <div class="user-role">Administrator</div>
+                    <div class="user-meta">ID: KK004 | Ostatnio: 11:00</div>
+                  </div>
+                  <button class="btn-login-user" data-user="katarzyna.kowalczyk">🔓 Zaloguj</button>
+                </div>
+
+                <div class="user-card selectable" data-user="tomasz.nowicki">
+                  <div class="user-avatar">👨‍🏭</div>
+                  <div class="user-details">
+                    <div class="user-name">Tomasz Nowicki</div>
+                    <div class="user-role">Serwisant</div>
+                    <div class="user-meta">ID: TN005 | Ostatnio: 14:20</div>
+                  </div>
+                  <button class="btn-login-user" data-user="tomasz.nowicki">🔓 Zaloguj</button>
+                </div>
                 
                 <!-- Login Form -->
                 <div id="login-form" class="login-form" style="display: none;">
@@ -775,6 +781,18 @@ export class ConnectIdView {
       .device-meta { font-size: 11px; color: #666; }
       .btn-select-device { padding: 6px 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; }
 
+      /* User List */
+      .user-card { display: flex; align-items: center; gap: 12px; background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 14px; margin-bottom: 10px; transition: all 0.2s; cursor: pointer; }
+      .user-card:hover { border-color: #28a745; box-shadow: 0 2px 12px rgba(40, 167, 69, 0.2); transform: translateY(-1px); }
+      .user-card.selected { border-color: #28a745; background: #f8fff9; }
+      .user-avatar { font-size: 28px; width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 50%; }
+      .user-details { flex: 1; }
+      .user-name { font-size: 15px; font-weight: 600; color: #333; margin-bottom: 3px; }
+      .user-role { font-size: 12px; color: #28a745; font-weight: 600; margin-bottom: 2px; }
+      .user-meta { font-size: 11px; color: #666; }
+      .btn-login-user { padding: 8px 15px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
+      .btn-login-user:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3); }
+
       /* Scenario Type Items */
       .scenario-type-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
       .scenario-type-item:hover { background: #4a4a4a; color: white; }
@@ -1069,6 +1087,11 @@ export class ConnectIdView {
 
   private switchMethod(method: string, container: HTMLElement): void {
     this.currentMethod = method;
+
+    // Update URL hash with method
+    const currentHash = window.location.hash.slice(2); // Remove '#/'
+    const [moduleName] = currentHash.split('/');
+    window.location.hash = `#/${moduleName}/${method}`;
 
     // Update method menu
     container.querySelectorAll('.method-item').forEach(item => {

@@ -184,7 +184,7 @@ if (submenu) submenu.textContent = '🔍 Module Title';
 | Przycisk | data-module | Status |
 |----------|-------------|--------|
 | 🏷 ConnectID | `connect-id` | ✅ OK |
-| 🔎 ConnectFilter | `connect-filter` | ✅ OK |
+| 🔎 ConnectFilter | `connect-data` | ✅ OK |
 | 🔧 Workshop | `connect-workshop` | ✅ OK |
 | 🧪 ConnectTest | `connect-test` | ✅ OK |
 

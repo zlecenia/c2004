@@ -249,7 +249,7 @@ export class ConnectTestView {
       .column-title { color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px; }
       .menu-item { width: 100%; background: #3a3a3a; border: none; padding: 5px 6px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc; }
       .menu-icon { font-size: 18px; }
-      .menu-label { font-size: 10px; font-weight: 500; text-align: center; }
+      .menu-label { font-size: 12px;; font-weight: 500; text-align: center; }
       .menu-item:hover { background: #4a4a4a; color: white; }
       .menu-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
       .main-content { flex: 1; display: flex; flex-direction: column; background: white; overflow: hidden; }

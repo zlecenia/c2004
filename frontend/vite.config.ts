@@ -12,7 +12,7 @@ export default defineConfig({
     watch: {
       usePolling: true
     },
-    allowedHosts: ['nvidia']
+    allowedHosts: ['nvidia', '217.160.242.184', 'localhost']
   },
   build: {
     outDir: 'dist',

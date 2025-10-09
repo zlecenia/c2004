@@ -62,13 +62,25 @@ export class IdentificationServiceManifest {
         keyboardShortcuts: true
       }
     },
-    'connect-filter': {
+    'connect-test': {
+      version: '1.0.0',
+      enabled: true,
+      configuration: {
+        enableRFID: env.VITE_ENABLE_RFID,
+        enableQR: env.VITE_ENABLE_QR,
+        enableBarcode: env.VITE_ENABLE_BARCODE,
+        enableSearch: true,
+        autoLoadDevices: true
+      }
+    },
+    'connect-data': {
       version: '1.0.0',
       enabled: true,
       configuration: {
         itemsPerPage: 20,
         enableAdvancedFilters: true,
-        enableExport: true
+        enableExport: true,
+        dynamicTables: true
       }
     },
     'connect-workshop': {
@@ -79,10 +91,20 @@ export class IdentificationServiceManifest {
         syncInterval: 30000,
         enableNotifications: true
       }
+    },
+    'connect-config': {
+      version: '1.0.0',
+      enabled: true,
+      configuration: {
+        enableSystemConfig: true,
+        enableNetworkConfig: true,
+        enableBackup: true,
+        validateConfiguration: true
+      }
     }
   };
   
-  readonly modules = ['identification', 'connect-id', 'connect-filter', 'connect-workshop'];
+  readonly modules = ['identification', 'connect-id', 'connect-test', 'connect-data', 'connect-workshop', 'connect-config'];
   
   /**
    * Validate manifest structure and component availability

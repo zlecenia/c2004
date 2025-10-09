@@ -1,14 +1,38 @@
 import { ConnectTestModule } from './connect-test.module';
 
 export class ConnectTestView {
-  private module: ConnectTestModule;
   private currentSection: string = 'identification';
   private currentMethod: string = 'list';
   private currentProtocol: string = 'service';
   private currentScenarioType: string = 'usage';
 
-  constructor(module: ConnectTestModule) {
-    this.module = module;
+  constructor(_module: ConnectTestModule) {
+    // module parameter used for future implementations
+  }
+
+  private updateNavigationURL(): void {
+    // Build URL based on current navigation state
+    let url = `#/connect-test`;
+    
+    if (this.currentSection === 'testing') {
+      url += `/${this.currentSection}`;
+      if (this.currentScenarioType) {
+        url += `/${this.currentScenarioType}`;
+      }
+      if (this.currentProtocol) {
+        url += `/${this.currentProtocol}`;
+      }
+    } else {
+      url += `/${this.currentSection}`;
+      if (this.currentMethod) {
+        url += `/${this.currentMethod}`;
+      }
+    }
+    
+    // Update URL without triggering page reload
+    window.history.replaceState(null, '', url);
+    
+    console.log(`🔗 Navigation URL updated: ${url}`);
   }
 
   render(): HTMLElement {
@@ -25,21 +49,7 @@ export class ConnectTestView {
     
     container.innerHTML = `
       <div class="compact-layout">
-        <div class="menu-column">
-          <h3 class="column-title">Sekcje</h3>
-          <button class="menu-item active" data-section="identification">
-            <span class="menu-icon">📱</span>
-            <span class="menu-label">Urządzenia</span>
-          </button>
-          <button class="menu-item" data-section="testing">
-            <span class="menu-icon">🧪</span>
-            <span class="menu-label">Testowanie</span>
-          </button>
-          <button class="menu-item" data-section="reports">
-            <span class="menu-icon">📋</span>
-            <span class="menu-label">Raporty</span>
-          </button>
-        </div>
+       
 
         <!-- Column 2A: Interface (shown only for Identification) -->
         <div class="menu-column" id="interface-column" style="display: block;">
@@ -56,9 +66,9 @@ export class ConnectTestView {
             <span class="menu-icon">📊</span>
             <span class="menu-label">Barcode</span>
           </button>
-          <button class="method-item" data-method="manual">
-            <span class="menu-icon">⌨️</span>
-            <span class="menu-label">Keyboard</span>
+          <button class="method-item" data-method="search">
+            <span class="menu-icon">🔍</span>
+            <span class="menu-label">Szukaj</span>
           </button>
           <button class="method-item active" data-method="list">
             <span class="menu-icon">📋</span>
@@ -67,8 +77,8 @@ export class ConnectTestView {
         </div>
 
         <!-- Column 2B: Scenario Types (shown only for Testing) -->
-        <div class="menu-column" id="scenario-types-column" style="display: none;">
-          <h3 class="column-title">Typ Scenariusza</h3>
+        <div class="menu-column" id="scenario-types-column" >
+          <h3 class="column-title">Rodzaj testu</h3>
           <button class="scenario-type-item active" data-scenario-type="usage">
             <span class="menu-icon">🔄</span>
             <span class="menu-label">Po użyciu</span>
@@ -93,21 +103,37 @@ export class ConnectTestView {
 
         <!-- Column 3: Protocols (shown only for Testing) -->
         <div class="menu-column" id="protocols-column" style="display: none;">
-          <h3 class="column-title">Protokoły</h3>
-          <button class="protocol-item active" data-protocol="service">
-            <span class="menu-icon">🔧</span>
+          <h3 class="column-title">Czynności</h3>
+
+          <!-- Test Procedures -->
+          <button class="protocol-item active" data-protocol="pressure-test">
+            <span class="menu-label">Test ciśnienia</span>
+          </button>
+          <button class="protocol-item" data-protocol="flow-test">
+            <span class="menu-label">Test przepływu</span>
+          </button>
+          <button class="protocol-item" data-protocol="function-test">
+            <span class="menu-label">Test funkcjonalny</span>
+          </button>
+          <button class="protocol-item" data-protocol="visual-inspection">
+            <span class="menu-label">Kontrola wizualna</span>
+          </button>
+          <button class="protocol-item" data-protocol="maintenance">
+            <span class="menu-label">Konserwacja</span>
+          </button>
+          <button class="protocol-item" data-protocol="calibration">
+            <span class="menu-label">Kalibracja</span>
+          </button>
+          
+          <!-- Administrative Actions -->
+          <div class="protocol-separator"></div>
+          <button class="protocol-item" data-protocol="service">
             <span class="menu-label">Serwis</span>
           </button>
-          <button class="protocol-item" data-protocol="scenario-c20">
-            <span class="menu-icon">🧪</span>
-            <span class="menu-label">Scenariusz C20</span>
-          </button>
           <button class="protocol-item" data-protocol="notes">
-            <span class="menu-icon">📝</span>
             <span class="menu-label">Uwagi</span>
           </button>
           <button class="protocol-item" data-protocol="create-report">
-            <span class="menu-icon">📋</span>
             <span class="menu-label">Stwórz Raport</span>
           </button>
         </div>
@@ -153,12 +179,61 @@ export class ConnectTestView {
                 </div>
               </div>
 
-              <!-- Manual Method -->
-              <div id="manual-method" class="method-content">
-                <div class="manual-input-area">
-                  <label>Wprowadź kod urządzenia:</label>
-                  <input type="text" class="manual-input" placeholder="Wpisz kod..." />
-                  <button class="btn-submit-manual">Zatwierdź</button>
+              <!-- Search Method -->
+              <div id="search-method" class="method-content">
+                <div class="search-table-container">
+                  <div class="search-header">
+                    <h4>🔍 Wyszukaj urządzenie</h4>
+                    <input type="text" class="search-input" placeholder="Wyszukaj urządzenie, typ, klienta..." />
+                  </div>
+                  <div class="device-search-table">
+                    <table class="search-table">
+                      <thead>
+                        <tr>
+                          <th>Urządzenie</th>
+                          <th>Typ</th>
+                          <th>Rodzaj</th>
+                          <th>Klient</th>
+                          <th>Status</th>
+                          <th>Akcje</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr class="device-row" data-device-id="PSS-7000-12345">
+                          <td>PSS-7000 #12345</td>
+                          <td>Pompa próżniowa</td>
+                          <td>Wysoka wydajność</td>
+                          <td>Zakład A</td>
+                          <td><span class="status-active">Aktywny</span></td>
+                          <td><button class="btn-select-device-row">Wybierz</button></td>
+                        </tr>
+                        <tr class="device-row" data-device-id="PSS-5000-67890">
+                          <td>PSS-5000 #67890</td>
+                          <td>Pompa próżniowa</td>
+                          <td>Średnia wydajność</td>
+                          <td>Zakład B</td>
+                          <td><span class="status-maintenance">Serwis</span></td>
+                          <td><button class="btn-select-device-row">Wybierz</button></td>
+                        </tr>
+                        <tr class="device-row" data-device-id="PSS-3000-11111">
+                          <td>PSS-3000 #11111</td>
+                          <td>Pompa próżniowa</td>
+                          <td>Niska wydajność</td>
+                          <td>Zakład C</td>
+                          <td><span class="status-active">Aktywny</span></td>
+                          <td><button class="btn-select-device-row">Wybierz</button></td>
+                        </tr>
+                        <tr class="device-row" data-device-id="VAC-2000-22222">
+                          <td>VAC-2000 #22222</td>
+                          <td>Pompa rotacyjna</td>
+                          <td>Przemysłowa</td>
+                          <td>Zakład A</td>
+                          <td><span class="status-active">Aktywny</span></td>
+                          <td><button class="btn-select-device-row">Wybierz</button></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
 
@@ -196,8 +271,229 @@ export class ConnectTestView {
 
             <!-- Testing Section -->
             <div id="testing-content" class="section-content">
+              <!-- Pressure Test Protocol -->
+              <div id="pressure-test-protocol" class="protocol-content active">
+                <div class="protocol-form">
+                  <h4>🔋 Test ciśnienia</h4>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Urządzenie:</label>
+                      <select class="form-select">
+                        <option>PSS-7000 #12345</option>
+                        <option>PSS-5000 #67890</option>
+                        <option>PSS-3000 #11111</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Ciśnienie docelowe [bar]:</label>
+                      <input type="number" class="form-input" value="300" min="0" max="1000" />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Czas trwania testu [min]:</label>
+                      <input type="number" class="form-input" value="5" min="1" max="60" />
+                    </div>
+                    <div class="form-group">
+                      <label>Tolerancja [%]:</label>
+                      <input type="number" class="form-input" value="2" min="0" max="10" />
+                    </div>
+                  </div>
+                  <div class="test-status">Status: <span class="status-ready">Gotowy do testu</span></div>
+                  <button class="btn-start-test">▶️ Rozpocznij Test Ciśnienia</button>
+                </div>
+              </div>
+
+              <!-- Flow Test Protocol -->
+              <div id="flow-test-protocol" class="protocol-content">
+                <div class="protocol-form">
+                  <h4>💨 Test przepływu</h4>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Urządzenie:</label>
+                      <select class="form-select">
+                        <option>PSS-7000 #12345</option>
+                        <option>PSS-5000 #67890</option>
+                        <option>PSS-3000 #11111</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Przepływ docelowy [l/min]:</label>
+                      <input type="number" class="form-input" value="40" min="1" max="100" />
+                    </div>
+                  </div>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Temperatura [°C]:</label>
+                      <input type="number" class="form-input" value="20" min="0" max="100" />
+                    </div>
+                    <div class="form-group">
+                      <label>Wilgotność [%]:</label>
+                      <input type="number" class="form-input" value="45" min="0" max="100" />
+                    </div>
+                  </div>
+                  <div class="test-status">Status: <span class="status-ready">Gotowy do testu</span></div>
+                  <button class="btn-start-test">▶️ Rozpocznij Test Przepływu</button>
+                </div>
+              </div>
+
+              <!-- Function Test Protocol -->
+              <div id="function-test-protocol" class="protocol-content">
+                <div class="protocol-form">
+                  <h4>⚙️ Test funkcjonalny</h4>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Urządzenie:</label>
+                      <select class="form-select">
+                        <option>PSS-7000 #12345</option>
+                        <option>PSS-5000 #67890</option>
+                        <option>PSS-3000 #11111</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Typ testu funkcjonalnego:</label>
+                      <select class="form-select">
+                        <option>Test startów/zatrzymań</option>
+                        <option>Test automatyki</option>
+                        <option>Test zabezpieczeń</option>
+                        <option>Test komunikacji</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="function-checklist">
+                    <h5>Lista kontrolna funkcji:</h5>
+                    <label><input type="checkbox"> Start/Stop normalny</label>
+                    <label><input type="checkbox"> Start/Stop awaryjny</label>
+                    <label><input type="checkbox"> Sygnalizacja LED</label>
+                    <label><input type="checkbox"> Komunikacja sieciowa</label>
+                  </div>
+                  <button class="btn-start-test">▶️ Rozpocznij Test Funkcjonalny</button>
+                </div>
+              </div>
+
+              <!-- Visual Inspection Protocol -->
+              <div id="visual-inspection-protocol" class="protocol-content">
+                <div class="protocol-form">
+                  <h4>👁️ Kontrola wizualna</h4>
+                  <div class="form-group">
+                    <label>Urządzenie:</label>
+                    <select class="form-select">
+                      <option>PSS-7000 #12345</option>
+                      <option>PSS-5000 #67890</option>
+                      <option>PSS-3000 #11111</option>
+                    </select>
+                  </div>
+                  <div class="inspection-checklist">
+                    <h5>Kontrola zewnętrzna:</h5>
+                    <label><input type="checkbox"> Stan obudowy</label>
+                    <label><input type="checkbox"> Połączenia elektryczne</label>
+                    <label><input type="checkbox"> Połączenia mechaniczne</label>
+                    <label><input type="checkbox"> Oznaczenia i tabliczki</label>
+                    <label><input type="checkbox"> Czystość urządzenia</label>
+                    
+                    <h5>Kontrola wewnętrzna:</h5>
+                    <label><input type="checkbox"> Stan komponentów</label>
+                    <label><input type="checkbox"> Zużycie części</label>
+                    <label><input type="checkbox"> Luzy mechaniczne</label>
+                  </div>
+                  <div class="form-group">
+                    <label>Uwagi z kontroli:</label>
+                    <textarea class="form-textarea" rows="3" placeholder="Opisz zauważone nieprawidłowości..."></textarea>
+                  </div>
+                  <button class="btn-submit-protocol">✅ Zakończ Kontrolę</button>
+                </div>
+              </div>
+
+              <!-- Maintenance Protocol -->
+              <div id="maintenance-protocol" class="protocol-content">
+                <div class="protocol-form">
+                  <h4>🔧 Konserwacja</h4>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Urządzenie:</label>
+                      <select class="form-select">
+                        <option>PSS-7000 #12345</option>
+                        <option>PSS-5000 #67890</option>
+                        <option>PSS-3000 #11111</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Typ konserwacji:</label>
+                      <select class="form-select">
+                        <option>Konserwacja planowa</option>
+                        <option>Konserwacja prewencyjna</option>
+                        <option>Naprawa awaryjna</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="maintenance-checklist">
+                    <h5>Czynności konserwacyjne:</h5>
+                    <label><input type="checkbox"> Wymiana oleju</label>
+                    <label><input type="checkbox"> Wymiana filtrów</label>
+                    <label><input type="checkbox"> Czyszczenie komponentów</label>
+                    <label><input type="checkbox"> Sprawdzenie połączeń</label>
+                    <label><input type="checkbox"> Kalibracja czujników</label>
+                  </div>
+                  <div class="form-group">
+                    <label>Opis wykonanych prac:</label>
+                    <textarea class="form-textarea" rows="4" placeholder="Opisz wykonane czynności konserwacyjne..."></textarea>
+                  </div>
+                  <button class="btn-submit-protocol">💾 Zapisz Protokół Konserwacji</button>
+                </div>
+              </div>
+
+              <!-- Calibration Protocol -->
+              <div id="calibration-protocol" class="protocol-content">
+                <div class="protocol-form">
+                  <h4>📏 Kalibracja</h4>
+                  <div class="form-row">
+                    <div class="form-group">
+                      <label>Urządzenie:</label>
+                      <select class="form-select">
+                        <option>PSS-7000 #12345</option>
+                        <option>PSS-5000 #67890</option>
+                        <option>PSS-3000 #11111</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label>Komponent do kalibracji:</label>
+                      <select class="form-select">
+                        <option>Czujnik ciśnienia</option>
+                        <option>Czujnik przepływu</option>
+                        <option>Czujnik temperatury</option>
+                        <option>Wszystkie czujniki</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div class="calibration-values">
+                    <h5>Wartości kalibracji:</h5>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label>Wartość referencyjna:</label>
+                        <input type="number" class="form-input" placeholder="0.00" step="0.01" />
+                      </div>
+                      <div class="form-group">
+                        <label>Wartość zmierzona:</label>
+                        <input type="number" class="form-input" placeholder="0.00" step="0.01" />
+                      </div>
+                    </div>
+                    <div class="form-row">
+                      <div class="form-group">
+                        <label>Odchyłka [%]:</label>
+                        <input type="number" class="form-input" placeholder="0.00" step="0.01" readonly />
+                      </div>
+                      <div class="form-group">
+                        <label>Status:</label>
+                        <span class="calibration-status">Oczekuje pomiaru</span>
+                      </div>
+                    </div>
+                  </div>
+                  <button class="btn-start-calibration">📏 Rozpocznij Kalibrację</button>
+                </div>
+              </div>
+
               <!-- Service Protocol -->
-              <div id="service-protocol" class="protocol-content active">
+              <div id="service-protocol" class="protocol-content">
                 <div class="protocol-form">
                   <h4>🔧 Protokół Serwisu</h4>
                   <div class="form-row">
@@ -374,26 +670,47 @@ export class ConnectTestView {
               <div class="sensor-icon">🔴</div>
               <div class="sensor-info">
                 <span class="sensor-label">Ciśnienie Niskie</span>
-                <span class="sensor-value" id="pressure-low">-- mbar</span>
+                <span class="sensor-value" id="pressure-low">125.4 mbar</span>
+                <span class="sensor-status">Normalny</span>
               </div>
             </div>
             <div class="sensor-item medium-pressure">
               <div class="sensor-icon">🟡</div>
               <div class="sensor-info">
                 <span class="sensor-label">Ciśnienie Średnie</span>
-                <span class="sensor-value" id="pressure-medium">-- mbar</span>
+                <span class="sensor-value" id="pressure-medium">298.7 mbar</span>
+                <span class="sensor-status">Aktywny</span>
               </div>
             </div>
             <div class="sensor-item high-pressure">
               <div class="sensor-icon">🟢</div>
               <div class="sensor-info">
                 <span class="sensor-label">Ciśnienie Wysokie</span>
-                <span class="sensor-value" id="pressure-high">-- mbar</span>
+                <span class="sensor-value" id="pressure-high">487.2 mbar</span>
+                <span class="sensor-status">Ostrzeżenie</span>
               </div>
+            </div>
+            
+            <h3 class="params-title">Status Urządzenia</h3>
+            <div class="param-item">
+              <span class="param-label">Typ urządzenia:</span>
+              <span class="param-value" id="device-type">PSS-7000</span>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Serial:</span>
+              <span class="param-value" id="device-serial">#12345</span>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Status:</span>
+              <span class="param-value status-active" id="device-status">Aktywny</span>
+            </div>
+            <div class="param-item">
+              <span class="param-label">Ostatni test:</span>
+              <span class="param-value" id="last-test">2025-10-08 17:30</span>
             </div>
             <div class="param-item">
               <span class="param-label">Protokół:</span>
-              <span class="param-value" id="active-protocol">Serwis</span>
+              <span class="param-value" id="active-protocol">Test ciśnienia</span>
             </div>
           </div>
 
@@ -416,7 +733,7 @@ export class ConnectTestView {
       .column-title { color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px; }
       .menu-item { width: 100%; background: #3a3a3a; border: none; padding: 5px 6px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc; }
       .menu-icon { font-size: 18px; }
-      .menu-label { font-size: 10px; font-weight: 500; text-align: center; }
+      .menu-label { font-size: 12px; font-weight: 500; text-align: center; }
       .menu-item:hover { background: #4a4a4a; color: white; }
       .menu-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
       .main-content { flex: 1; display: flex; flex-direction: column; background: white; overflow: hidden; }
@@ -451,6 +768,9 @@ export class ConnectTestView {
       .protocol-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
       .protocol-item:hover { background: #4a4a4a; color: white; }
       .protocol-item.active { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
+      
+      /* Protocol Separator */
+      .protocol-separator { height: 1px; background: #555; margin: 8px 6px; }
 
       /* Test Form */
       .test-form { background: #f8f9fa; padding: 15px; border-radius: 5px; }
@@ -527,17 +847,37 @@ export class ConnectTestView {
       .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
       .form-row .form-group { flex: 1; }
       .form-textarea { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; font-family: inherit; resize: vertical; }
-      .btn-submit-protocol, .btn-start-c20, .btn-generate-report { width: 100%; padding: 12px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; margin-top: 10px; }
+      .btn-submit-protocol, .btn-start-c20, .btn-generate-report, .btn-start-test, .btn-start-calibration { width: 100%; padding: 12px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; margin-top: 10px; }
+      
+      /* Test Status Styles */
+      .test-status { margin: 10px 0; font-weight: 600; }
+      .status-ready { color: #28a745; }
+      .status-running { color: #ffc107; }
+      .status-complete { color: #17a2b8; }
+      
+      /* Checklists */
+      .function-checklist, .inspection-checklist, .maintenance-checklist { margin: 15px 0; }
+      .function-checklist h5, .inspection-checklist h5, .maintenance-checklist h5 { margin: 10px 0 8px 0; font-size: 12px; color: #666; font-weight: 600; }
+      .function-checklist label, .inspection-checklist label, .maintenance-checklist label { display: block; margin: 5px 0; font-size: 11px; cursor: pointer; }
+      .function-checklist input, .inspection-checklist input, .maintenance-checklist input { margin-right: 8px; }
+      
+      /* Calibration Values */
+      .calibration-values { margin: 15px 0; }
+      .calibration-status { font-weight: 600; color: #666; }
 
       /* Sensors */
       .sensor-item { display: flex; align-items: center; gap: 10px; background: #3a3a3a; padding: 10px; margin-bottom: 8px; border-radius: 6px; }
       .sensor-icon { font-size: 20px; }
       .sensor-info { flex: 1; }
       .sensor-label { display: block; font-size: 10px; color: #999; margin-bottom: 2px; }
-      .sensor-value { font-size: 14px; color: #fff; font-weight: 600; }
+      .sensor-value { display: block; font-size: 14px; color: #fff; font-weight: 600; margin-bottom: 2px; }
+      .sensor-status { display: block; font-size: 9px; color: #bbb; }
       .low-pressure { border-left: 3px solid #dc3545; }
       .medium-pressure { border-left: 3px solid #ffc107; }
       .high-pressure { border-left: 3px solid #28a745; }
+      .status-active { color: #28a745; }
+      .status-warning { color: #ffc107; }
+      .status-error { color: #dc3545; }
     `;
     document.head.appendChild(style);
   }
@@ -652,6 +992,9 @@ export class ConnectTestView {
     // Update params
     const activeSection = container.querySelector('#active-section');
     if (activeSection) activeSection.textContent = titles[section];
+    
+    // Update navigation URL
+    this.updateNavigationURL();
   }
 
   private switchMethod(method: string, container: HTMLElement): void {
@@ -689,6 +1032,9 @@ export class ConnectTestView {
     // Update params
     const activeMethodParam = container.querySelector('#active-method');
     if (activeMethodParam) activeMethodParam.textContent = methodTitles[method];
+    
+    // Update navigation URL
+    this.updateNavigationURL();
   }
 
   private switchScenarioType(scenarioType: string, container: HTMLElement): void {
@@ -700,7 +1046,16 @@ export class ConnectTestView {
       if (item.getAttribute('data-scenario-type') === scenarioType) item.classList.add('active');
     });
 
+    // Show protocols column when scenario type is selected
+    const protocolsColumn = container.querySelector('#protocols-column') as HTMLElement;
+    if (protocolsColumn) {
+      protocolsColumn.style.display = 'block';
+    }
+
     this.updateTestingTopBar();
+    
+    // Update navigation URL
+    this.updateNavigationURL();
   }
 
   private switchProtocol(protocol: string, container: HTMLElement): void {
@@ -725,8 +1080,33 @@ export class ConnectTestView {
 
     this.updateTestingTopBar();
 
+    // Update URL menu for protocol change  
+    const topBarTitle = document.getElementById('top-bar-section-title');
+    if (topBarTitle) {
+      const protocolTitles: any = {
+        'pressure-test': 'Test ciśnienia',
+        'flow-test': 'Test przepływu', 
+        'function-test': 'Test funkcjonalny',
+        'visual-inspection': 'Kontrola wizualna',
+        'maintenance': 'Konserwacja',
+        'calibration': 'Kalibracja',
+        'service': 'Serwis',
+        'notes': 'Uwagi',
+        'create-report': 'Stwórz Raport'
+      };
+      
+      const protocolName = protocolTitles[protocol] || protocol;
+      topBarTitle.textContent = `ConnectTest - Testowanie - ${this.currentScenarioType || 'Po użyciu'} - ${protocolName}`;
+    }
+
     // Update params
     const protocolTitles: any = {
+      'pressure-test': 'Test ciśnienia',
+      'flow-test': 'Test przepływu', 
+      'function-test': 'Test funkcjonalny',
+      'visual-inspection': 'Kontrola wizualna',
+      'maintenance': 'Konserwacja',
+      'calibration': 'Kalibracja',
       'service': 'Serwis',
       'scenario-c20': 'Scenariusz C20',
       'notes': 'Uwagi',
@@ -735,6 +1115,9 @@ export class ConnectTestView {
 
     const activeProtocolParam = document.querySelector('#active-protocol');
     if (activeProtocolParam) activeProtocolParam.textContent = protocolTitles[protocol];
+    
+    // Update navigation URL
+    this.updateNavigationURL();
   }
 
   private updateTestingTopBar(): void {

@@ -2,6 +2,7 @@
 import './config/env.config'; // Validate environment on startup
 import './config/service.manifest'; // Validate service manifest
 import { moduleManager } from './modules';
+import { IconComponent, IconStyles } from './components/icon.component';
 
 // Add basic CSS for 1280×400px touchscreen
 const style = document.createElement('style');
@@ -117,7 +118,7 @@ style.textContent = `
   }
 
   .nav-text {
-    font-size: 10px;
+    font-size: 12px;
     font-weight: 500;
   }
 
@@ -173,6 +174,8 @@ style.textContent = `
   .module-container::-webkit-scrollbar-thumb:hover {
     background: #555;
   }
+  
+  ${IconStyles}
 `;
 document.head.appendChild(style);
 
@@ -216,28 +219,29 @@ function createMainApplication() {
       <div class="sidebar-navigation">
         <h3 class="sidebar-title">Główne menu</h3>
         <button class="nav-btn active" data-module="connect-id" data-type="user">
-          <span class="nav-icon">👤</span>
+          <span class="nav-icon">${IconComponent.render('user-circle', { size: 18 })}</span>
           <span class="nav-text">Użytkownik</span>
         </button>
-        <button class="nav-btn" data-module="connect-id" data-type="device">
-          <span class="nav-icon">📱</span>
-          <span class="nav-text">Urządzenie</span>
+        <button class="nav-btn" data-module="connect-test">
+          <span class="nav-icon">${IconComponent.render('flask', { size: 18 })}</span>
+          <span class="nav-text">Testowanie</span>
         </button>
-        <button class="nav-btn" data-module="connect-id" data-type="test">
-          <span class="nav-icon">🧪</span>
-          <span class="nav-text">Typ Testu</span>
+         <button class="nav-btn" data-module="connect-reports">
+          <span class="nav-icon">${IconComponent.render('file-text', { size: 18 })}</span>
+          <span class="nav-text">Raporty</span>
         </button>
-        <button class="nav-btn" data-module="connect-filter">
-          <span class="nav-icon">📊</span>
-          <span class="nav-text">ConnectData</span>
-        </button>
-        <button class="nav-btn" data-module="connect-workshop">
-          <span class="nav-icon">🔧</span>
+        <hr />
+         <button class="nav-btn" data-module="connect-workshop">
+          <span class="nav-icon">${IconComponent.render('wrench', { size: 18 })}</span>
           <span class="nav-text">ConnectWorkshop</span>
         </button>
-        <button class="nav-btn" data-module="connect-reports">
-          <span class="nav-icon">📋</span>
-          <span class="nav-text">Raporty</span>
+        <button class="nav-btn" data-module="connect-data">
+          <span class="nav-icon">${IconComponent.render('database', { size: 18 })}</span>
+          <span class="nav-text">ConnectData</span>
+        </button>
+        <button class="nav-btn" data-module="connect-config">
+          <span class="nav-icon">${IconComponent.render('settings', { size: 18 })}</span>
+          <span class="nav-text">ConnectConfig</span>
         </button>
       </div>
       
@@ -250,11 +254,8 @@ function createMainApplication() {
   app.innerHTML = '';
   app.appendChild(mainContainer);
   
-  // Setup navigation
+  // Setup navigation with routing
   setupNavigation();
-  
-  // Load default module (connect-id with user type)
-  loadModule('connect-id', 'user');
 }
 
 function setupNavigation() {
@@ -271,14 +272,58 @@ function setupNavigation() {
         navButtons.forEach(btn => btn.classList.remove('active'));
         target.classList.add('active');
         
+        // Update URL hash
+        const path = moduleType ? `${moduleName}/${moduleType}` : moduleName;
+        window.location.hash = `#/${path}`;
+        
         // Load module with type
         loadModule(moduleName, moduleType);
       }
     });
   });
+  
+  // Handle hash change events
+  window.addEventListener('hashchange', handleHashChange);
+  
+  // Load initial route from hash
+  handleHashChange();
 }
 
-function loadModule(moduleName: string, moduleType?: string | null) {
+function handleHashChange() {
+  const hash = window.location.hash.slice(2); // Remove '#/'
+  if (hash) {
+    const [moduleName, moduleType, method] = hash.split('/');
+    if (moduleName) {
+      // Update active button based on hash
+      const navButtons = document.querySelectorAll('.nav-btn');
+      navButtons.forEach(btn => {
+        btn.classList.remove('active');
+        const btnModule = btn.getAttribute('data-module');
+        const btnType = btn.getAttribute('data-type');
+        
+        if (btnModule === moduleName && (!moduleType || btnType === moduleType)) {
+          btn.classList.add('active');
+        }
+      });
+      
+      // Load module and pass method for later handling
+      loadModule(moduleName, moduleType, method);
+    }
+  } else {
+    // Default to first module if no hash
+    const firstButton = document.querySelector('.nav-btn');
+    if (firstButton) {
+      const moduleName = firstButton.getAttribute('data-module');
+      const moduleType = firstButton.getAttribute('data-type');
+      if (moduleName) {
+        const path = moduleType ? `${moduleName}/${moduleType}` : moduleName;
+        window.location.hash = `#/${path}`;
+      }
+    }
+  }
+}
+
+function loadModule(moduleName: string, moduleType?: string | null, method?: string | null) {
   const container = document.getElementById('module-container');
   if (!container) return;
   
@@ -288,13 +333,19 @@ function loadModule(moduleName: string, moduleType?: string | null) {
     
     switch (moduleName) {
       case 'connect-id':
-        loadConnectIdModule(container, moduleType || 'user');
+        loadConnectIdModule(container, moduleType || 'user', method);
         break;
-      case 'connect-filter':
-        loadConnectDataModule(container);
+      case 'connect-test':
+        loadConnectTestModule(container, method);
+        break;
+      case 'connect-data':  // Renamed from connect-data
+        loadConnectDataModule(container, method);
         break;
       case 'connect-workshop':
-        loadConnectWorkshopModule(container);
+        loadConnectWorkshopModule(container, method);
+        break;
+      case 'connect-config':
+        loadConnectConfigModule(container, method);
         break;
       case 'connect-reports':
         loadConnectReportsModule(container);
@@ -308,7 +359,7 @@ function loadModule(moduleName: string, moduleType?: string | null) {
 }
 
 
-function loadConnectIdModule(container: HTMLElement, type: string = 'user') {
+function loadConnectIdModule(container: HTMLElement, type: string = 'user', method?: string | null) {
   import('./modules/connect-id/connect-id.module').then(async () => {
     const module = moduleManager.getModule('connect-id');
     const { ConnectIdView } = await import('./modules/connect-id/connect-id.view');
@@ -318,9 +369,13 @@ function loadConnectIdModule(container: HTMLElement, type: string = 'user') {
     const viewElement = view.render();
     container.appendChild(viewElement);
     
-    // Set the type directly after render
+    // Set the type and method directly after render
     setTimeout(() => {
       view.setInitialType(type);
+      if (method) {
+        // Trigger method change via custom event
+        window.dispatchEvent(new CustomEvent('connectid:set-method', { detail: { method } }));
+      }
       window.dispatchEvent(new CustomEvent('connectid:dom-ready'));
     }, 50);
   }).catch(error => {
@@ -328,10 +383,33 @@ function loadConnectIdModule(container: HTMLElement, type: string = 'user') {
   });
 }
 
-function loadConnectDataModule(container: HTMLElement) {
-  import('./modules/connect-filter/connect-filter.module').then(async () => {
-    const module = moduleManager.getModule('connect-filter');
-    const { ConnectDataView } = await import('./modules/connect-filter/connect-filter.view');
+function loadConnectTestModule(container: HTMLElement, method?: string | null) {
+  import('./modules/connect-test/connect-test.module').then(async () => {
+    const module = moduleManager.getModule('connect-test');
+    const { ConnectTestView } = await import('./modules/connect-test/connect-test.view');
+    const view = new ConnectTestView(module as any);
+    
+    container.innerHTML = '';
+    const viewElement = view.render();
+    container.appendChild(viewElement);
+    
+    // Set method if provided
+    if (method) {
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('connecttest:set-method', { detail: { method } }));
+      }, 50);
+    }
+    
+    console.log('✅ ConnectTest view loaded');
+  }).catch(error => {
+    container.innerHTML = `<div class="error">Failed to load ConnectTest module: ${error}</div>`;
+  });
+}
+
+function loadConnectDataModule(container: HTMLElement, method?: string | null) {
+  import('./modules/connect-data/connect-filter.module').then(async () => {
+    const module = moduleManager.getModule('connect-data');
+    const { ConnectDataView } = await import('./modules/connect-data/connect-filter.view');
     const view = new ConnectDataView(module as any);
     
     container.innerHTML = '';
@@ -344,7 +422,7 @@ function loadConnectDataModule(container: HTMLElement) {
   });
 }
 
-function loadConnectWorkshopModule(container: HTMLElement) {
+function loadConnectWorkshopModule(container: HTMLElement, method?: string | null) {
   import('./modules/connect-workshop/connect-workshop.module').then(async () => {
     const module = moduleManager.getModule('connect-workshop');
     const { ConnectWorkshopView } = await import('./modules/connect-workshop/connect-workshop.view');
@@ -357,6 +435,29 @@ function loadConnectWorkshopModule(container: HTMLElement) {
     console.log('✅ ConnectWorkshop view loaded with full functionality');
   }).catch(error => {
     container.innerHTML = `<div class="error">Failed to load ConnectWorkshop module: ${error}</div>`;
+  });
+}
+
+function loadConnectConfigModule(container: HTMLElement, method?: string | null) {
+  import('./modules/connect-config/connect-config.module').then(async () => {
+    const module = moduleManager.getModule('connect-config');
+    const { ConnectConfigView } = await import('./modules/connect-config/connect-config.view');
+    const view = new ConnectConfigView(module as any);
+    
+    container.innerHTML = '';
+    const viewElement = view.render();
+    container.appendChild(viewElement);
+    
+    // Set method if provided
+    if (method) {
+      setTimeout(() => {
+        window.dispatchEvent(new CustomEvent('connectconfig:set-method', { detail: { method } }));
+      }, 50);
+    }
+    
+    console.log('✅ ConnectConfig view loaded');
+  }).catch(error => {
+    container.innerHTML = `<div class="error">Failed to load ConnectConfig module: ${error}</div>`;
   });
 }
 
@@ -456,7 +557,7 @@ function loadConnectReportsModule(container: HTMLElement) {
                         <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 17:30</td>
                         <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-7000 #12345</td>
                         <td style="padding: 10px 8px; font-size: 11px;">Szczelność, Przepływ, Funkcjonalny</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Jan Kowalski</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Jan K.</td>
                         <td style="padding: 10px 8px;"><span style="background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-size: 10px;">✅ Pozytywny</span></td>
                         <td style="padding: 10px 8px; text-align: center;">
                           <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
@@ -468,7 +569,7 @@ function loadConnectReportsModule(container: HTMLElement) {
                         <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 16:15</td>
                         <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-5000 #67890</td>
                         <td style="padding: 10px 8px; font-size: 11px;">Szczelność</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Anna Nowak</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Anna N.</td>
                         <td style="padding: 10px 8px;"><span style="background: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 4px; font-size: 10px;">❌ Negatywny</span></td>
                         <td style="padding: 10px 8px; text-align: center;">
                           <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
@@ -480,7 +581,7 @@ function loadConnectReportsModule(container: HTMLElement) {
                         <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 15:45</td>
                         <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-3000 #11111</td>
                         <td style="padding: 10px 8px; font-size: 11px;">Kalibracja, Przepływ</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Piotr Wiśniewski</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Piotr W.</td>
                         <td style="padding: 10px 8px;"><span style="background: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 4px; font-size: 10px;">⚠️ Ostrzeżenie</span></td>
                         <td style="padding: 10px 8px; text-align: center;">
                           <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
@@ -492,7 +593,7 @@ function loadConnectReportsModule(container: HTMLElement) {
                         <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 14:20</td>
                         <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-7000 #54321</td>
                         <td style="padding: 10px 8px; font-size: 11px;">Funkcjonalny</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Jan Kowalski</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Jan K.</td>
                         <td style="padding: 10px 8px;"><span style="background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-size: 10px;">✅ Pozytywny</span></td>
                         <td style="padding: 10px 8px; text-align: center;">
                           <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
@@ -504,7 +605,7 @@ function loadConnectReportsModule(container: HTMLElement) {
                         <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 13:10</td>
                         <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-5000 #98765</td>
                         <td style="padding: 10px 8px; font-size: 11px;">Szczelność, Kalibracja</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Anna Nowak</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Anna N.</td>
                         <td style="padding: 10px 8px;"><span style="background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-size: 10px;">✅ Pozytywny</span></td>
                         <td style="padding: 10px 8px; text-align: center;">
                           <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>

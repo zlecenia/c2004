@@ -1,4 +1,4 @@
-// frontend/src/modules/connect-filter/connect-filter.service.ts
+// frontend/src/modules/connect-data/connect-data.service.ts
 interface ConnectFilterConfiguration {
   itemsPerPage?: number;
   enableAdvancedFilters?: boolean;

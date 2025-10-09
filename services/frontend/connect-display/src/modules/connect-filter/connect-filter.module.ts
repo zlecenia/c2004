@@ -1,15 +1,15 @@
-// frontend/src/modules/connect-filter/connect-filter.module.ts
+// frontend/src/modules/connect-data/connect-data.module.ts
 import { Module, ModuleMetadata } from '../module.interface';
 import { serviceManifest } from '../../config/service.manifest';
-import { ConnectFilterService } from './connect-filter.service';
+import { ConnectFilterService } from './connect-data.service';
 
 export class ConnectFilterModule implements Module {
   readonly metadata: ModuleMetadata = {
-    name: 'connect-filter',
+    name: 'connect-data',
     version: '1.0.0',
     dependencies: [],
     routes: [
-      { path: '/connect-filter', component: 'ConnectFilterView' }
+      { path: '/connect-data', component: 'ConnectFilterView' }
     ]
   };
   
@@ -19,7 +19,7 @@ export class ConnectFilterModule implements Module {
     console.log(`🔧 Initializing ${this.metadata.name} module...`);
     
     // Validate configuration exists
-    const config = serviceManifest.getComponentConfig('connect-filter');
+    const config = serviceManifest.getComponentConfig('connect-data');
     if (!config?.enabled) {
       console.warn(`Component ${this.metadata.name} is disabled`);
       return;

@@ -45,8 +45,8 @@ frontend/src/
     │   ├── connect-id.view.ts      # UI + VirtualKeyboard
     │   ├── connect-id.service.ts   # Logika biznesowa
     │   └── connect-id.module.ts    # Konfiguracja modułu
-    ├── connect-filter/              # Zarządzanie danymi
-    │   └── connect-filter.view.ts  # UI z dynamicznym przełączaniem
+    ├── connect-data/              # Zarządzanie danymi
+    │   └── connect-data.view.ts  # UI z dynamicznym przełączaniem
     ├── connect-workshop/            # Warsztat serwisowy
     │   └── connect-workshop.view.ts # UI z kontekstowymi danymi
     └── connect-test/                # System testowania

@@ -36,7 +36,7 @@ class IdentificationService:
             if not value.startswith('RFID'):
                 raise ValueError("RFID values must start with 'RFID'")
             
-            name = "Jan Kowalski"
+            name = "Jan K."
             id_prefix = "user"
         elif method == IdentificationMethod.QR:
             name = "QR Test User"

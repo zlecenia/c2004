@@ -62,7 +62,7 @@ export class IdentificationServiceManifest {
         keyboardShortcuts: true
       }
     },
-    'connect-filter': {
+    'connect-data': {
       version: '1.0.0',
       enabled: true,
       configuration: {
@@ -82,7 +82,7 @@ export class IdentificationServiceManifest {
     }
   };
   
-  readonly modules = ['identification', 'connect-id', 'connect-filter', 'connect-workshop'];
+  readonly modules = ['identification', 'connect-id', 'connect-data', 'connect-workshop'];
   
   /**
    * Validate manifest structure and component availability

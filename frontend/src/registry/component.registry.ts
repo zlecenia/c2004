@@ -30,27 +30,51 @@ export const COMPONENT_REGISTRY = {
     dependencies: ['vue']
   },
   'connect-id': {
-    path: '/static/common/components/connect-id/2.1.0/ConnectId.js',
+    path: '/src/modules/connect-id/connect-id.module.ts',
     version: '2.1.0',
     type: 'vanilla',
     status: 'production',
-    exports: ['ConnectIdModule'],
+    exports: ['ConnectIdModule', 'ConnectIdView', 'ConnectIdService'],
     dependencies: ['universal-connectid']
   },
-  'connect-filter': {
-    path: '/static/common/components/connect-filter/1.0.0/ConnectFilter.js',
+  'connect-test': {
+    path: '/src/modules/connect-test/connect-test.module.ts',
     version: '1.0.0',
     type: 'vanilla',
     status: 'production',
-    exports: ['ConnectFilterModule'],
+    exports: ['ConnectTestModule', 'ConnectTestView', 'ConnectTestService'],
+    dependencies: []
+  },
+  'connect-data': {
+    path: '/src/modules/connect-data/connect-filter.module.ts',
+    version: '1.0.0',
+    type: 'vanilla',
+    status: 'production',
+    exports: ['ConnectFilterModule', 'ConnectDataView', 'ConnectFilterService'],
     dependencies: []
   },
   'connect-workshop': {
-    path: '/static/common/components/connect-workshop/1.0.0/ConnectWorkshop.js',
+    path: '/src/modules/connect-workshop/connect-workshop.module.ts',
     version: '1.0.0',
     type: 'vanilla',
     status: 'production',
-    exports: ['ConnectWorkshopModule'],
+    exports: ['ConnectWorkshopModule', 'ConnectWorkshopView', 'ConnectWorkshopService'],
+    dependencies: []
+  },
+  'connect-config': {
+    path: '/src/modules/connect-config/connect-config.module.ts',
+    version: '1.0.0',
+    type: 'vanilla',
+    status: 'production',
+    exports: ['ConnectConfigModule', 'ConnectConfigView', 'ConnectConfigService'],
+    dependencies: []
+  },
+  'identification': {
+    path: '/src/modules/identification/identification.module.ts',
+    version: '1.0.0',
+    type: 'vanilla',
+    status: 'beta',
+    exports: ['IdentificationModule'],
     dependencies: []
   }
 } as const satisfies Record<string, Component>;

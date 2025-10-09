@@ -37,8 +37,8 @@ export const COMPONENT_REGISTRY = {
     exports: ['ConnectIdModule'],
     dependencies: ['universal-connectid']
   },
-  'connect-filter': {
-    path: '/static/common/components/connect-filter/1.0.0/ConnectFilter.js',
+  'connect-data': {
+    path: '/static/common/components/connect-data/1.0.0/ConnectFilter.js',
     version: '1.0.0',
     type: 'vanilla',
     status: 'production',

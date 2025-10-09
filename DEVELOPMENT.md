@@ -90,7 +90,7 @@ make refresh
 frontend/src/
 ├── modules/           # All UI modules
 │   ├── connect-id/    # ConnectID module
-│   ├── connect-filter/ # ConnectFilter module
+│   ├── connect-data/ # ConnectFilter module
 │   ├── connect-workshop/ # ConnectWorkshop module
 │   ├── connect-test/   # ConnectTest module
 │   └── identification/ # Basic identification

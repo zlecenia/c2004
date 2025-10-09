@@ -1,4 +1,4 @@
-import { ConnectFilterModule } from './connect-filter.module';
+import { ConnectFilterModule } from './connect-data.module';
 
 export class ConnectDataView {
   private module: ConnectFilterModule;
@@ -354,7 +354,7 @@ export class ConnectDataView {
       /* Menu Items */
       .menu-item { width: 100%; background: #3a3a3a; border: none; padding: 5px 6px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc; }
       .menu-icon { font-size: 18px; }
-      .menu-label { font-size: 10px; font-weight: 500; text-align: center; }
+      .menu-label { font-size: 12px; font-weight: 500; text-align: center; }
       .menu-item:hover { background: #4a4a4a; color: white; }
       .menu-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
       
@@ -532,6 +532,7 @@ export class ConnectDataView {
     // Update search results if current action is search
     if (this.currentAction === 'search') {
       this.updateSearchResults(container, object);
+      this.updateResultsList(container, object);
       this.showNotification(`🔍 Wyszukiwanie w ${objectTitles[object]}`, 'info');
     }
 
@@ -723,6 +724,191 @@ export class ConnectDataView {
         }
       });
     }
+  }
+
+  private updateResultsList(container: HTMLElement, objectType: string): void {
+    const resultsList = container.querySelector('#results-list');
+    if (!resultsList) return;
+
+    // Define different table data for each object type
+    const objectTableData: any = {
+      'users': [
+        {
+          icon: '👤',
+          title: 'Jan Kowalski',
+          info: 'Role: 👔 Manager | Status: ✅ Aktywny | Email: jan@fleet.local'
+        },
+        {
+          icon: '👤', 
+          title: 'Anna Nowak',
+          info: 'Role: 🔧 Technik | Status: ✅ Aktywny | Email: anna@fleet.local'
+        },
+        {
+          icon: '👤',
+          title: 'Piotr Wiśniewski', 
+          info: 'Role: 👤 Operator | Status: ⏳ Oczekujący | Email: piotr@fleet.local'
+        }
+      ],
+      'devices': [
+        {
+          icon: '📱',
+          title: 'PSS-7000 #12345',
+          info: 'Sekcja: A | Status: ✅ Aktywny | Ostatni test: 2025-10-08 17:30'
+        },
+        {
+          icon: '📱',
+          title: 'PSS-5000 #67890', 
+          info: 'Sekcja: B | Status: ⚠️ Serwis | Ostatni test: 2025-10-07 14:20'
+        },
+        {
+          icon: '📱',
+          title: 'PSS-3000 #11111',
+          info: 'Sekcja: C | Status: ❌ Nieaktywny | Ostatni test: 2025-10-06 09:15'
+        }
+      ],
+      'test-scenarios': [
+        {
+          icon: '🧪',
+          title: 'Szczelność standardowa',
+          info: 'Ciśnienie: 300 bar | Czas: 5 min | Status: ✅ Aktywny'
+        },
+        {
+          icon: '🧪',
+          title: 'Przepływ funkcjonalny',
+          info: 'Przepływ: 40 l/min | Temperatura: 20°C | Status: ✅ Aktywny'
+        },
+        {
+          icon: '🧪',
+          title: 'Test szczelności wysokiej',
+          info: 'Ciśnienie: 500 bar | Czas: 10 min | Status: ⚠️ Wersja robocza'
+        }
+      ],
+      'groups': [
+        {
+          icon: '👥',
+          title: 'Grupa Serwisowa A',
+          info: 'Członkowie: 5 | Sekcja: A | Status: ✅ Aktywna'
+        },
+        {
+          icon: '👥',
+          title: 'Grupa Operatorska B',
+          info: 'Członkowie: 8 | Sekcja: B | Status: ✅ Aktywna'
+        },
+        {
+          icon: '👥',
+          title: 'Administratorzy',
+          info: 'Członkowie: 3 | Sekcja: Wszystkie | Status: ✅ Aktywna'
+        }
+      ],
+      'warehouses': [
+        {
+          icon: '🏭',
+          title: 'Magazyn Główny A',
+          info: 'Lokalizacja: Warszawa | Urządzenia: 150 | Status: ✅ Aktywny'
+        },
+        {
+          icon: '🏭',
+          title: 'Magazyn Serwisowy B',
+          info: 'Lokalizacja: Kraków | Urządzenia: 45 | Status: ✅ Aktywny'
+        },
+        {
+          icon: '🏭',
+          title: 'Magazyn Rezerwowy C',
+          info: 'Lokalizacja: Gdańsk | Urządzenia: 25 | Status: ⚠️ Konserwacja'
+        }
+      ],
+      'clients': [
+        {
+          icon: '🏢',
+          title: 'PGNiG SA',
+          info: 'Kontakt: biuro@pgnig.pl | Urządzenia: 50 | Status: ✅ Aktywny'
+        },
+        {
+          icon: '🏢',
+          title: 'Orlen SA',
+          info: 'Kontakt: info@orlen.pl | Urządzenia: 75 | Status: ✅ Aktywny'
+        },
+        {
+          icon: '🏢',
+          title: 'Gaz-System SA',
+          info: 'Kontakt: kontakt@gaz-system.pl | Urządzenia: 30 | Status: ❌ Nieaktywny'
+        }
+      ]
+    };
+
+    const data = objectTableData[objectType] || objectTableData['users'];
+    
+    resultsList.innerHTML = data.map((item: any) => `
+      <div class="result-card">
+        <div class="card-icon">${item.icon}</div>
+        <div class="card-content">
+          <div class="card-title">${item.title}</div>
+          <div class="card-info">${item.info}</div>
+        </div>
+        <div class="card-actions">
+          <button class="btn-card-action" title="Edytuj">✏️</button>
+          <button class="btn-card-action" title="Profil">👁️</button>
+        </div>
+      </div>
+    `).join('');
+
+    // Update filters based on object type
+    this.updateFiltersForObject(container, objectType);
+  }
+
+  private updateFiltersForObject(container: HTMLElement, objectType: string): void {
+    const roleFilter = container.querySelector('#role-filter') as HTMLSelectElement;
+    const statusFilter = container.querySelector('#status-filter') as HTMLSelectElement;
+    
+    if (!roleFilter || !statusFilter) return;
+
+    // Update role filter options based on object type
+    const roleOptions: any = {
+      'users': `
+        <option value="">Wszystkie role</option>
+        <option value="admin">👑 Administrator</option>
+        <option value="manager">👔 Manager</option>
+        <option value="operator">👤 Operator</option>
+        <option value="technician">🔧 Technik</option>
+      `,
+      'devices': `
+        <option value="">Wszystkie typy</option>
+        <option value="pss-7000">📱 PSS-7000</option>
+        <option value="pss-5000">📱 PSS-5000</option>
+        <option value="pss-3000">📱 PSS-3000</option>
+        <option value="vac-series">🔧 VAC Series</option>
+      `,
+      'test-scenarios': `
+        <option value="">Wszystkie kategorie</option>
+        <option value="pressure">🔋 Ciśnienie</option>
+        <option value="flow">💨 Przepływ</option>
+        <option value="function">⚙️ Funkcjonalny</option>
+        <option value="calibration">📏 Kalibracja</option>
+      `,
+      'groups': `
+        <option value="">Wszystkie typy grup</option>
+        <option value="service">🔧 Serwisowe</option>
+        <option value="operator">👤 Operatorskie</option>
+        <option value="admin">👑 Administracyjne</option>
+        <option value="guest">👥 Gości</option>
+      `,
+      'warehouses': `
+        <option value="">Wszystkie typy</option>
+        <option value="main">🏭 Główne</option>
+        <option value="service">🔧 Serwisowe</option>
+        <option value="backup">💾 Rezerwowe</option>
+        <option value="client">🏢 Klienckie</option>
+      `,
+      'clients': `
+        <option value="">Wszystkie sektory</option>
+        <option value="energy">⚡ Energetyczny</option>
+        <option value="oil-gas">🛢️ Naftowo-gazowy</option>
+        <option value="chemical">🧪 Chemiczny</option>
+        <option value="industrial">🏭 Przemysłowy</option>
+      `
+    };
+
+    roleFilter.innerHTML = roleOptions[objectType] || roleOptions['users'];
   }
 
   private updateSearchResults(container: HTMLElement, objectType: string): void {

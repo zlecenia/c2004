@@ -52,7 +52,7 @@ class IdentificationResponse(BaseModel):
         schema_extra = {
             "example": {
                 "id": "user-001",
-                "name": "Jan Kowalski",
+                "name": "Jan K.",
                 "type": "user",
                 "method": "rfid",
                 "metadata": {"role": "operator"},

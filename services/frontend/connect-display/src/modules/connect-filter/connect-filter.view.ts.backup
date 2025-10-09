@@ -1,4 +1,4 @@
-import { ConnectFilterModule } from './connect-filter.module';
+import { ConnectFilterModule } from './connect-data.module';
 
 export class ConnectFilterView {
   private module: ConnectFilterModule;
@@ -9,10 +9,10 @@ export class ConnectFilterView {
 
   render(): HTMLElement {
     const container = document.createElement('div');
-    container.className = 'connect-filter-page';
+    container.className = 'connect-data-page';
     
     container.innerHTML = `
-      <div class="connect-filter-container">
+      <div class="connect-data-container">
         <div class="header-section">
           <h1>🔎 ConnectFilter - Advanced Search & Filtering</h1>
           <div class="header-actions">
@@ -235,13 +235,13 @@ export class ConnectFilterView {
   private addStyles(): void {
     const style = document.createElement('style');
     style.textContent = `
-      .connect-filter-page {
+      .connect-data-page {
         padding: 20px;
         max-width: 1400px;
         margin: 0 auto;
       }
 
-      .connect-filter-container {
+      .connect-data-container {
         background: white;
         border-radius: 8px;
         overflow: hidden;

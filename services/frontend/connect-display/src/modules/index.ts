@@ -2,14 +2,14 @@
 import { Module } from './module.interface';
 import { IdentificationModule } from './identification/identification.module';
 import { ConnectIdModule } from './connect-id/connect-id.module';
-import { ConnectFilterModule } from './connect-filter/connect-filter.module';
+import { ConnectFilterModule } from './connect-data/connect-data.module';
 import { ConnectWorkshopModule } from './connect-workshop/connect-workshop.module';
 import { ConnectTestModule } from './connect-test/connect-test.module';
 
 export const MODULE_REGISTRY = {
   identification: IdentificationModule,
   'connect-id': ConnectIdModule,
-  'connect-filter': ConnectFilterModule,
+  'connect-data': ConnectFilterModule,
   'connect-workshop': ConnectWorkshopModule,
   'connect-test': ConnectTestModule
 } as const;

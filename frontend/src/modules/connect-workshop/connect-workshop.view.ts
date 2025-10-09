@@ -97,30 +97,7 @@ export class ConnectWorkshopView {
                 </div>
 
                 <div class="search-results">
-                  <div class="result-item">
-                    <div class="result-icon">📋</div>
-                    <div class="result-details">
-                      <div class="result-title">Zgłoszenie #WS-001</div>
-                      <div class="result-meta">PSS-7000 #12345 | Konserwacja | 2025-10-08</div>
-                    </div>
-                    <div class="result-status">⏳ Oczekujące</div>
-                  </div>
-                  <div class="result-item">
-                    <div class="result-icon">⚙️</div>
-                    <div class="result-details">
-                      <div class="result-title">Serwis #SRV-002</div>
-                      <div class="result-meta">PSS-5000 #67890 | Naprawa | 2025-10-07</div>
-                    </div>
-                    <div class="result-status">⚙️ W trakcie</div>
-                  </div>
-                  <div class="result-item">
-                    <div class="result-icon">🚚</div>
-                    <div class="result-details">
-                      <div class="result-title">Transport #TR-003</div>
-                      <div class="result-meta">Dostawa części | 2025-10-06</div>
-                    </div>
-                    <div class="result-status">✅ Zakończone</div>
-                  </div>
+                  <!-- Results will be dynamically updated based on selected section -->
                 </div>
               </div>
             </div>
@@ -790,8 +767,15 @@ export class ConnectWorkshopView {
       .result-icon { width: 30px; height: 30px; background: #667eea; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 14px; }
       .result-details { flex: 1; }
       .result-title { font-size: 12px; font-weight: 600; color: #333; margin-bottom: 3px; }
-      .result-meta { font-size: 10px; color: #666; }
+      .result-description { font-size: 10px; color: #666; margin-bottom: 2px; }
+      .result-id { font-size: 9px; color: #999; font-weight: 600; }
       .result-status { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
+      
+      /* Badge Styles */
+      .badge { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; text-align: center; }
+      .badge-pending { background: #fff3cd; color: #856404; }
+      .badge-active { background: #d1ecf1; color: #0c5460; }
+      .badge-completed { background: #d1e7dd; color: #0f5132; }
     `;
     document.head.appendChild(style);
   }
@@ -822,6 +806,9 @@ export class ConnectWorkshopView {
     });
 
     // Force sync functionality moved to Sync action in main menu
+    
+    // Initialize search results with default section (requests)
+    this.updateSearchResults(container, this.currentSection);
   }
 
   private handleAction(action: string, container: HTMLElement): void {
@@ -879,6 +866,8 @@ export class ConnectWorkshopView {
     switch (action) {
       case 'search':
         this.showNotification(`🔍 Wyszukiwanie w ${sectionNames}`, 'info');
+        // Update search results when switching to search action
+        this.updateSearchResults(container, this.currentSection);
         break;
       case 'sync':
         this.showNotification(`🔄 Synchronizacja ${sectionNames}`, 'info');
@@ -938,7 +927,12 @@ export class ConnectWorkshopView {
 
   private updateSearchResults(container: HTMLElement, section: string): void {
     const searchResults = container.querySelector('.search-results');
-    if (!searchResults) return;
+    if (!searchResults) {
+      console.warn('Search results container not found');
+      return;
+    }
+    
+    console.log(`🔄 Updating search results for section: ${section}`);
 
     // Define different data sets for each section
     const sectionData: any = {
@@ -977,6 +971,8 @@ export class ConnectWorkshopView {
         <span class="badge ${item.badge}">${item.status}</span>
       </div>
     `).join('');
+    
+    console.log(`✅ Search results updated with ${data.length} items for ${section}`);
   }
 
   private forceSync(container: HTMLElement): void {

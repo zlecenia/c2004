@@ -219,7 +219,7 @@ function createMainApplication() {
           <span class="nav-icon">🏷</span>
           <span class="nav-text">ConnectID</span>
         </button>
-        <button class="nav-btn" data-module="connect-filter">
+        <button class="nav-btn" data-module="connect-data">
           <span class="nav-icon">🔎</span>
           <span class="nav-text">ConnectFilter</span>
         </button>
@@ -281,7 +281,7 @@ function loadModule(moduleName: string) {
       case 'connect-id':
         loadConnectIdModule(container);
         break;
-      case 'connect-filter':
+      case 'connect-data':
         loadConnectFilterModule(container);
         break;
       case 'connect-workshop':
@@ -319,9 +319,9 @@ function loadConnectIdModule(container: HTMLElement) {
 }
 
 function loadConnectFilterModule(container: HTMLElement) {
-  import('./modules/connect-filter/connect-filter.module').then(async () => {
-    const module = moduleManager.getModule('connect-filter');
-    const { ConnectFilterView } = await import('./modules/connect-filter/connect-filter.view');
+  import('./modules/connect-data/connect-data.module').then(async () => {
+    const module = moduleManager.getModule('connect-data');
+    const { ConnectFilterView } = await import('./modules/connect-data/connect-data.view');
     const view = new ConnectFilterView(module as any);
     
     container.innerHTML = '';
