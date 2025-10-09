@@ -110,57 +110,7 @@ export class ConnectWorkshopView {
               </div>
             </div>
 
-            <!-- Transport Section -->
-            <div id="transport-content" class="section-content">
-              <div class="transport-list">
-                <div class="transport-card">
-                  <div class="card-header">
-                    <span class="transport-id">🚚 TRANS-001</span>
-                    <span class="badge badge-active">Aktywny</span>
-                  </div>
-                  <div class="card-body">
-                    <div class="info-line">
-                      <span class="label">Kierowca:</span>
-                      <span class="value">Jan Kowalski</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Urządzenia:</span>
-                      <span class="value">12 szt.</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Status:</span>
-                      <span class="value">W drodze</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <!-- Dispositions Section -->
-            <div id="dispositions-content" class="section-content">
-              <div class="dispositions-list">
-                <div class="disposition-card">
-                  <div class="card-header">
-                    <span class="disposition-id">📦 DISP-001</span>
-                    <span class="badge badge-new">Nowy</span>
-                  </div>
-                  <div class="card-body">
-                    <div class="info-line">
-                      <span class="label">Typ:</span>
-                      <span class="value">Przyjęcie</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Data:</span>
-                      <span class="value">2025-10-08</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Ilość:</span>
-                      <span class="value">5 urządzeń</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             <!-- Service Section -->
             <div id="service-content" class="section-content">
@@ -280,7 +230,7 @@ export class ConnectWorkshopView {
         width: 100%;
         background: #3a3a3a;
         border: none;
-        padding: 10px 6px;
+        padding: 5px 6px;
         margin-bottom: 4px;
         border-radius: 5px;
         cursor: pointer;

@@ -1,5 +1,6 @@
 // frontend/src/modules/connect-id/connect-id.view.ts - Compact 1280x400px version
 import { ConnectIdModule } from './connect-id.module';
+import { VirtualKeyboard, VirtualKeyboardOptions } from '../../components/virtual-keyboard.component';
 
 export class ConnectIdView {
   private module: ConnectIdModule;
@@ -7,6 +8,8 @@ export class ConnectIdView {
   private currentMethod: string = 'rfid';
   private currentScenarioType: string = 'usage';
   private currentProtocol: string = 'service';
+  private manualKeyboard: VirtualKeyboard | null = null;
+  private passwordKeyboard: VirtualKeyboard | null = null;
 
   constructor(module: ConnectIdModule) {
     this.module = module;
@@ -76,7 +79,35 @@ export class ConnectIdView {
           </button>
         </div>
 
-        <!-- Column 3: Protocols (shown only for test type with list method) -->
+        <!-- Column 3: Users (shown only for user type with list method) -->
+        <div class="menu-column" id="users-column" style="display: none;">
+          <h3 class="column-title">Użytkownicy</h3>
+          <div class="users-list-menu">
+            <div class="user-menu-item" data-user="jan.kowalski">
+              <div class="user-info">
+                <div class="user-name">Jan Kowalski</div>
+                <div class="user-role">Manager</div>
+                <div class="user-last-login">10:30</div>
+              </div>
+            </div>
+            <div class="user-menu-item" data-user="anna.nowak">
+              <div class="user-info">
+                <div class="user-name">Anna Nowak</div>
+                <div class="user-role">Technik</div>
+                <div class="user-last-login">09:15</div>
+              </div>
+            </div>
+            <div class="user-menu-item" data-user="piotr.wisniewski">
+              <div class="user-info">
+                <div class="user-name">Piotr Wiśniewski</div>
+                <div class="user-role">Operator</div>
+                <div class="user-last-login">08:45</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Column 4: Protocols (shown only for test type with list method) -->
         <div class="menu-column" id="protocols-column" style="display: none;">
           <h3 class="column-title">Protokoły</h3>
           <button class="protocol-item active" data-protocol="service">
@@ -100,6 +131,22 @@ export class ConnectIdView {
         <!-- Main Content -->
         <div class="main-content">
           <div class="content-body">
+            
+            <!-- User Login Form (shown when user is selected from menu) -->
+            <div id="user-login-content" class="method-content" style="display: none;">
+              <div class="user-login-form">
+                                
+                <div class="password-section">
+                  <div class="password-input-group">
+                    <input type="password" id="user-password-input" class="password-field" placeholder="••••••••">
+                    <button id="user-login-submit" class="btn-login">🔓 Zaloguj</button>
+                  </div>
+                </div>
+
+                <!-- Virtual Keyboard for Password -->
+                <div id="password-keyboard-container"></div>
+              </div>
+            </div>
             <!-- RFID Panel -->
             <div id="rfid-content" class="method-content active">
               <div class="scan-prompt">
@@ -135,86 +182,14 @@ export class ConnectIdView {
               </div>
               
               <!-- Virtual Keyboard -->
-              <div class="virtual-keyboard-compact">
-                <div class="keyboard-row">
-                  <button class="key" data-key="1">1</button>
-                  <button class="key" data-key="2">2</button>
-                  <button class="key" data-key="3">3</button>
-                  <button class="key" data-key="4">4</button>
-                  <button class="key" data-key="5">5</button>
-                  <button class="key" data-key="6">6</button>
-                  <button class="key" data-key="7">7</button>
-                  <button class="key" data-key="8">8</button>
-                  <button class="key" data-key="9">9</button>
-                  <button class="key" data-key="0">0</button>
-                </div>
-                <div class="keyboard-row">
-                  <button class="key" data-key="Q">Q</button>
-                  <button class="key" data-key="W">W</button>
-                  <button class="key" data-key="E">E</button>
-                  <button class="key" data-key="R">R</button>
-                  <button class="key" data-key="T">T</button>
-                  <button class="key" data-key="Y">Y</button>
-                  <button class="key" data-key="U">U</button>
-                  <button class="key" data-key="I">I</button>
-                  <button class="key" data-key="O">O</button>
-                  <button class="key" data-key="P">P</button>
-                </div>
-                <div class="keyboard-row">
-                  <button class="key" data-key="A">A</button>
-                  <button class="key" data-key="S">S</button>
-                  <button class="key" data-key="D">D</button>
-                  <button class="key" data-key="F">F</button>
-                  <button class="key" data-key="G">G</button>
-                  <button class="key" data-key="H">H</button>
-                  <button class="key" data-key="J">J</button>
-                  <button class="key" data-key="K">K</button>
-                  <button class="key" data-key="L">L</button>
-                  <button class="key key-special" data-key="CLEAR">⌫</button>
-                </div>
-                <div class="keyboard-row">
-                  <button class="key" data-key="Z">Z</button>
-                  <button class="key" data-key="X">X</button>
-                  <button class="key" data-key="C">C</button>
-                  <button class="key" data-key="V">V</button>
-                  <button class="key" data-key="B">B</button>
-                  <button class="key" data-key="N">N</button>
-                  <button class="key" data-key="M">M</button>
-                  <button class="key" data-key="-">-</button>
-                  <button class="key key-wide" data-key="ENTER">↵ ENTER</button>
-                </div>
-              </div>
+              <div id="manual-keyboard-container"></div>
             </div>
 
             <!-- List Panel -->
             <div id="list-content" class="method-content">
               <!-- User List -->
               <div id="user-list" class="list-type-content">
-                <h4>Ostatnio zalogowani użytkownicy:</h4>
-                <div class="device-card selectable">
-                  <div class="device-icon">👤</div>
-                  <div class="device-info">
-                    <div class="device-name">Jan Kowalski</div>
-                    <div class="device-meta">Manager | Ostatnie logowanie: 10:30</div>
-                  </div>
-                  <button class="btn-login-user" data-user="jan.kowalski">🔑 Zaloguj</button>
-                </div>
-                <div class="device-card selectable">
-                  <div class="device-icon">👤</div>
-                  <div class="device-info">
-                    <div class="device-name">Anna Nowak</div>
-                    <div class="device-meta">Technik | Ostatnie logowanie: 09:15</div>
-                  </div>
-                  <button class="btn-login-user" data-user="anna.nowak">🔑 Zaloguj</button>
-                </div>
-                <div class="device-card selectable">
-                  <div class="device-icon">👤</div>
-                  <div class="device-info">
-                    <div class="device-name">Piotr Wiśniewski</div>
-                    <div class="device-meta">Operator | Ostatnie logowanie: 08:45</div>
-                  </div>
-                  <button class="btn-login-user" data-user="piotr.wisniewski">🔑 Zaloguj</button>
-                </div>
+               
                 
                 <!-- Login Form -->
                 <div id="login-form" class="login-form" style="display: none;">
@@ -460,6 +435,7 @@ export class ConnectIdView {
 
     this.addStyles();
     this.setupEventListeners(container);
+    this.initializeKeyboards();
 
     return container;
   }
@@ -504,7 +480,7 @@ export class ConnectIdView {
         width: 100%;
         background: #3a3a3a;
         border: none;
-        padding: 10px 6px;
+        padding: 5px 6px;
         margin-bottom: 4px;
         border-radius: 5px;
         cursor: pointer;
@@ -842,6 +818,96 @@ export class ConnectIdView {
       .progress-header { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 12px; color: #666; }
       .progress-bar { background: #e9ecef; height: 8px; border-radius: 4px; overflow: hidden; }
       .progress-fill { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); height: 100%; transition: width 0.3s; }
+
+      /* Users Column Styles */
+      .users-list-menu { padding: 10px 0; }
+      .user-menu-item { 
+        display: flex; 
+        align-items: center; 
+        padding: 8px 12px; 
+        margin-bottom: 6px; 
+        background: white; 
+        border: 1px solid #e0e0e0; 
+        border-radius: 6px; 
+        cursor: pointer; 
+        transition: all 0.2s;
+      }
+      .user-menu-item:hover { background: #f0f8ff; border-color: #667eea; }
+      .user-menu-item.selected { background: #667eea; color: white; }
+      .user-avatar { 
+        width: 32px; 
+        height: 32px; 
+        background: #667eea; 
+        border-radius: 50%; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        margin-right: 10px; 
+        font-size: 16px; 
+        color: white;
+      }
+      .user-info { flex: 1; }
+      .user-name { font-size: 11px; font-weight: 600; margin-bottom: 2px; }
+      .user-role { font-size: 9px; color: #666; margin-bottom: 1px; }
+      .user-last-login { font-size: 8px; color: #999; }
+
+      /* User Login Form Styles */
+      .user-login-form { 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        padding: 20px; 
+        max-width: 400px; 
+        margin: 0 auto;
+      }
+      .selected-user-info { 
+        display: flex; 
+        align-items: center; 
+        margin-bottom: 30px; 
+        padding: 20px; 
+        background: #f8f9fa; 
+        border-radius: 12px; 
+        width: 100%;
+      }
+      .user-avatar-large { 
+        width: 60px; 
+        height: 60px; 
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+        border-radius: 50%; 
+        display: flex; 
+        align-items: center; 
+        justify-content: center; 
+        font-size: 24px; 
+        margin-right: 20px;
+        color: white;
+      }
+      .user-details h3 { margin: 0 0 5px 0; font-size: 18px; color: #333; }
+      .user-details p { margin: 2px 0; font-size: 12px; color: #666; }
+
+      .password-section { width: 100%; margin-bottom: 20px; }
+      .password-section h4 { text-align: center; margin-bottom: 15px; font-size: 14px; color: #333; }
+      .password-input-group { display: flex; gap: 10px; }
+      .password-field { 
+        flex: 1; 
+        padding: 12px; 
+        border: 2px solid #ddd; 
+        border-radius: 6px; 
+        font-size: 16px; 
+        text-align: center; 
+        letter-spacing: 3px;
+      }
+      .btn-login { 
+        padding: 12px 20px; 
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
+        color: white; 
+        border: none; 
+        border-radius: 6px; 
+        cursor: pointer; 
+        font-size: 12px; 
+        font-weight: 600;
+      }
+
+      /* Virtual keyboards handled by VirtualKeyboard component */
     `;
     document.head.appendChild(style);
   }
@@ -914,23 +980,37 @@ export class ConnectIdView {
       }
     });
 
-    // Virtual keyboard
-    const keys = container.querySelectorAll('.key');
-    const manualInput = container.querySelector('#manual-code-input') as HTMLInputElement;
-    keys.forEach(key => {
-      key.addEventListener('click', (e) => {
+    // User menu items (from users column)
+    const userMenuItems = container.querySelectorAll('.user-menu-item');
+    userMenuItems.forEach(item => {
+      item.addEventListener('click', (e) => {
         const target = e.currentTarget as HTMLElement;
-        const keyValue = target.getAttribute('data-key');
-        this.handleVirtualKeyInput(keyValue, manualInput);
+        const userId = target.getAttribute('data-user');
+        if (userId) this.showUserLoginForm(userId, container);
       });
     });
 
+    // Password keyboard is handled by VirtualKeyboard component
+
+    // User password submit button
+    const userPasswordSubmit = container.querySelector('#user-login-submit');
+    if (userPasswordSubmit) {
+      userPasswordSubmit.addEventListener('click', () => {
+        const input = container.querySelector('#user-password-input') as HTMLInputElement;
+        if (input && input.value.trim()) {
+          this.handleUserLogin(input.value);
+        }
+      });
+    }
+
+    // Manual keyboard is handled by VirtualKeyboard component
+
     // Manual submit
     const submitBtn = container.querySelector('#manual-submit-btn');
+    const manualInput = container.querySelector('#manual-code-input') as HTMLInputElement;
     submitBtn?.addEventListener('click', () => {
       if (manualInput && manualInput.value) {
-        this.handleManualIdentification(manualInput.value);
-        manualInput.value = '';
+        this.handleManualSubmit(manualInput.value);
       }
     });
 
@@ -1055,11 +1135,21 @@ export class ConnectIdView {
   }
 
   private updateColumnsVisibility(container: HTMLElement): void {
+    const usersColumn = container.querySelector('#users-column') as HTMLElement;
     const scenarioTypesColumn = container.querySelector('#scenario-types-column') as HTMLElement;
     const protocolsColumn = container.querySelector('#protocols-column') as HTMLElement;
     
+    // Show users column only for user type with list method
+    if (usersColumn) {
+      if (this.currentType === 'user' && this.currentMethod === 'list') {
+        usersColumn.style.display = 'block';
+      } else {
+        usersColumn.style.display = 'none';
+      }
+    }
+    
     if (scenarioTypesColumn && protocolsColumn) {
-      // Show extra columns only for test type with list method
+      // Show scenario/protocol columns only for test type with list method
       if (this.currentType === 'test' && this.currentMethod === 'list') {
         scenarioTypesColumn.style.display = 'block';
         protocolsColumn.style.display = 'block';
@@ -1158,20 +1248,7 @@ export class ConnectIdView {
     return names[this.currentType as keyof typeof names] || 'Urządzenia';
   }
 
-  private handleVirtualKeyInput(key: string | null, input: HTMLInputElement): void {
-    if (!key || !input) return;
-
-    if (key === 'CLEAR') {
-      input.value = '';
-    } else if (key === 'ENTER') {
-      if (input.value) {
-        this.handleManualIdentification(input.value);
-        input.value = '';
-      }
-    } else {
-      input.value += key;
-    }
-  }
+  // Virtual keyboard input handled by VirtualKeyboard component
 
   private handleManualIdentification(code: string): void {
     this.showNotification(`✓ Identyfikacja: ${code}`, 'success');
@@ -1297,6 +1374,179 @@ export class ConnectIdView {
     if (container) {
       this.updateColumnsVisibility(container as HTMLElement);
       this.updateTopBarTitle();
+    }
+  }
+
+  private showUserLoginForm(userId: string, container: HTMLElement): void {
+    // User data mapping
+    const userData: any = {
+      'jan.kowalski': { name: 'Jan Kowalski', role: 'Manager', lastLogin: '10:30' },
+      'anna.nowak': { name: 'Anna Nowak', role: 'Technik', lastLogin: '09:15' },
+      'piotr.wisniewski': { name: 'Piotr Wiśniewski', role: 'Operator', lastLogin: '08:45' }
+    };
+
+    const user = userData[userId];
+    if (!user) return;
+
+    // Update selected user in menu
+    container.querySelectorAll('.user-menu-item').forEach(item => {
+      item.classList.remove('selected');
+    });
+    const selectedItem = container.querySelector(`[data-user="${userId}"]`);
+    if (selectedItem) {
+      selectedItem.classList.add('selected');
+    }
+
+    // Update user details in login form
+    const nameEl = container.querySelector('#login-user-name');
+    const roleEl = container.querySelector('#login-user-role');
+    const timeEl = container.querySelector('#login-user-time');
+    
+    if (nameEl) nameEl.textContent = user.name;
+    if (roleEl) roleEl.textContent = user.role;
+    if (timeEl) timeEl.textContent = user.lastLogin;
+
+    // Hide other content and show login form
+    container.querySelectorAll('.method-content').forEach(content => {
+      (content as HTMLElement).style.display = 'none';
+    });
+    
+    const loginContent = container.querySelector('#user-login-content') as HTMLElement;
+    if (loginContent) {
+      loginContent.style.display = 'block';
+    }
+
+    // Clear password field
+    const passwordInput = container.querySelector('#user-password-input') as HTMLInputElement;
+    if (passwordInput) {
+      passwordInput.value = '';
+      passwordInput.focus();
+    }
+
+    // Update top-bar title
+    this.updateTopBarTitle();
+
+    // Initialize password keyboard for this form
+    this.initializePasswordKeyboard();
+  }
+
+  // Password keyboard input handled by VirtualKeyboard component
+
+  private handleUserLogin(password: string): void {
+    // Get user name from current login form
+    const nameEl = document.querySelector('#login-user-name');
+    const userName = nameEl?.textContent || 'Unknown';
+    
+    // Simple password validation (in real app, this would be secure)
+    if (password.length >= 4) {
+      this.showNotification(`✅ Zalogowano jako ${userName}`, 'success');
+      this.updateLastResult(`LOGIN: ${userName}`, true);
+      
+      // Clear selection and hide login form
+      const container = document.querySelector('.connect-id-compact') as HTMLElement;
+      if (container) {
+        container.querySelectorAll('.user-menu-item').forEach(item => {
+          item.classList.remove('selected');
+        });
+        
+        // Return to default content
+        container.querySelectorAll('.method-content').forEach(content => {
+          (content as HTMLElement).style.display = 'none';
+        });
+        
+        const activeContent = container.querySelector(`#${this.currentMethod}-content`) as HTMLElement;
+        if (activeContent) {
+          activeContent.style.display = 'block';
+        }
+        
+        // Clear password
+        const passwordInput = container.querySelector('#user-password-input') as HTMLInputElement;
+        if (passwordInput) {
+          passwordInput.value = '';
+        }
+      }
+    } else {
+      this.showNotification(`❌ Nieprawidłowe hasło`, 'error');
+    }
+  }
+
+  private initializeKeyboards(): void {
+    // Initialize manual keyboard for code input
+    setTimeout(() => {
+      try {
+        this.manualKeyboard = new VirtualKeyboard('manual-keyboard-container', {
+          targetInputId: 'manual-code-input',
+          layout: 'full',
+          onEnter: (value: string) => {
+            this.handleManualSubmit(value);
+          },
+          onKeyPress: (key: string, value: string) => {
+            if (key === 'CLEAR') {
+              // Clear handled by component
+            }
+          }
+        });
+      } catch (error) {
+        console.warn('Manual keyboard initialization failed:', error);
+      }
+    }, 100);
+  }
+
+  private initializePasswordKeyboard(): void {
+    // Initialize password keyboard when user login form is shown
+    setTimeout(() => {
+      try {
+        if (this.passwordKeyboard) {
+          this.passwordKeyboard.destroy();
+        }
+        
+        this.passwordKeyboard = new VirtualKeyboard('password-keyboard-container', {
+          targetInputId: 'user-password-input',
+          layout: 'password',
+          onKeyPress: (key: string, value: string) => {
+            if (key === 'CANCEL') {
+              this.cancelPasswordEntry();
+            }
+          }
+        });
+      } catch (error) {
+        console.warn('Password keyboard initialization failed:', error);
+      }
+    }, 100);
+  }
+
+  private handleManualSubmit(value: string): void {
+    if (value.trim()) {
+      this.showNotification(`✅ Kod: ${value}`, 'success');
+      this.updateLastResult(`MANUAL: ${value}`, true);
+      
+      // Clear input after successful submit
+      if (this.manualKeyboard) {
+        this.manualKeyboard.clear();
+      }
+    } else {
+      this.showNotification(`❌ Wprowadź kod`, 'error');
+    }
+  }
+
+  private cancelPasswordEntry(): void {
+    // Hide login form and return to previous content
+    const container = document.querySelector('.connect-id-compact') as HTMLElement;
+    if (container) {
+      container.querySelectorAll('.method-content').forEach(content => {
+        (content as HTMLElement).style.display = 'none';
+      });
+      
+      // Show appropriate content based on current method
+      const activeContent = container.querySelector(`#${this.currentMethod}-content`) as HTMLElement;
+      if (activeContent) {
+        activeContent.style.display = 'block';
+      }
+      
+      // Clear selection
+      container.querySelectorAll('.user-menu-item').forEach(item => {
+        item.classList.remove('selected');
+      });
     }
   }
 }

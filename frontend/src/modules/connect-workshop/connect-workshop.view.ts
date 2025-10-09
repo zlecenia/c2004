@@ -48,9 +48,9 @@ export class ConnectWorkshopView {
         <!-- Column 2: Actions -->
         <div class="menu-column">
           <h3 class="column-title">Akcje</h3>
-          <button class="menu-item active" data-action="sync">
-            <span class="menu-icon">🔄</span>
-            <span class="menu-label">Sync</span>
+          <button class="menu-item active" data-action="search">
+            <span class="menu-icon">🔍</span>
+            <span class="menu-label">Szukaj</span>
           </button>
           <button class="menu-item" data-action="new-request">
             <span class="menu-icon">➕</span>
@@ -64,13 +64,69 @@ export class ConnectWorkshopView {
             <span class="menu-icon">📥</span>
             <span class="menu-label">Import</span>
           </button>
+          <button class="menu-item" data-action="sync">
+            <span class="menu-icon">🔄</span>
+            <span class="menu-label">Sync</span>
+          </button>
         </div>
 
         <!-- Main Content -->
         <div class="main-content">
           <div class="content-body">
+            <!-- Search Action Content -->
+            <div id="search-content" class="action-content active">
+              <div class="search-workshop">
+                <div class="search-input-row">
+                  <input type="text" id="workshop-search-input" class="search-input" placeholder="Szukaj w zgłoszeniach...">
+                  <button id="workshop-search-btn" class="btn-search">🔍</button>
+                </div>
+                
+                <div class="search-filters">
+                  <select class="filter-select">
+                    <option>📋 Wszystkie zgłoszenia</option>
+                    <option>⏳ Oczekujące</option>
+                    <option>⚙️ W trakcie</option>
+                    <option>✅ Zakończone</option>
+                  </select>
+                  <select class="filter-select">
+                    <option>📅 Ostatni tydzień</option>
+                    <option>📆 Ostatni miesiąc</option>
+                    <option>🗓️ Ostatnie 3 miesiące</option>
+                    <option>📅 Cały rok</option>
+                  </select>
+                </div>
+
+                <div class="search-results">
+                  <div class="result-item">
+                    <div class="result-icon">📋</div>
+                    <div class="result-details">
+                      <div class="result-title">Zgłoszenie #WS-001</div>
+                      <div class="result-meta">PSS-7000 #12345 | Konserwacja | 2025-10-08</div>
+                    </div>
+                    <div class="result-status">⏳ Oczekujące</div>
+                  </div>
+                  <div class="result-item">
+                    <div class="result-icon">⚙️</div>
+                    <div class="result-details">
+                      <div class="result-title">Serwis #SRV-002</div>
+                      <div class="result-meta">PSS-5000 #67890 | Naprawa | 2025-10-07</div>
+                    </div>
+                    <div class="result-status">⚙️ W trakcie</div>
+                  </div>
+                  <div class="result-item">
+                    <div class="result-icon">🚚</div>
+                    <div class="result-details">
+                      <div class="result-title">Transport #TR-003</div>
+                      <div class="result-meta">Dostawa części | 2025-10-06</div>
+                    </div>
+                    <div class="result-status">✅ Zakończone</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
             <!-- Sync Action Content -->
-            <div id="sync-content" class="action-content active">
+            <div id="sync-content" class="action-content">
               <div class="sync-status">
                 <div class="sync-info">
                   <div class="sync-item">
@@ -93,7 +149,6 @@ export class ConnectWorkshopView {
             <!-- New Request Action Content -->
             <div id="new-request-content" class="action-content">
               <div class="form-container">
-                <h4>➕ Nowe Zgłoszenie</h4>
                 <div class="form-row">
                   <div class="form-group">
                     <label>Urządzenie:</label>
@@ -132,7 +187,6 @@ export class ConnectWorkshopView {
             <!-- New Transport Action Content -->
             <div id="new-transport-content" class="action-content">
               <div class="form-container">
-                <h4>🚚 Nowy Transport</h4>
                 <div class="form-row">
                   <div class="form-group">
                     <label>Kierowca:</label>
@@ -170,7 +224,6 @@ export class ConnectWorkshopView {
             <!-- New Disposition Action Content -->
             <div id="new-disposition-content" class="action-content">
               <div class="form-container">
-                <h4>📦 Nowa Dyspozycja</h4>
                 <div class="form-row">
                   <div class="form-group">
                     <label>Typ dyspozycji:</label>
@@ -261,7 +314,6 @@ export class ConnectWorkshopView {
             <!-- Import Action Content -->
             <div id="import-content" class="action-content">
               <div class="form-container">
-                <h4>📥 Import Danych</h4>
                 <div class="form-group">
                   <label>Wybierz plik:</label>
                   <input type="file" class="form-input" accept=".csv,.xlsx,.json">
@@ -284,140 +336,7 @@ export class ConnectWorkshopView {
               </div>
             </div>
 
-            <!-- Services Section -->
-            <div id="services-content" class="section-content">
-              <div class="services-list">
-                <div class="service-card">
-                  <div class="card-header">
-                    <span class="service-id">⚙️ SERV-001</span>
-                    <span class="badge badge-active">Aktywny</span>
-                  </div>
-                  <div class="card-body">
-                    <div class="info-line">
-                      <span class="label">Urządzenie:</span>
-                      <span class="value">PSS-7000 #12345</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Technik:</span>
-                      <span class="value">Jan Kowalski</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Status:</span>
-                      <span class="value">W trakcie</span>
-                    </div>
-                  </div>
-                </div>
-                <div class="service-card">
-                  <div class="card-header">
-                    <span class="service-id">⚙️ SERV-002</span>
-                    <span class="badge badge-completed">Zakończony</span>
-                  </div>
-                  <div class="card-body">
-                    <div class="info-line">
-                      <span class="label">Urządzenie:</span>
-                      <span class="value">PSS-5000 #67890</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Technik:</span>
-                      <span class="value">Anna Nowak</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Status:</span>
-                      <span class="value">Zakończony</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
-            <!-- Requests Section -->
-            <div id="requests-content" class="section-content active">
-              <div class="filters-compact">
-                <select id="status-filter" class="filter-select">
-                  <option value="">Wszystkie</option>
-                  <option value="pending">⏳ Pending</option>
-                  <option value="processing">⚙️ Processing</option>
-                  <option value="completed">✅ Completed</option>
-                  <option value="cancelled">❌ Cancelled</option>
-                </select>
-                <input type="text" id="search-requests" class="filter-input" placeholder="Szukaj...">
-              </div>
-              
-              <div class="requests-list" id="requests-list">
-                <div class="request-card">
-                  <div class="card-header">
-                    <span class="request-id">#REQ-001</span>
-                    <span class="badge badge-pending">⏳ Pending</span>
-                  </div>
-                  <div class="card-body">
-                    <div class="info-line">
-                      <span class="label">Urządzenie:</span>
-                      <span class="value">PSS-7000 #12345</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Typ:</span>
-                      <span class="value">Konserwacja</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Priorytet:</span>
-                      <span class="value">🔴 Wysoki</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Transport Section -->
-            <div id="transport-content" class="section-content">
-              <div class="transport-list">
-                <div class="transport-card">
-                  <div class="card-header">
-                    <span class="transport-id">🚚 TRANS-001</span>
-                    <span class="badge badge-active">Aktywny</span>
-                  </div>
-                  <div class="card-body">
-                    <div class="info-line">
-                      <span class="label">Kierowca:</span>
-                      <span class="value">Jan Kowalski</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Urządzenia:</span>
-                      <span class="value">12 szt.</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Status:</span>
-                      <span class="value">W drodze</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <!-- Dispositions Section -->
-            <div id="dispositions-content" class="section-content">
-              <div class="dispositions-list">
-                <div class="disposition-card">
-                  <div class="card-header">
-                    <span class="disposition-id">📦 DISP-001</span>
-                    <span class="badge badge-new">Nowy</span>
-                  </div>
-                  <div class="card-body">
-                    <div class="info-line">
-                      <span class="label">Typ:</span>
-                      <span class="value">Przyjęcie</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Data:</span>
-                      <span class="value">2025-10-08</span>
-                    </div>
-                    <div class="info-line">
-                      <span class="label">Ilość:</span>
-                      <span class="value">5 urządzeń</span>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            </div>
 
             <!-- Service Section -->
             <div id="service-content" class="section-content">
@@ -444,6 +363,9 @@ export class ConnectWorkshopView {
 
         <!-- Right Panel - Parameters -->
         <div class="right-panel">
+          <!-- Notification Panel -->
+          <div id="right-panel-notifications" class="notifications-panel"></div>
+          
           <div class="params-section">
             <h3 class="params-title">Status Sync</h3>
             <div class="param-item">
@@ -460,29 +382,6 @@ export class ConnectWorkshopView {
             </div>
           </div>
 
-          <div class="params-section">
-            <h3 class="params-title">Statystyki</h3>
-            <div class="param-item">
-              <span class="param-label">Requests:</span>
-              <span class="param-value">12</span>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Transport:</span>
-              <span class="param-value">3</span>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Dyspozycje:</span>
-              <span class="param-value">8</span>
-            </div>
-          </div>
-
-          <div class="params-section">
-            <h3 class="params-title">Szybkie akcje</h3>
-            <button class="quick-action-btn" id="force-sync-btn">
-              <span>🔄</span>
-              <span>Force Sync</span>
-            </button>
-          </div>
         </div>
       </div>
 
@@ -536,7 +435,7 @@ export class ConnectWorkshopView {
         width: 100%;
         background: #3a3a3a;
         border: none;
-        padding: 10px 6px;
+        padding: 5px 6px;
         margin-bottom: 4px;
         border-radius: 5px;
         cursor: pointer;
@@ -732,6 +631,41 @@ export class ConnectWorkshopView {
         flex-shrink: 0;
       }
 
+      /* Notifications in Right Panel */
+      .notifications-panel { margin-bottom: 10px; }
+      .right-notification { 
+        background: #4a4a4a; 
+        border-left: 3px solid #28a745; 
+        padding: 8px 10px; 
+        margin-bottom: 6px; 
+        border-radius: 4px; 
+        font-size: 10px; 
+        color: white; 
+        animation: slideInRight 0.3s ease;
+        cursor: pointer;
+        transition: all 0.3s;
+      }
+      .right-notification.success { border-left-color: #28a745; }
+      .right-notification.error { border-left-color: #dc3545; }
+      .right-notification.info { border-left-color: #17a2b8; }
+      .right-notification.warning { border-left-color: #ffc107; }
+      .right-notification:hover { background: #5a5a5a; }
+      .right-notification.removing { 
+        animation: slideOutRight 0.3s ease;
+        transform: translateX(100%);
+        opacity: 0;
+      }
+      
+      @keyframes slideInRight {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+      }
+      
+      @keyframes slideOutRight {
+        from { transform: translateX(0); opacity: 1; }
+        to { transform: translateX(100%); opacity: 0; }
+      }
+
       .params-section {
         margin-bottom: 15px;
       }
@@ -765,27 +699,7 @@ export class ConnectWorkshopView {
         font-weight: 600;
       }
 
-      .quick-action-btn {
-        width: 100%;
-        background: #3a3a3a;
-        border: none;
-        padding: 10px;
-        margin-bottom: 6px;
-        border-radius: 5px;
-        cursor: pointer;
-        color: #ccc;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        gap: 4px;
-        font-size: 11px;
-        transition: all 0.2s;
-      }
-
-      .quick-action-btn:hover {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        color: white;
-      }
+      /* Quick action button removed - actions moved to main menu */
 
       /* Notification */
       .notification-container {
@@ -829,7 +743,6 @@ export class ConnectWorkshopView {
       
       /* Form Styles */
       .form-container { background: #f8f9fa; padding: 20px; border-radius: 8px; }
-      .form-container h4 { margin: 0 0 20px 0; font-size: 14px; color: #333; font-weight: 600; }
       .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
       .form-group { flex: 1; }
       .form-group label { display: block; margin-bottom: 5px; font-size: 11px; font-weight: 600; color: #666; }
@@ -861,6 +774,24 @@ export class ConnectWorkshopView {
       .service-id { font-weight: 600; font-size: 12px; color: #333; }
       .badge-active { background: #d1ecf1; color: #0c5460; padding: 2px 8px; border-radius: 4px; font-size: 10px; }
       .badge-completed { background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-size: 10px; }
+
+      /* Search Workshop Styles */
+      .search-workshop { padding: 20px; }
+      .search-input-row { display: flex; gap: 10px; margin-bottom: 15px; }
+      .search-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
+      .btn-search { padding: 10px 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
+      .search-filters { display: flex; gap: 10px; margin-bottom: 20px; }
+      .filter-select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; background: white; }
+      
+      /* Search Results */
+      .search-results { max-height: 250px; overflow-y: auto; }
+      .result-item { display: flex; align-items: center; padding: 12px; margin-bottom: 8px; background: white; border: 1px solid #e0e0e0; border-radius: 6px; cursor: pointer; transition: all 0.2s; }
+      .result-item:hover { border-color: #667eea; background: #f8f9ff; }
+      .result-icon { width: 30px; height: 30px; background: #667eea; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin-right: 12px; font-size: 14px; }
+      .result-details { flex: 1; }
+      .result-title { font-size: 12px; font-weight: 600; color: #333; margin-bottom: 3px; }
+      .result-meta { font-size: 10px; color: #666; }
+      .result-status { padding: 4px 8px; border-radius: 4px; font-size: 10px; font-weight: 600; }
     `;
     document.head.appendChild(style);
   }
@@ -890,11 +821,7 @@ export class ConnectWorkshopView {
       });
     });
 
-    // Force sync button
-    const forceSyncBtn = container.querySelector('#force-sync-btn');
-    forceSyncBtn?.addEventListener('click', () => {
-      this.forceSync(container);
-    });
+    // Force sync functionality moved to Sync action in main menu
   }
 
   private handleAction(action: string, container: HTMLElement): void {
@@ -919,35 +846,51 @@ export class ConnectWorkshopView {
       activeContent.classList.add('active');
     }
 
+    // Synchronize forms with current section context
+    this.updateActionFormsContext(container, action);
+
     // Update top-bar title
+    const sectionTitles: any = {
+      'requests': 'Zgłoszenia',
+      'services': 'Serwisy',
+      'transport': 'Transport',
+      'dispositions': 'Dyspozycje'
+    };
+
     const actionTitles: any = {
+      'search': 'Szukaj',
       'sync': 'Sync',
       'new-request': 'Nowe Zgłoszenie',
       'export': 'Eksport i Backup',
       'import': 'Import Danych'
     };
 
+    const currentSectionName = sectionTitles[this.currentSection] || 'Obiekty';
     const topBarTitle = document.getElementById('top-bar-section-title');
     if (topBarTitle) {
-      topBarTitle.textContent = `ConnectWorkshop - ${actionTitles[action]}`;
+      topBarTitle.textContent = `ConnectWorkshop - ${currentSectionName} - ${actionTitles[action]}`;
     }
 
     // Update status
     const statusAction = container.querySelector('#status-action');
     if (statusAction) statusAction.textContent = actionTitles[action];
 
+    const sectionNames = sectionTitles[this.currentSection] || 'obiektów';
     switch (action) {
+      case 'search':
+        this.showNotification(`🔍 Wyszukiwanie w ${sectionNames}`, 'info');
+        break;
       case 'sync':
-        this.showNotification('🔄 Tryb synchronizacji aktywny', 'info');
+        this.showNotification(`🔄 Synchronizacja ${sectionNames}`, 'info');
         break;
       case 'new-request':
-        this.showNotification('➕ Formularz nowego zgłoszenia', 'info');
+        this.showNotification(`➕ Nowe zgłoszenie dla ${sectionNames}`, 'info');
         break;
       case 'export':
-        this.showNotification('📊 Eksport i backup danych', 'info');
+        this.showNotification(`📊 Eksport i backup ${sectionNames}`, 'info');
         break;
       case 'import':
-        this.showNotification('📥 Import danych do systemu', 'info');
+        this.showNotification(`📥 Import ${sectionNames}`, 'info');
         break;
     }
   }
@@ -972,6 +915,14 @@ export class ConnectWorkshopView {
       activeContent.classList.add('active');
     }
 
+    // Synchronize forms with the new section context
+    this.updateActionFormsContext(container, this.currentAction);
+
+    // Update search results if current action is search
+    if (this.currentAction === 'search') {
+      this.updateSearchResults(container, section);
+    }
+
     // Update title in top-bar
     const titles = {
       'requests': 'ConnectWorkshop - Zgłoszenia',
@@ -983,6 +934,49 @@ export class ConnectWorkshopView {
     if (topBarTitle) {
       topBarTitle.textContent = titles[section as keyof typeof titles] || 'ConnectWorkshop';
     }
+  }
+
+  private updateSearchResults(container: HTMLElement, section: string): void {
+    const searchResults = container.querySelector('.search-results');
+    if (!searchResults) return;
+
+    // Define different data sets for each section
+    const sectionData: any = {
+      'requests': [
+        { icon: '📋', id: 'REQ-001', title: 'Awaria PSS-7000', desc: 'Urządzenie: PSS-7000 #12345', status: 'Otwarte', badge: 'badge-pending' },
+        { icon: '📋', id: 'REQ-002', title: 'Kalibracja PSS-5000', desc: 'Urządzenie: PSS-5000 #67890', status: 'W trakcie', badge: 'badge-active' },
+        { icon: '📋', id: 'REQ-003', title: 'Serwis PSS-3000', desc: 'Urządzenie: PSS-3000 #11111', status: 'Zakończone', badge: 'badge-completed' }
+      ],
+      'services': [
+        { icon: '⚙️', id: 'SERV-001', title: 'Serwis okresowy', desc: 'Technik: Jan Kowalski', status: 'Aktywny', badge: 'badge-active' },
+        { icon: '⚙️', id: 'SERV-002', title: 'Naprawa główna', desc: 'Technik: Anna Nowak', status: 'Zakończony', badge: 'badge-completed' },
+        { icon: '⚙️', id: 'SERV-003', title: 'Konserwacja', desc: 'Technik: Piotr Wiśniewski', status: 'Zaplanowany', badge: 'badge-pending' }
+      ],
+      'transport': [
+        { icon: '🚚', id: 'TRANS-001', title: 'Dostawa urządzeń', desc: 'Kierowca: Jan Kowalski', status: 'W drodze', badge: 'badge-active' },
+        { icon: '🚚', id: 'TRANS-002', title: 'Odbiór z serwisu', desc: 'Kierowca: Anna Nowak', status: 'Zakończony', badge: 'badge-completed' },
+        { icon: '🚚', id: 'TRANS-003', title: 'Transport awaryjny', desc: 'Kierowca: Piotr Wiśniewski', status: 'Zaplanowany', badge: 'badge-pending' }
+      ],
+      'dispositions': [
+        { icon: '📦', id: 'DISP-001', title: 'Wydanie PSS-7000', desc: 'Magazyn A → Sekcja 1', status: 'Wydane', badge: 'badge-completed' },
+        { icon: '📦', id: 'DISP-002', title: 'Przyjęcie PSS-5000', desc: 'Serwis → Magazyn B', status: 'W trakcie', badge: 'badge-active' },
+        { icon: '📦', id: 'DISP-003', title: 'Transfer urządzeń', desc: 'Magazyn A → Magazyn B', status: 'Zaplanowane', badge: 'badge-pending' }
+      ]
+    };
+
+    const data = sectionData[section] || sectionData['requests'];
+    
+    searchResults.innerHTML = data.map((item: any) => `
+      <div class="result-item">
+        <div class="result-icon">${item.icon}</div>
+        <div class="result-details">
+          <div class="result-title">${item.title}</div>
+          <div class="result-description">${item.desc}</div>
+          <span class="result-id">${item.id}</span>
+        </div>
+        <span class="badge ${item.badge}">${item.status}</span>
+      </div>
+    `).join('');
   }
 
   private forceSync(container: HTMLElement): void {
@@ -1001,28 +995,104 @@ export class ConnectWorkshopView {
     }, 1500);
   }
 
-  private showNotification(message: string, type: 'success' | 'error' | 'info' = 'info'): void {
-    const container = document.getElementById('notification-container');
-    if (!container) return;
-
-    const colors = {
-      success: '#4caf50',
-      error: '#f44336',
-      info: '#2196f3'
+  private updateActionFormsContext(container: HTMLElement, action: string): void {
+    const sectionTitles: any = {
+      'requests': 'Zgłoszenia',
+      'services': 'Serwisy',
+      'transport': 'Transport',
+      'dispositions': 'Dyspozycje'
     };
 
-    const notification = document.createElement('div');
-    notification.className = 'notification';
-    notification.innerHTML = `
-      <div style="font-size: 12px; color: ${colors[type]}; font-weight: 600;">
-        ${message}
-      </div>
-    `;
-    
-    container.appendChild(notification);
+    const currentSectionName = sectionTitles[this.currentSection] || 'Obiekty';
 
+    // Update form titles based on current section
+    const newRequestTitle = container.querySelector('#new-request-content h4');
+    if (newRequestTitle) newRequestTitle.textContent = `➕ Nowe Zgłoszenie - ${currentSectionName}`;
+
+    const exportTitle = container.querySelector('#export-content h4');
+    if (exportTitle) exportTitle.textContent = `📊 Eksport i Backup - ${currentSectionName}`;
+
+    const importTitle = container.querySelector('#import-content h4');
+    if (importTitle) importTitle.textContent = `📥 Import - ${currentSectionName}`;
+
+    // Update form fields based on section type
+    this.updateSectionForms(container, this.currentSection);
+  }
+
+  private updateSectionForms(container: HTMLElement, sectionType: string): void {
+    // Update type options in export form based on current section
+    const exportTypeSelect = container.querySelector('#export-content .form-select:nth-of-type(2)');
+    if (exportTypeSelect) {
+      const sectionOptions: any = {
+        'requests': ['📋 Zgłoszenia', '🔧 Serwisy do zgłoszeń', '👤 Użytkownicy zgłoszeń'],
+        'services': ['⚙️ Serwisy', '📋 Raporty serwisowe', '🔧 Historia napraw'],
+        'transport': ['🚚 Transport', '📦 Paczki', '🗓️ Harmonogramy dostaw'],
+        'dispositions': ['📦 Dyspozycje', '🏭 Lokalizacje', '📊 Statusy dyspozycji']
+      };
+
+      const options = sectionOptions[sectionType] || sectionOptions['requests'];
+      exportTypeSelect.innerHTML = '';
+      
+      options.forEach((option: string) => {
+        const optionElement = document.createElement('option');
+        optionElement.textContent = option;
+        exportTypeSelect.appendChild(optionElement);
+      });
+    }
+
+    // Update import type options
+    const importTypeSelect = container.querySelector('#import-content .form-select:nth-of-type(2)');
+    if (importTypeSelect) {
+      const importOptions: any = {
+        'requests': ['📋 Zgłoszenia z Fleet Manager', '🔧 Dane serwisowe'],
+        'services': ['⚙️ Harmonogram serwisów', '📊 Raporty serwisowe'],
+        'transport': ['🚚 Plan transportu', '📦 Lista przesyłek'],
+        'dispositions': ['📦 Lista dyspozycji', '🏭 Mapowanie lokalizacji']
+      };
+
+      const options = importOptions[sectionType] || importOptions['requests'];
+      importTypeSelect.innerHTML = '';
+      
+      options.forEach((option: string) => {
+        const optionElement = document.createElement('option');
+        optionElement.textContent = option;
+        importTypeSelect.appendChild(optionElement);
+      });
+    }
+  }
+
+  private showNotification(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
+    const notificationsPanel = document.getElementById('right-panel-notifications');
+    if (!notificationsPanel) return;
+
+    // Limit to max 2 notifications
+    const existing = notificationsPanel.querySelectorAll('.right-notification');
+    if (existing.length >= 2) {
+      // Remove oldest notification
+      const oldest = existing[0];
+      oldest.classList.add('removing');
+      setTimeout(() => oldest.remove(), 300);
+    }
+
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `right-notification ${type}`;
+    notification.textContent = message;
+
+    // Add click to dismiss
+    notification.addEventListener('click', () => {
+      notification.classList.add('removing');
+      setTimeout(() => notification.remove(), 300);
+    });
+
+    // Auto-remove after 4 seconds
     setTimeout(() => {
-      notification.remove();
-    }, 3000);
+      if (notification.parentNode) {
+        notification.classList.add('removing');
+        setTimeout(() => notification.remove(), 300);
+      }
+    }, 4000);
+
+    notificationsPanel.appendChild(notification);
   }
 }

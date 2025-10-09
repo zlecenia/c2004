@@ -98,7 +98,7 @@ style.textContent = `
   .nav-btn {
     background: #3a3a3a;
     border: none;
-    padding: 10px 6px;
+    padding: 5px 6px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 12px;
@@ -367,11 +367,11 @@ function loadConnectReportsModule(container: HTMLElement) {
         <!-- Column 1: Report Types -->
         <div class="menu-column" style="width: 120px; background: #2a2a2a; padding: 6px 4px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #1a1a1a;">
           <h3 class="column-title" style="color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px;">Raporty</h3>
-          <button class="report-type-item active" data-type="executed" style="width: 100%; background: #3a3a3a; border: none; padding: 10px 6px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
+          <button class="report-type-item active" data-type="executed" style="width: 100%; background: #3a3a3a; border: none; padding: 5px 6px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
             <span class="menu-icon" style="font-size: 18px;">✅</span>
             <span class="menu-label" style="font-size: 10px; font-weight: 500;">Wykonane</span>
           </button>
-          <button class="report-type-item" data-type="planned" style="width: 100%; background: #3a3a3a; border: none; padding: 10px 6px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
+          <button class="report-type-item" data-type="planned" style="width: 100%; background: #3a3a3a; border: none; padding: 5px 6px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
             <span class="menu-icon" style="font-size: 18px;">📅</span>
             <span class="menu-label" style="font-size: 10px; font-weight: 500;">Planowane</span>
           </button>
@@ -399,24 +399,135 @@ function loadConnectReportsModule(container: HTMLElement) {
           <div class="content-body" style="flex: 1; padding: 15px; overflow-y: auto;">
             <!-- Executed Reports -->
             <div id="executed-content" class="report-content active">
-              <div class="reports-list">
-                <div class="report-card" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
-                  <div class="report-header" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span class="report-date" style="font-size: 12px; color: #666;">2025-10-08 17:30</span>
-                    <span class="report-status success" style="background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-size: 11px;">✅ Pozytywny</span>
+              <div class="reports-table-container">
+                <!-- Search and Filters -->
+                <div class="reports-search-section" style="background: #f8f9fa; padding: 1px; border-radius: 8px; margin-bottom: 15px;">
+                  <div class="search-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="text" id="reports-search" placeholder="Szukaj po urządzeniu, dacie, operatorze..." style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">
+                    <button id="reports-search-btn" style="padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">🔍 Szukaj</button>
                   </div>
-                  <div class="report-device" style="font-weight: 600; margin-bottom: 5px;">PSS-7000 #12345</div>
-                  <div class="report-tests" style="font-size: 12px; color: #666; margin-bottom: 10px;">3 testy: Szczelność, Przepływ, Funkcjonalny</div>
-                  <button class="btn-view-report" style="padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px;">Pokaż szczegóły</button>
+                  <div class="filters-row" style="display: flex; gap: 10px; flex-wrap: wrap;">
+                    <select id="status-filter" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px;">
+                      <option value="">Wszystkie statusy</option>
+                      <option value="success">✅ Pozytywne</option>
+                      <option value="error">❌ Negatywne</option>
+                      <option value="warning">⚠️ Ostrzeżenia</option>
+                    </select>
+                    <select id="device-filter" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px;">
+                      <option value="">Wszystkie urządzenia</option>
+                      <option value="pss-7000">PSS-7000</option>
+                      <option value="pss-5000">PSS-5000</option>
+                      <option value="pss-3000">PSS-3000</option>
+                    </select>
+                    <select id="test-type-filter" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px;">
+                      <option value="">Wszystkie testy</option>
+                      <option value="szczelnosc">Szczelność</option>
+                      <option value="przeplyw">Przepływ</option>
+                      <option value="funkcjonalny">Funkcjonalny</option>
+                      <option value="kalibracja">Kalibracja</option>
+                    </select>
+                    <select id="date-filter" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px;">
+                      <option value="">Wszystkie daty</option>
+                      <option value="today">Dzisiaj</option>
+                      <option value="week">Ostatni tydzień</option>
+                      <option value="month">Ostatni miesiąc</option>
+                      <option value="custom">Niestandardowy zakres</option>
+                    </select>
+                    <input type="date" id="date-from" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; display: none;">
+                    <input type="date" id="date-to" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; display: none;">
+                  </div>
                 </div>
-                <div class="report-card" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 10px;">
-                  <div class="report-header" style="display: flex; justify-content: space-between; margin-bottom: 10px;">
-                    <span class="report-date" style="font-size: 12px; color: #666;">2025-10-08 16:15</span>
-                    <span class="report-status error" style="background: #f8d7da; color: #721c24; padding: 2px 8px; border-radius: 4px; font-size: 11px;">❌ Negatywny</span>
+
+                <!-- Reports Table -->
+                <div class="reports-table-wrapper" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
+                  <table class="reports-table" style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: #f8f9fa;">
+                      <tr>
+                        <th style="padding: 12px 8px; text-align: left; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0; cursor: pointer;" data-sort="date">📅 Data/Czas ↕</th>
+                        <th style="padding: 12px 8px; text-align: left; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0; cursor: pointer;" data-sort="device">📱 Urządzenie ↕</th>
+                        <th style="padding: 12px 8px; text-align: left; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0; cursor: pointer;" data-sort="test">🧪 Testy ↕</th>
+                        <th style="padding: 12px 8px; text-align: left; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0; cursor: pointer;" data-sort="operator">👤 Operator ↕</th>
+                        <th style="padding: 12px 8px; text-align: left; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0; cursor: pointer;" data-sort="status">✅ Status ↕</th>
+                        <th style="padding: 12px 8px; text-align: center; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0;">⚙️ Akcje</th>
+                      </tr>
+                    </thead>
+                    <tbody id="reports-table-body">
+                      <tr style="border-bottom: 1px solid #f0f0f0;">
+                        <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 17:30</td>
+                        <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-7000 #12345</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Szczelność, Przepływ, Funkcjonalny</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Jan Kowalski</td>
+                        <td style="padding: 10px 8px;"><span style="background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-size: 10px;">✅ Pozytywny</span></td>
+                        <td style="padding: 10px 8px; text-align: center;">
+                          <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
+                          <button style="padding: 4px 8px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">📄 PDF</button>
+                          <button style="padding: 4px 8px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📧 Wyślij</button>
+                        </td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #f0f0f0;">
+                        <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 16:15</td>
+                        <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-5000 #67890</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Szczelność</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Anna Nowak</td>
+                        <td style="padding: 10px 8px;"><span style="background: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 4px; font-size: 10px;">❌ Negatywny</span></td>
+                        <td style="padding: 10px 8px; text-align: center;">
+                          <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
+                          <button style="padding: 4px 8px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">📄 PDF</button>
+                          <button style="padding: 4px 8px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📧 Wyślij</button>
+                        </td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #f0f0f0;">
+                        <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 15:45</td>
+                        <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-3000 #11111</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Kalibracja, Przepływ</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Piotr Wiśniewski</td>
+                        <td style="padding: 10px 8px;"><span style="background: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 4px; font-size: 10px;">⚠️ Ostrzeżenie</span></td>
+                        <td style="padding: 10px 8px; text-align: center;">
+                          <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
+                          <button style="padding: 4px 8px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">📄 PDF</button>
+                          <button style="padding: 4px 8px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📧 Wyślij</button>
+                        </td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #f0f0f0;">
+                        <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 14:20</td>
+                        <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-7000 #54321</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Funkcjonalny</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Jan Kowalski</td>
+                        <td style="padding: 10px 8px;"><span style="background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-size: 10px;">✅ Pozytywny</span></td>
+                        <td style="padding: 10px 8px; text-align: center;">
+                          <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
+                          <button style="padding: 4px 8px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">📄 PDF</button>
+                          <button style="padding: 4px 8px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📧 Wyślij</button>
+                        </td>
+                      </tr>
+                      <tr style="border-bottom: 1px solid #f0f0f0;">
+                        <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 13:10</td>
+                        <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-5000 #98765</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Szczelność, Kalibracja</td>
+                        <td style="padding: 10px 8px; font-size: 11px;">Anna Nowak</td>
+                        <td style="padding: 10px 8px;"><span style="background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-size: 10px;">✅ Pozytywny</span></td>
+                        <td style="padding: 10px 8px; text-align: center;">
+                          <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
+                          <button style="padding: 4px 8px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">📄 PDF</button>
+                          <button style="padding: 4px 8px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📧 Wyślij</button>
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="reports-pagination" style="display: flex; justify-content: between; align-items: center; margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px;">
+                  <div class="pagination-info" style="font-size: 11px; color: #666;">
+                    Pokazano 1-5 z 47 raportów
                   </div>
-                  <div class="report-device" style="font-weight: 600; margin-bottom: 5px;">PSS-5000 #67890</div>
-                  <div class="report-tests" style="font-size: 12px; color: #666; margin-bottom: 10px;">Test szczelności: Błąd</div>
-                  <button class="btn-view-report" style="padding: 6px 12px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px;">Pokaż szczegóły</button>
+                  <div class="pagination-controls" style="display: flex; gap: 5px;">
+                    <button style="padding: 6px 10px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" disabled>⬅️ Poprzednia</button>
+                    <button style="padding: 6px 10px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">1</button>
+                    <button style="padding: 6px 10px; background: #f8f9fa; color: #333; border: 1px solid #ddd; border-radius: 3px; cursor: pointer; font-size: 10px;">2</button>
+                    <button style="padding: 6px 10px; background: #f8f9fa; color: #333; border: 1px solid #ddd; border-radius: 3px; cursor: pointer; font-size: 10px;">3</button>
+                    <button style="padding: 6px 10px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">Następna ➡️</button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -475,64 +586,221 @@ function loadConnectReportsModule(container: HTMLElement) {
                 </div>
               </div>
 
-              <!-- Monthly Calendar -->
+              <!-- Monthly Tables -->
               <div id="month-view" class="calendar-view">
                 <div class="calendar-header" style="text-align: center; margin-bottom: 15px;">
-                  <h4 style="margin: 0; color: #333;">🗓️ Widok Miesięczny - Październik 2025</h4>
+                  <h4 style="margin: 0; color: #333;">🗓️ Widok 3 Miesięcy - 2025</h4>
                 </div>
-                <div class="month-full-calendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; background: #f0f0f0; padding: 8px; border-radius: 8px; max-height: 280px; overflow-y: auto;">
-                  <!-- Nagłówki dni -->
-                  <div class="day-header" style="background: #667eea; color: white; padding: 6px; text-align: center; font-size: 10px; font-weight: 600;">Pon</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 6px; text-align: center; font-size: 10px; font-weight: 600;">Wt</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 6px; text-align: center; font-size: 10px; font-weight: 600;">Śr</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 6px; text-align: center; font-size: 10px; font-weight: 600;">Czw</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 6px; text-align: center; font-size: 10px; font-weight: 600;">Pt</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 6px; text-align: center; font-size: 10px; font-weight: 600;">Sob</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 6px; text-align: center; font-size: 10px; font-weight: 600;">Ndz</div>
+                
+                <!-- Three Month Tables Container -->
+                <div class="three-months-container" style="display: flex; gap: 8px; justify-content: space-between;">
+                
+                  <!-- Previous Month -->
+                  <div class="month-table" style="flex: 1; background: white; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;">
+                    <div class="month-header" style="background: #f8f9fa; padding: 8px; text-align: center; font-size: 11px; font-weight: 600; color: #666;">
+                      ← Wrzesień 2025
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <thead>
+                        <tr style="background: #f1f3f4;">
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pn</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Wt</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Śr</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Cz</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pt</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Sb</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Nd</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">1</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">2</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">3</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">4</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">5</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">6</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">7</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">8</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">9</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">10<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">11</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">12</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">13</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">14</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">15</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">16</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">17</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">18<div style="width: 3px; height: 3px; background: #dc3545; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">19</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">20</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">21</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">22</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">23</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">24</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">25<div style="width: 3px; height: 3px; background: #17a2b8; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">26</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">27</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">28</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">29</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">30</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div style="padding: 4px; font-size: 8px; text-align: center; background: #f8f9fa; color: #666;">3 zaplanowane</div>
+                  </div>
+
+                  <!-- Current Month -->
+                  <div class="month-table" style="flex: 1; background: white; border: 2px solid #28a745; border-radius: 6px; overflow: hidden;">
+                    <div class="month-header" style="background: #28a745; padding: 8px; text-align: center; font-size: 11px; font-weight: 600; color: white;">
+                      Październik 2025 (Aktualny)
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <thead>
+                        <tr style="background: #f1f3f4;">
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pn</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Wt</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Śr</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Cz</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pt</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Sb</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Nd</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #ccc;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #ccc;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">1</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">2<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">3</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">4</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">5</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">6</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">7</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600; background: #fff3cd;">8<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">9</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">10<div style="width: 3px; height: 3px; background: #dc3545; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">11</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">12</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">13</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">14<div style="width: 3px; height: 3px; background: #17a2b8; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">15</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">16<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">17</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">18</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">19</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">20</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">21</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">22<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">23</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">24<div style="width: 3px; height: 3px; background: #dc3545; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">25</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">26</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">27</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">28<div style="width: 3px; height: 3px; background: #17a2b8; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">29</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">30<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">31</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div style="padding: 4px; font-size: 8px; text-align: center; background: #d4edda; color: #155724; font-weight: 600;">7 zaplanowanych</div>
+                  </div>
+
+                  <!-- Next Month -->
+                  <div class="month-table" style="flex: 1; background: white; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;">
+                    <div class="month-header" style="background: #f8f9fa; padding: 8px; text-align: center; font-size: 11px; font-weight: 600; color: #666;">
+                      Listopad 2025 →
+                    </div>
+                    <table style="width: 100%; border-collapse: collapse;">
+                      <thead>
+                        <tr style="background: #f1f3f4;">
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pn</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Wt</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Śr</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Cz</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pt</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Sb</th>
+                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Nd</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;"></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">1</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">2</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">3</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">4</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">5<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">6</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">7</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">8</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">9</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">10</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">11</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">12<div style="width: 3px; height: 3px; background: #dc3545; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">13</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">14</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">15<div style="width: 3px; height: 3px; background: #17a2b8; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">16</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">17</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">18<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">19</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">20</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">21</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">22</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">23</td>
+                        </tr>
+                        <tr>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">24</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">25</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">26</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">27</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">28</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">29</td>
+                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">30</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <div style="padding: 4px; font-size: 8px; text-align: center; background: #f8f9fa; color: #666;">4 zaplanowane</div>
+                  </div>
                   
-                  <!-- Puste komórki na początku miesiąca -->
-                  <div style="background: #f8f9fa; padding: 4px; min-height: 35px; border: 1px solid #ddd;"></div>
-                  <div style="background: #f8f9fa; padding: 4px; min-height: 35px; border: 1px solid #ddd;"></div>
-                  
-                  <!-- Październik 2025 -->
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px; position: relative;"><span style="font-weight: 600;">1</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">2</span><div style="width: 6px; height: 6px; background: #28a745; border-radius: 50%; margin-top: 2px;"></div></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">3</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">4</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">5</span></div>
-                  
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">6</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">7</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">8</span><div style="width: 6px; height: 6px; background: #28a745; border-radius: 50%; margin-top: 2px;"></div></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">9</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">10</span><div style="width: 6px; height: 6px; background: #dc3545; border-radius: 50%; margin-top: 2px;"></div></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">11</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">12</span></div>
-                  
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">13</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">14</span><div style="width: 6px; height: 6px; background: #17a2b8; border-radius: 50%; margin-top: 2px;"></div></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">15</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">16</span><div style="width: 6px; height: 6px; background: #28a745; border-radius: 50%; margin-top: 2px;"></div></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">17</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">18</span><div style="width: 6px; height: 6px; background: #dc3545; border-radius: 50%; margin-top: 2px;"></div></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">19</span></div>
-                  
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">20</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">21</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">22</span><div style="width: 6px; height: 6px; background: #28a745; border-radius: 50%; margin-top: 2px;"></div></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">23</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">24</span><div style="width: 6px; height: 6px; background: #dc3545; border-radius: 50%; margin-top: 2px;"></div></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">25</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">26</span></div>
-                  
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">27</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">28</span><div style="width: 6px; height: 6px; background: #17a2b8; border-radius: 50%; margin-top: 2px;"></div></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">29</span></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">30</span><div style="width: 6px; height: 6px; background: #28a745; border-radius: 50%; margin-top: 2px;"></div></div>
-                  <div style="background: white; padding: 4px; min-height: 35px; border: 1px solid #ddd; font-size: 9px;"><span style="font-weight: 600;">31</span></div>
-                  <div style="background: #f8f9fa; padding: 4px; min-height: 35px; border: 1px solid #ddd;"></div>
-                  <div style="background: #f8f9fa; padding: 4px; min-height: 35px; border: 1px solid #ddd;"></div>
                 </div>
+                
                 <div style="margin-top: 10px; font-size: 10px; text-align: center;">
                   <span style="color: #28a745;">● Serwis</span> | 
                   <span style="color: #dc3545;">● Test</span> | 
