@@ -6,6 +6,13 @@ export interface VirtualKeyboardOptions {
   showSpecialKeys?: boolean;
 }
 
+interface KeyDefinition {
+  value: string;
+  display: string;
+  class?: string;
+  disabled?: boolean;
+}
+
 export class VirtualKeyboard {
   private container: HTMLElement;
   private targetInput: HTMLInputElement;
@@ -44,7 +51,7 @@ export class VirtualKeyboard {
     this.addStyles();
   }
 
-  private getLayout() {
+  private getLayout(): KeyDefinition[][] {
     switch (this.options.layout) {
       case 'numeric':
         return [

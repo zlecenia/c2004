@@ -1,12 +1,12 @@
 import { ConnectFilterModule } from './connect-data.module';
 
 export class ConnectDataView {
-  private module: ConnectFilterModule;
+  // private module: ConnectFilterModule; // Reserved for future use
   private currentObject: string = 'users';
   private currentAction: string = 'search';
 
-  constructor(module: ConnectFilterModule) {
-    this.module = module;
+  constructor(_module: ConnectFilterModule) {
+    // Module parameter reserved for future use
   }
 
   render(): HTMLElement {
@@ -613,7 +613,7 @@ export class ConnectDataView {
     console.log(messages[action]);
   }
 
-  private updateActionFormsContext(container: HTMLElement, action: string): void {
+  private updateActionFormsContext(container: HTMLElement, _action: string): void {
     const objectTitles: any = {
       'users': 'Użytkownika',
       'test-scenarios': 'Scenariusz Testowy',
@@ -693,7 +693,7 @@ export class ConnectDataView {
           });
           
           // Add new fields based on object type at the beginning of form
-          fields.forEach((field: any, index: number) => {
+          fields.forEach((field: any, _index: number) => {
             const formGroup = document.createElement('div');
             formGroup.className = 'form-group';
             

@@ -12,7 +12,7 @@ NC='\033[0m' # No Color
 
 # Configuration
 BACKEND_URL="http://localhost:8101"
-FRONTEND_URL="http://localhost:8200"
+FRONTEND_URL="http://localhost:3000"  # Dev server port
 MAX_RETRIES=30
 RETRY_DELAY=2
 

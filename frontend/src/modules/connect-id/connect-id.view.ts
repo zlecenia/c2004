@@ -3,7 +3,7 @@ import { ConnectIdModule } from './connect-id.module';
 import { VirtualKeyboard } from '../../components/virtual-keyboard.component';
 
 export class ConnectIdView {
-  private module: ConnectIdModule;
+  // private module: ConnectIdModule; // Reserved for future use
   private currentType: string = 'device';
   private currentMethod: string = 'rfid';
   private currentScenarioType: string = 'usage';
@@ -11,8 +11,8 @@ export class ConnectIdView {
   private manualKeyboard: VirtualKeyboard | null = null;
   private passwordKeyboard: VirtualKeyboard | null = null;
 
-  constructor(module: ConnectIdModule) {
-    this.module = module;
+  constructor(_module: ConnectIdModule) {
+    // Module parameter reserved for future use
   }
 
   render(): HTMLElement {
@@ -1057,6 +1057,7 @@ export class ConnectIdView {
     });
   }
 
+  // Reserved for future use 
   private switchType(type: string, container: HTMLElement): void {
     this.currentType = type;
     
@@ -1273,6 +1274,7 @@ export class ConnectIdView {
 
   // Virtual keyboard input handled by VirtualKeyboard component
 
+  // Reserved for future use
   private handleManualIdentification(code: string): void {
     this.showNotification(`✓ Identyfikacja: ${code}`, 'success');
     this.updateLastResult(code, true);

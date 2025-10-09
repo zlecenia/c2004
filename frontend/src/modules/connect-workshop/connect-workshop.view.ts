@@ -974,6 +974,7 @@ export class ConnectWorkshopView {
     console.log(`✅ Search results updated with ${data.length} items for ${section}`);
   }
 
+  // Reserved for future use
   private forceSync(_container: HTMLElement): void {
     this.showNotification('🔄 Synchronizacja w trakcie...', 'info');
     

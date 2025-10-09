@@ -1,5 +1,41 @@
 # Changelog
 
+## [1.2.2] - 2025-10-09 (Diagnostics)
+
+### ✨ Added
+- **System Diagnostics** - Kompletny system diagnostyki połączeń
+  - 🔍 Endpoint `/api/diagnostics` - pełna diagnostyka systemu
+  - ⚡ Endpoint `/api/diagnostics/quick` - szybka kontrola zdrowia
+  - 🖥️ Monitorowanie zasobów systemowych (CPU, RAM, Disk)
+  - 🔴 Status Redis, Database, External Services
+  - 📊 Rekomendacje systemowe na podstawie diagnostyki
+  - 🐳 Status kontenerów Docker
+  - 🌐 Test connectivity wszystkich serwisów
+
+- **Diagnostic Script** - Automatyczny skrypt diagnostyczny
+  - 🚀 Automatyczne uruchamianie po `make dev`
+  - 🎨 Kolorowe output z emoji dla czytelności
+  - ⏱️ Inteligentny retry mechanism
+  - 📋 Szczegółowe raporty z rekomendacjami
+  - 🔧 Integration z Makefile (`make diagnostics`, `make quick-check`)
+
+- **Backend Dependencies** - Nowe zależności diagnostyczne
+  - `redis==4.6.0` - Redis connectivity
+  - `psutil==5.9.5` - System resources monitoring
+  - `httpx==0.24.1` - HTTP async client for service checks
+
+### 🚀 Performance
+- **Real-time Monitoring** - Monitoring w czasie rzeczywistym
+- **Async Diagnostics** - Równoległe testy wszystkich serwisów
+- **Quick Health Checks** - Szybkie kontrole (<100ms)
+
+### 📦 Integration
+- **Make Dev Enhancement** - `make dev` teraz automatycznie uruchamia diagnostykę
+- **Docker Integration** - Pełna integracja z kontenerami Docker
+- **Service Discovery** - Automatyczne wykrywanie dostępnych serwisów
+
+---
+
 ## [1.2.1] - 2025-10-09 (Hotfix)
 
 ### 🔧 Fixed

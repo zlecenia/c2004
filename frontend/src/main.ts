@@ -406,7 +406,7 @@ function loadConnectTestModule(container: HTMLElement, method?: string | null) {
   });
 }
 
-function loadConnectDataModule(container: HTMLElement, method?: string | null) {
+function loadConnectDataModule(container: HTMLElement, _method?: string | null) {
   import('./modules/connect-data/connect-filter.module').then(async () => {
     const module = moduleManager.getModule('connect-data');
     const { ConnectDataView } = await import('./modules/connect-data/connect-filter.view');
@@ -422,7 +422,7 @@ function loadConnectDataModule(container: HTMLElement, method?: string | null) {
   });
 }
 
-function loadConnectWorkshopModule(container: HTMLElement, method?: string | null) {
+function loadConnectWorkshopModule(container: HTMLElement, _method?: string | null) {
   import('./modules/connect-workshop/connect-workshop.module').then(async () => {
     const module = moduleManager.getModule('connect-workshop');
     const { ConnectWorkshopView } = await import('./modules/connect-workshop/connect-workshop.view');
@@ -1075,7 +1075,7 @@ function loadConnectReportsModule(container: HTMLElement) {
   // Add event listeners
   const reportTypeButtons = container.querySelectorAll('.report-type-item');
   const calendarViewButtons = container.querySelectorAll('.calendar-view-item');
-  const calendarColumn = container.querySelector('#calendar-column');
+  const calendarColumn = container.querySelector('#calendar-column') as HTMLElement;
   
   reportTypeButtons.forEach(btn => {
     btn.addEventListener('click', (e) => {
