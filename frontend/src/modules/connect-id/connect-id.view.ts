@@ -1,6 +1,6 @@
 // frontend/src/modules/connect-id/connect-id.view.ts - Compact 1280x400px version
 import { ConnectIdModule } from './connect-id.module';
-import { VirtualKeyboard, VirtualKeyboardOptions } from '../../components/virtual-keyboard.component';
+import { VirtualKeyboard } from '../../components/virtual-keyboard.component';
 
 export class ConnectIdView {
   private module: ConnectIdModule;
@@ -1503,7 +1503,7 @@ export class ConnectIdView {
           onEnter: (value: string) => {
             this.handleManualSubmit(value);
           },
-          onKeyPress: (key: string, value: string) => {
+          onKeyPress: (key: string, _value: string) => {
             if (key === 'CLEAR') {
               // Clear handled by component
             }
@@ -1526,7 +1526,7 @@ export class ConnectIdView {
         this.passwordKeyboard = new VirtualKeyboard('password-keyboard-container', {
           targetInputId: 'user-password-input',
           layout: 'password',
-          onKeyPress: (key: string, value: string) => {
+          onKeyPress: (key: string, _value: string) => {
             if (key === 'CANCEL') {
               this.cancelPasswordEntry();
             }

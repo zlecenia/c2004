@@ -40,6 +40,7 @@ help:
 	@echo "Maintenance:"
 	@echo "  make clean        - Clean all data"
 	@echo "  make health       - Check service health"
+	@echo "  make diagnostics  - Run full system diagnostics"
 	@echo ""
 
 # Setup
@@ -87,7 +88,10 @@ dev: env
 	@echo "Frontend: http://localhost:8200 (dev mode)"
 	@echo "Backend:  http://localhost:$(BACKEND_PORT)"
 	@echo "📝 Files will auto-refresh on changes"
-	@$(COMPOSE_CMD) -f docker-compose.yml -f docker-compose.dev.yml up --build
+	@$(COMPOSE_CMD) -f docker-compose.yml -f docker-compose.dev.yml up --build -d
+	@echo ""
+	@echo "🔍 Running system diagnostics..."
+	@./scripts/system-diagnostics.sh
 
 refresh:
 	@echo "🔄 Refreshing frontend cache..."
@@ -210,6 +214,10 @@ health:
 	@echo ""
 	@echo "Health endpoints:"
 	@curl -s http://localhost:$(BACKEND_PORT)/api/v1/health | python3 -m json.tool
+
+diagnostics:
+	@echo "🔍 Running full system diagnostics..."
+	@./scripts/system-diagnostics.sh
 
 # Maintenance
 clean:

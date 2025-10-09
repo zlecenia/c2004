@@ -1,5 +1,4 @@
 // frontend/src/registry/route.registry.ts
-import { MODULE_REGISTRY } from './module.registry';
 
 export interface RouteDefinition {
   path: string;

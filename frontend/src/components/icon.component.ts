@@ -1,14 +1,79 @@
-// frontend/src/components/icon.component.ts - Professional SVG Icon System
-import { 
-  User, UserCircle, FlaskConical, ClipboardCheck, FileText, BarChart3, 
-  Wrench, HardHat, Database, HardDrive, Settings, Sliders,
-  Smartphone, CreditCard, QrCode, Barcode, ScanLine, Search, ScanSearch,
-  CheckCircle, Check, Calendar, CalendarDays, CalendarRange, CalendarClock,
-  AlertTriangle, AlertCircle, Shield, ShieldCheck, Lock, Key,
-  Monitor, Network, Wifi, Globe, Save, Download, Upload,
-  Edit, Trash2, Plus, X, Home, Menu, ArrowLeft, ArrowRight,
-  Play, Pause, Stop, RefreshCw, Power, Eye, EyeOff, Bell
-} from 'lucide';
+// frontend/src/components/icon.component.ts - Icon System with Emoji Fallback
+
+// Emoji fallback mapping for when Lucide is not available
+const emojiMap: Record<string, string> = {
+  // Users & Authentication
+  'user': '👤',
+  'user-circle': '👤', 
+  'lock': '🔒',
+  'key': '🔑',
+  
+  // Testing & Lab
+  'flask': '🧪',
+  'clipboard-check': '📋',
+  'check-circle': '✅',
+  'check': '✓',
+  
+  // Reports & Analytics
+  'file-text': '📄',
+  'bar-chart': '📊',
+  'calendar': '📅',
+  'calendar-days': '📆',
+  
+  // Workshop & Tools
+  'wrench': '🔧',
+  'hard-hat': '⛑️',
+  'settings': '⚙️',
+  'sliders': '🎛️',
+  
+  // Data & Storage
+  'database': '📊',
+  'hard-drive': '💾',
+  'save': '💾',
+  'download': '⬇️',
+  'upload': '⬆️',
+  
+  // Hardware & Devices
+  'smartphone': '📱',
+  'credit-card': '💳',
+  'qr-code': '📄',
+  'barcode': '📊',
+  
+  // Network & System
+  'monitor': '🖥️',
+  'network': '🌐',
+  'wifi': '📶',
+  'globe': '🌍',
+  
+  // Navigation & UI
+  'search': '🔍',
+  'home': '🏠',
+  'menu': '☰',
+  'arrow-left': '←',
+  'arrow-right': '→',
+  
+  // Actions
+  'edit': '✏️',
+  'trash': '🗑️',
+  'plus': '➕',
+  'x': '❌',
+  'play': '▶️',
+  'pause': '⏸️',
+  'stop': '⏹️',
+  
+  // Status & Alerts
+  'alert-triangle': '⚠️',
+  'alert-circle': '🔴',
+  'shield': '🛡️',
+  'shield-check': '✅',
+  
+  // Utility
+  'refresh': '🔄',
+  'power': '⚡',
+  'eye': '👁️',
+  'eye-off': '🙈',
+  'bell': '🔔'
+};
 
 export type IconName = 
   // Users & Authentication
@@ -41,131 +106,46 @@ export interface IconConfig {
   className?: string;
 }
 
-const iconMap = {
-  // Users & Authentication
-  'user': User,
-  'user-circle': UserCircle,
-  'lock': Lock,
-  'key': Key,
-  
-  // Testing & Lab
-  'flask': FlaskConical,
-  'clipboard-check': ClipboardCheck,
-  'check-circle': CheckCircle,
-  'check': Check,
-  
-  // Reports & Analytics
-  'file-text': FileText,
-  'bar-chart': BarChart3,
-  'calendar': Calendar,
-  'calendar-days': CalendarDays,
-  
-  // Workshop & Tools
-  'wrench': Wrench,
-  'hard-hat': HardHat,
-  'settings': Settings,
-  'sliders': Sliders,
-  
-  // Data & Storage
-  'database': Database,
-  'hard-drive': HardDrive,
-  'save': Save,
-  'download': Download,
-  'upload': Upload,
-  
-  // Hardware & Devices
-  'smartphone': Smartphone,
-  'credit-card': CreditCard,
-  'qr-code': QrCode,
-  'barcode': Barcode,
-  
-  // Network & System
-  'monitor': Monitor,
-  'network': Network,
-  'wifi': Wifi,
-  'globe': Globe,
-  
-  // Navigation & UI
-  'search': Search,
-  'home': Home,
-  'menu': Menu,
-  'arrow-left': ArrowLeft,
-  'arrow-right': ArrowRight,
-  
-  // Actions
-  'edit': Edit,
-  'trash': Trash2,
-  'plus': Plus,
-  'x': X,
-  'play': Play,
-  'pause': Pause,
-  'stop': Stop,
-  
-  // Status & Alerts
-  'alert-triangle': AlertTriangle,
-  'alert-circle': AlertCircle,
-  'shield': Shield,
-  'shield-check': ShieldCheck,
-  
-  // Utility
-  'refresh': RefreshCw,
-  'power': Power,
-  'eye': Eye,
-  'eye-off': EyeOff,
-  'bell': Bell
-};
+// No iconMap needed - using emoji fallback
 
 export class IconComponent {
   static render(name: IconName, config: IconConfig = {}): string {
     const {
       size = 24,
-      color = 'currentColor',
-      strokeWidth = 2,
       className = ''
     } = config;
     
-    const IconClass = iconMap[name];
-    if (!IconClass) {
+    // Use emoji fallback for now (until Lucide is properly installed in Docker)
+    const emoji = emojiMap[name];
+    if (!emoji) {
       console.warn(`Icon "${name}" not found, using default`);
       return `<span class="icon-missing ${className}">?</span>`;
     }
     
-    // Create a temporary container to get SVG string
-    const container = document.createElement('div');
-    const icon = IconClass({
-      size,
-      color,
-      strokeWidth,
-      className: `icon icon-${name} ${className}`
-    });
-    
-    container.appendChild(icon);
-    return container.innerHTML;
+    // Return emoji wrapped in span with appropriate styling
+    return `<span class="icon icon-${name} ${className}" style="font-size: ${size}px;">${emoji}</span>`;
   }
   
-  static renderDOMElement(name: IconName, config: IconConfig = {}): SVGElement {
+  static renderDOMElement(name: IconName, config: IconConfig = {}): HTMLElement {
     const {
       size = 24,
-      color = 'currentColor',
-      strokeWidth = 2,
       className = ''
     } = config;
     
-    const IconClass = iconMap[name];
-    if (!IconClass) {
+    const emoji = emojiMap[name];
+    const span = document.createElement('span');
+    span.className = `icon icon-${name} ${className}`;
+    span.style.fontSize = `${size}px`;
+    
+    if (!emoji) {
       console.warn(`Icon "${name}" not found, returning default element`);
-      const span = document.createElement('span');
       span.className = `icon-missing ${className}`;
       span.textContent = '?';
-      return span as any;
+      return span;
     }
     
-    return IconClass({
-      size,
-      color,
-      strokeWidth,
-      className: `icon icon-${name} ${className}`
-    });
+    span.textContent = emoji;
+    return span;
   }
   
   // Helper method for menu icons with consistent styling
@@ -195,7 +175,7 @@ export class IconComponent {
   
   // Get all available icons for development/debugging
   static getAvailableIcons(): IconName[] {
-    return Object.keys(iconMap) as IconName[];
+    return Object.keys(emojiMap) as IconName[];
   }
 }
 

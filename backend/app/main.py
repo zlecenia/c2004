@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config.settings import settings
 from app.api.v1.router import api_router
+from app.api.diagnostics import router as diagnostics_router
 import logging
 
 # Configure logging
@@ -27,8 +28,9 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Include API router
+# Include API routers
 app.include_router(api_router, prefix="/api/v1")
+app.include_router(diagnostics_router, prefix="/api")
 
 # Root endpoint
 @app.get("/")

@@ -1,5 +1,25 @@
 # Changelog
 
+## [1.2.1] - 2025-10-09 (Hotfix)
+
+### 🔧 Fixed
+- **Docker Build Issues** - Naprawiono błędy TypeScript w kontenerze Docker
+- **Icon System Fallback** - Dodano emoji fallback gdy Lucide nie jest dostępne
+- **Development Server** - Uruchomiono dev server na porcie 3000 z hot reload
+- **TypeScript Errors** - Naprawiono wszystkie błędy kompilacji TS
+- **Unused Variables** - Usunieto nieużywane zmienne i importy
+
+### 📦 Dependencies
+- **Emoji Fallback System** - Graceful degradation gdy brakuje SVG ikon
+- **Vite Hot Reload** - Development server działa poprawnie
+- **TypeScript Fixes** - Wszystkie błędy kompilacji naprawione
+
+### 🚀 Performance
+- **Faster Development** - Hot reload bez problemów z zależnościami
+- **Lightweight Icons** - Emoji jako backup dla SVG
+
+---
+
 ## [1.2.0] - 2025-10-09
 
 ### ✨ Added

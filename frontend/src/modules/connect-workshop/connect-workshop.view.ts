@@ -2,12 +2,11 @@
 import { ConnectWorkshopModule } from './connect-workshop.module';
 
 export class ConnectWorkshopView {
-  private module: ConnectWorkshopModule;
   private currentAction: string = 'sync';
   private currentSection: string = 'requests';
 
-  constructor(module: ConnectWorkshopModule) {
-    this.module = module;
+  constructor(_module: ConnectWorkshopModule) {
+    // module parameter available for future use
   }
 
   render(): HTMLElement {
@@ -975,14 +974,13 @@ export class ConnectWorkshopView {
     console.log(`✅ Search results updated with ${data.length} items for ${section}`);
   }
 
-  private forceSync(container: HTMLElement): void {
+  private forceSync(_container: HTMLElement): void {
     this.showNotification('🔄 Synchronizacja w trakcie...', 'info');
     
     // Simulate sync
     setTimeout(() => {
-      const lastSyncEl = container.querySelector('#last-sync');
-      const lastSyncTimeEl = container.querySelector('#last-sync-time');
-      const now = new Date().toLocaleTimeString();
+      const lastSyncEl = document.querySelector('#last-sync');
+      const lastSyncTimeEl = document.querySelector('#last-sync-time');
       
       if (lastSyncEl) lastSyncEl.textContent = `teraz`;
       if (lastSyncTimeEl) lastSyncTimeEl.textContent = `teraz`;
@@ -991,7 +989,7 @@ export class ConnectWorkshopView {
     }, 1500);
   }
 
-  private updateActionFormsContext(container: HTMLElement, action: string): void {
+  private updateActionFormsContext(container: HTMLElement, _action: string): void {
     const sectionTitles: any = {
       'requests': 'Zgłoszenia',
       'services': 'Serwisy',

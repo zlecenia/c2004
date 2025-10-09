@@ -100,8 +100,8 @@ export function getAllModules(): ModuleDefinition[] {
 }
 
 export function getModulesByFeature(feature: string): ModuleDefinition[] {
-  return Object.values(MODULE_REGISTRY).filter(module => 
-    module.features.includes(feature)
+  return Object.values(MODULE_REGISTRY).filter((module: ModuleDefinition) => 
+    module.features && module.features.includes(feature)
   );  
 }
 
