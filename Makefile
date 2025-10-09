@@ -6,6 +6,14 @@ SERVICE_NAME := identification
 FRONTEND_PORT := 8100
 BACKEND_PORT := 8101
 
+# Docker Compose command detection
+DOCKER_COMPOSE := $(shell command -v docker-compose 2> /dev/null)
+ifdef DOCKER_COMPOSE
+    COMPOSE_CMD := docker-compose
+else
+    COMPOSE_CMD := docker compose
+endif
+
 help:
 	@echo "╔══════════════════════════════════════════╗"
 	@echo "║  Identification Service - Commands       ║"
@@ -79,29 +87,29 @@ dev: env
 	@echo "Frontend: http://localhost:8200 (dev mode)"
 	@echo "Backend:  http://localhost:$(BACKEND_PORT)"
 	@echo "📝 Files will auto-refresh on changes"
-	@docker-compose -f docker-compose.yml -f docker-compose.dev.yml up --build
+	@$(COMPOSE_CMD) -f docker-compose.yml -f docker-compose.dev.yml up --build
 
 refresh:
 	@echo "🔄 Refreshing frontend cache..."
 	@echo "Rebuilding frontend with cache bust..."
-	@docker-compose build --no-cache frontend
-	@docker-compose restart frontend
+	@$(COMPOSE_CMD) build --no-cache frontend
+	@$(COMPOSE_CMD) restart frontend
 	@echo "✅ Frontend cache refreshed"
 	@echo "💡 Use Ctrl+Shift+R in browser to clear client cache"
 
 dev-logs:
 	@echo "📝 Showing development logs..."
-	@docker-compose logs -f frontend backend
+	@$(COMPOSE_CMD) logs -f frontend backend
 
 # Docker
 build:
 	@echo "🏗️  Building Docker images..."
-	@docker-compose build
+	@$(COMPOSE_CMD) build
 	@echo "✅ Build complete"
 
 up: env validate
 	@echo "🚀 Starting services..."
-	@docker-compose up -d
+	@$(COMPOSE_CMD) up -d
 	@echo "✅ Services started:"
 	@echo "   Frontend: http://localhost:$(FRONTEND_PORT)"
 	@echo "   Backend:  http://localhost:$(BACKEND_PORT)/docs"
@@ -109,13 +117,13 @@ up: env validate
 
 down:
 	@echo "🛑 Stopping services..."
-	@docker-compose down
+	@$(COMPOSE_CMD) down
 	@echo "✅ Services stopped"
 
 restart: down up
 
 logs:
-	@docker-compose logs -f
+	@$(COMPOSE_CMD) logs -f
 
 # Testing
 test: test-backend test-frontend test-api
@@ -144,7 +152,7 @@ test-identify:
 # Health checks
 health:
 	@echo "🏥 Checking service health..."
-	@docker-compose ps
+	@$(COMPOSE_CMD) ps
 	@echo ""
 	@echo "Health endpoints:"
 	@curl -s http://localhost:$(BACKEND_PORT)/api/v1/health | python3 -m json.tool
@@ -152,21 +160,21 @@ health:
 # Maintenance
 clean:
 	@echo "🧹 Cleaning up..."
-	@docker-compose down -v
+	@$(COMPOSE_CMD) down -v
 	@docker system prune -f
 	@echo "✅ Cleanup complete"
 
 status:
 	@echo "📊 Service Status:"
-	@docker-compose ps
+	@$(COMPOSE_CMD) ps
 
 # Production
 prod:
 	@echo "🚀 Starting in production mode..."
-	@docker-compose --profile production up -d
+	@$(COMPOSE_CMD) --profile production up -d
 	@echo "✅ Production services started"
 
 prod-down:
 	@echo "🛑 Stopping production services..."
-	@docker-compose --profile production down
+	@$(COMPOSE_CMD) --profile production down
 	@echo "✅ Production services stopped"
