@@ -10,7 +10,12 @@
     "type-check": "tsc --noEmit",
     "test": "node tests/run-tests.js",
     "test:structure": "node tests/test-structure.js",
-    "test:modules": "node tests/test-modules.js"
+    "test:modules": "node tests/test-modules.js",
+    "test:quality": "node tests/test-code-quality.js",
+    "lint": "node tests/test-code-quality.js",
+    "lint:fix": "node tests/lint-autofix.js",
+    "lint:safe-fix": "node tests/lint-safe-fix.js",
+    "lint:dry-run": "node tests/lint-autofix.js --dry-run"
   },
   "dependencies": {
     "lucide": "^0.545.0",

@@ -1,6 +1,6 @@
-// frontend/src/config/service.manifest.ts
+// frontend / src / config / service.manifest.ts
 import { z } from 'zod';
-import { getComponent } from '../registry/component.registry';
+import { getComponent } from '../registry / component.registry';
 import { env } from './env.config';
 
 const ServiceManifestSchema = z.object({
@@ -18,7 +18,7 @@ const ServiceManifestSchema = z.object({
   modules: z.array(z.string())
 });
 
-export type ServiceManifest = z.infer<typeof ServiceManifestSchema>;
+export type ServiceManifest = z.infer < typeof ServiceManifestSchema>;
 
 /**
  * Identification Service Manifest
@@ -27,14 +27,14 @@ export type ServiceManifest = z.infer<typeof ServiceManifestSchema>;
 export class IdentificationServiceManifest {
   readonly name = 'identification';
   readonly version = '1.0.0';
-  
+
   readonly ports = {
     frontend: 8100,
     backend: 8101
   };
-  
+
   readonly components = {
-    'universal-connectid': {
+    'universal - connectid': {
       version: '2.0.0',
       enabled: true,
       configuration: {
@@ -45,11 +45,11 @@ export class IdentificationServiceManifest {
         debug: env.NODE_ENV === 'development'
       }
     },
-    'app-shell': {
+    'app - shell': {
       version: '0.1.0',
       enabled: true
     },
-    'connect-id': {
+    'connect - id': {
       version: '2.1.0',
       enabled: true,
       configuration: {
@@ -62,7 +62,7 @@ export class IdentificationServiceManifest {
         keyboardShortcuts: true
       }
     },
-    'connect-test': {
+    'connect - test': {
       version: '1.0.0',
       enabled: true,
       configuration: {
@@ -73,7 +73,7 @@ export class IdentificationServiceManifest {
         autoLoadDevices: true
       }
     },
-    'connect-data': {
+    'connect - data': {
       version: '1.0.0',
       enabled: true,
       configuration: {
@@ -83,7 +83,7 @@ export class IdentificationServiceManifest {
         dynamicTables: true
       }
     },
-    'connect-workshop': {
+    'connect - workshop': {
       version: '1.0.0',
       enabled: true,
       configuration: {
@@ -92,7 +92,7 @@ export class IdentificationServiceManifest {
         enableNotifications: true
       }
     },
-    'connect-config': {
+    'connect - config': {
       version: '1.0.0',
       enabled: true,
       configuration: {
@@ -103,23 +103,23 @@ export class IdentificationServiceManifest {
       }
     }
   };
-  
-  readonly modules = ['identification', 'connect-id', 'connect-test', 'connect-data', 'connect-workshop', 'connect-config'];
-  
+
+  readonly modules = ['identification', 'connect - id', 'connect - test', 'connect - data', 'connect - workshop', 'connect - config'];
+
   /**
    * Validate manifest structure and component availability
    */
   validate(): void {
     // Validate schema
     ServiceManifestSchema.parse(this.toJSON());
-    
-    // Validate components exist in registry
+
+    // Validate components exist in registry;
     for (const [name, config] of Object.entries(this.components)) {
       if (!config.enabled) continue;
-      
+
       try {
         const component = getComponent(name as any);
-        
+
         if (component.version !== config.version) {
           console.warn(
             `⚠️  Version mismatch for "${name}":\n` +
@@ -134,25 +134,25 @@ export class IdentificationServiceManifest {
       }
     }
   }
-  
+
   /**
    * Get component configuration
    */
-  getComponentConfig<T extends keyof typeof this.components>(name: T) {
+  getComponentConfig < T extends keyof typeof this.components > (name: T) {
     return this.components[name];
   }
-  
+
   /**
    * Check if feature is enabled
    */
   isFeatureEnabled(feature: string): boolean {
-    const config = this.components['universal-connectid']?.configuration;
+    const config = this.components['universal - connectid']?.configuration;
     if (!config) return false;
-    
+
     const key = `enable${feature}` as keyof typeof config;
     return config[key] === true;
   }
-  
+
   toJSON(): ServiceManifest {
     return {
       name: this.name,
@@ -169,7 +169,10 @@ export const serviceManifest = new IdentificationServiceManifest();
 
 try {
   serviceManifest.validate();
-  console.log(`✅ Service manifest validated: ${serviceManifest.name} v${serviceManifest.version}`);
+  // console
+    .log(`✅ Service manifest validated: ${serviceManifest
+    .name} v${serviceManifest
+    .version}`); // Auto - commented by lint - fix
 } catch (error) {
   console.error('❌ Service manifest validation failed:', error);
   throw error;

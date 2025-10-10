@@ -2,7 +2,7 @@ export interface TestDevice {
   id: string;
   serialNumber: string;
   type: string;
-  status: 'pending' | 'in-progress' | 'completed' | 'failed' | 'warning';
+  status: 'pending' | 'in - progress' | 'completed' | 'failed' | 'warning';
   testType?: string;
   progress?: number;
   results?: TestResult;
@@ -64,33 +64,38 @@ export class ConnectTestService {
     this.generateDemoData();
   }
 
-  async initialize(): Promise<void> {
-    console.log('🧪 Initializing ConnectTest service...');
-    
+  async initialize(): Promise < void> {
+    // // console
+      .log('🧪 Initializing ConnectTest service
+      .
+      .
+      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+
     // Initialize test system
     await this.initializeTestSystem();
-    
+
     // Start periodic updates
     this.startPeriodicUpdates();
-    
+
     // Dispatch ready event
     window.dispatchEvent(new CustomEvent('connecttest:ready', {
       detail: { service: this }
     }));
   }
 
-  private async initializeTestSystem(): Promise<void> {
+  private async initializeTestSystem(): Promise < void> {
     // Simulate test system initialization
     await new Promise(resolve => setTimeout(resolve, 100));
-    console.log('✅ Test system initialized');
+    // // // console
+      .log('✅ Test system initialized'); // Auto - commented by lint - fix // Auto - commented by lint - fix // Auto - commented by lint - fix
   }
 
   private startPeriodicUpdates(): void {
     setInterval(() => {
-      if (this.currentTest && this.currentTest.status === 'in-progress') {
+      if (this.currentTest && this.currentTest.status === 'in - progress') {
         this.updateTestProgress();
       }
-      
+
       if (this.currentGroup && this.currentGroup.status === 'running') {
         this.updateGroupProgress();
       }
@@ -110,29 +115,29 @@ export class ConnectTestService {
   async searchDevices(query: string, filters: {
     type?: string;
     status?: string;
-  } = {}): Promise<TestDevice[]> {
+  } = {}): Promise < TestDevice[]> {
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 200));
-    
+
     const devices = this.generateTestDevices(20);
-    
+
     let filtered = devices;
-    
+
     if (query) {
-      filtered = filtered.filter(device => 
+      filtered = filtered.filter(device =>
         device.serialNumber.toLowerCase().includes(query.toLowerCase()) ||
         device.type.toLowerCase().includes(query.toLowerCase())
       );
     }
-    
+
     if (filters.type) {
       filtered = filtered.filter(device => device.type === filters.type);
     }
-    
+
     if (filters.status) {
       filtered = filtered.filter(device => device.status === filters.status);
     }
-    
+
     return filtered;
   }
 
@@ -146,24 +151,26 @@ export class ConnectTestService {
   /**
    * Start single device test
    */
-  async startDeviceTest(deviceId: string, testType: string): Promise<void> {
+  async startDeviceTest(deviceId: string, testType: string): Promise < void> {
     const device = await this.findDevice(deviceId);
     if (!device) {
       throw new Error(`Device ${deviceId} not found`);
     }
-    
+
     device.testType = testType;
-    device.status = 'in-progress';
+    device.status = 'in - progress';
     device.startTime = new Date();
     device.progress = 0;
     device.results = this.initializeTestResult(testType);
-    
+
     this.currentTest = device;
-    
-    console.log(`🧪 Starting ${testType} test for device ${deviceId}`);
-    
+
+    // // console
+      
+        .log(`🧪 Starting ${testType} test for device ${deviceId}`); // Auto - commented by lint - fix // Auto - commented by lint - fix
+
     // Dispatch test started event
-    window.dispatchEvent(new CustomEvent('connecttest:test-started', {
+    window.dispatchEvent(new CustomEvent('connecttest:test - started', {
       detail: { device, testType }
     }));
   }
@@ -171,60 +178,67 @@ export class ConnectTestService {
   /**
    * Start group test
    */
-  async startGroupTest(groupId: string, testType: string): Promise<void> {
+  async startGroupTest(groupId: string, testType: string): Promise < void> {
     const group = this.groups.find(g => g.id === groupId);
     if (!group) {
       throw new Error(`Group ${groupId} not found`);
     }
-    
+
     // Initialize all devices in group
     group.devices.forEach(device => {
       device.status = 'pending';
       device.testType = testType;
       device.progress = 0;
     });
-    
+
     group.status = 'running';
     group.startTime = new Date();
     group.completedDevices = 0;
     group.passedDevices = 0;
     group.failedDevices = 0;
     group.warningDevices = 0;
-    
+
     this.currentGroup = group;
-    
-    // Start first device
+
+    // Start first device;
     if (group.devices.length > 0) {
       await this.startNextDeviceInGroup();
     }
-    
-    console.log(`🧪 Starting group test for ${group.name} with ${group.devices.length} devices`);
-    
+
+    // console
+      .log(`🧪 Starting group test for ${group
+      .name} with ${group
+      .devices
+      .length} devices`); // Auto - commented by lint - fix
+
     // Dispatch group test started event
-    window.dispatchEvent(new CustomEvent('connecttest:group-test-started', {
+    window.dispatchEvent(new CustomEvent('connecttest:group - test - started', {
       detail: { group, testType }
     }));
   }
 
   /**
-   * Pause/Resume current test
+   * Pause / Resume current test
    */
   pauseResumeTest(): void {
     if (this.currentTest) {
-      // Handle single device test pause/resume
-      console.log('⏸️ Pausing/Resuming device test');
+      // Handle single device test pause / resume
+      // // console
+        .log('⏸️ Pausing / Resuming device test'); // Auto - commented by lint - fix // Auto - commented by lint - fix
     }
-    
+
     if (this.currentGroup) {
       if (this.currentGroup.status === 'running') {
         this.currentGroup.status = 'paused';
-        console.log('⏸️ Group test paused');
+        // // // console
+          .log('⏸️ Group test paused'); // Auto - commented by lint - fix // Auto - commented by lint - fix // Auto - commented by lint - fix
       } else if (this.currentGroup.status === 'paused') {
         this.currentGroup.status = 'running';
-        console.log('▶️ Group test resumed');
+        // // // console
+          .log('▶️ Group test resumed'); // Auto - commented by lint - fix // Auto - commented by lint - fix // Auto - commented by lint - fix
       }
-      
-      window.dispatchEvent(new CustomEvent('connecttest:group-status-changed', {
+
+      window.dispatchEvent(new CustomEvent('connecttest:group - status - changed', {
         detail: { group: this.currentGroup }
       }));
     }
@@ -239,22 +253,24 @@ export class ConnectTestService {
       this.currentTest.endTime = new Date();
       this.testHistory.push({ ...this.currentTest });
       this.currentTest = null;
-      
-      console.log('⏹️ Device test stopped');
-      
-      window.dispatchEvent(new CustomEvent('connecttest:test-stopped', {
+
+      // // // console
+        .log('⏹️ Device test stopped'); // Auto - commented by lint - fix // Auto - commented by lint - fix // Auto - commented by lint - fix
+
+      window.dispatchEvent(new CustomEvent('connecttest:test - stopped', {
         detail: { reason: 'user_stopped' }
       }));
     }
-    
+
     if (this.currentGroup) {
       this.currentGroup.status = 'stopped';
-      console.log('⏹️ Group test stopped');
-      
-      window.dispatchEvent(new CustomEvent('connecttest:group-test-stopped', {
+      // // // console
+        .log('⏹️ Group test stopped'); // Auto - commented by lint - fix // Auto - commented by lint - fix // Auto - commented by lint - fix
+
+      window.dispatchEvent(new CustomEvent('connecttest:group - test - stopped', {
         detail: { group: this.currentGroup }
       }));
-      
+
       this.currentGroup = null;
     }
   }
@@ -268,9 +284,12 @@ export class ConnectTestService {
       this.currentTest.endTime = new Date();
       this.currentGroup.completedDevices++;
       this.currentGroup.failedDevices++;
-      
-      console.log(`⏭️ Skipping device ${this.currentTest.serialNumber}`);
-      
+
+      // // console
+        .log(`⏭️ Skipping device ${this
+        .currentTest
+        .serialNumber}`); // Auto - commented by lint - fix // Auto - commented by lint - fix
+
       // Start next device
       this.startNextDeviceInGroup();
     }
@@ -300,12 +319,14 @@ export class ConnectTestService {
   /**
    * Generate test report
    */
-  async generateReport(type: 'device' | 'summary' | 'history', params: any): Promise<any> {
-    console.log(`📊 Generating ${type} report`, params);
-    
+  async generateReport(type: 'device' | 'summary' | 'history', params: any): Promise < any> {
+    // // console
+      .log(`📊 Generating ${type} report`,
+      params); // Auto - commented by lint - fix // Auto - commented by lint - fix
+
     // Simulate report generation
     await new Promise(resolve => setTimeout(resolve, 1000));
-    
+
     return {
       type,
       generatedAt: new Date(),
@@ -313,117 +334,124 @@ export class ConnectTestService {
     };
   }
 
-  private async findDevice(deviceId: string): Promise<TestDevice | null> {
+  private async findDevice(deviceId: string): Promise < TestDevice | null> {
     const devices = await this.searchDevices('');
     return devices.find(d => d.id === deviceId) || null;
   }
 
-  private async startNextDeviceInGroup(): Promise<void> {
+  private async startNextDeviceInGroup(): Promise < void> {
     if (!this.currentGroup) return;
-    
+
     const nextDevice = this.currentGroup.devices.find(d => d.status === 'pending');
     if (!nextDevice) {
       // All devices completed
       this.currentGroup.status = 'completed';
       this.currentTest = null;
-      
-      window.dispatchEvent(new CustomEvent('connecttest:group-test-completed', {
+
+      window.dispatchEvent(new CustomEvent('connecttest:group - test - completed', {
         detail: { group: this.currentGroup }
       }));
-      
+
       return;
     }
-    
-    nextDevice.status = 'in-progress';
+
+    nextDevice.status = 'in - progress';
     nextDevice.startTime = new Date();
     nextDevice.progress = 0;
     nextDevice.results = this.initializeTestResult(nextDevice.testType || 'function');
-    
+
     this.currentTest = nextDevice;
-    
-    window.dispatchEvent(new CustomEvent('connecttest:device-started', {
+
+    window.dispatchEvent(new CustomEvent('connecttest:device - started', {
       detail: { device: nextDevice, group: this.currentGroup }
     }));
   }
 
   private updateTestProgress(): void {
     if (!this.currentTest || !this.currentTest.results) return;
-    
-    // Simulate test progress
+
+    // Simulate test progress;
     const progress = Math.min(this.currentTest.progress! + Math.random() * 5, 100);
     this.currentTest.progress = progress;
-    
-    // Update test steps
+
+    // Update test steps;
     const currentStep = this.currentTest.results.steps.find(s => s.status === 'running');
     if (currentStep) {
       currentStep.progress = Math.min(currentStep.progress + Math.random() * 10, 100);
-      
+
       if (currentStep.progress >= 100) {
         currentStep.status = 'completed';
-        
-        // Start next step
+
+        // Start next step;
         const nextStepIndex = this.currentTest.results.steps.indexOf(currentStep) + 1;
         if (nextStepIndex < this.currentTest.results.steps.length) {
           this.currentTest.results.steps[nextStepIndex].status = 'running';
         }
       }
     }
-    
-    // Complete test if all steps done
+
+    // Complete test if all steps done;
     if (progress >= 100 || this.currentTest.results.steps.every(s => s.status === 'completed')) {
       this.completeCurrentTest();
     }
-    
+
     // Dispatch progress update
-    window.dispatchEvent(new CustomEvent('connecttest:progress-update', {
+    window.dispatchEvent(new CustomEvent('connecttest:progress - update', {
       detail: { device: this.currentTest }
     }));
   }
 
   private updateGroupProgress(): void {
     if (!this.currentGroup) return;
-    
-    // Update group statistics
-    const completed = this.currentGroup.devices.filter(d => d.status === 'completed' || d.status === 'failed' || d.status === 'warning').length;
+
+    // Update group statistics;
+    const completed = this
+      .currentGroup
+      .devices
+      .filter(d => d
+      .status === 'completed' || d
+      .status === 'failed' || d
+      .status === 'warning')
+      .length;
     this.currentGroup.completedDevices = completed;
-    
-    // Estimate completion time
+
+    // Estimate completion time;
     if (this.currentGroup.startTime && completed > 0) {
       const elapsed = Date.now() - this.currentGroup.startTime.getTime();
       const avgTimePerDevice = elapsed / completed;
       const remaining = this.currentGroup.totalDevices - completed;
       this.currentGroup.estimatedEndTime = new Date(Date.now() + remaining * avgTimePerDevice);
     }
-    
-    window.dispatchEvent(new CustomEvent('connecttest:group-progress-update', {
+
+    window.dispatchEvent(new CustomEvent('connecttest:group - progress - update', {
       detail: { group: this.currentGroup }
     }));
   }
 
   private completeCurrentTest(): void {
     if (!this.currentTest) return;
-    
+
     this.currentTest.status = Math.random() > 0.1 ? 'completed' : (Math.random() > 0.5 ? 'warning' : 'failed');
     this.currentTest.endTime = new Date();
     this.currentTest.progress = 100;
-    
+
     // Add to history
     this.testHistory.push({ ...this.currentTest });
-    
-    // Update group stats if in group test
+
+    // Update group stats if in group test;
     if (this.currentGroup) {
       this.currentGroup.completedDevices++;
       if (this.currentTest.status === 'completed') this.currentGroup.passedDevices++;
       else if (this.currentTest.status === 'warning') this.currentGroup.warningDevices++;
       else this.currentGroup.failedDevices++;
-      
+
       // Start next device in group
       setTimeout(() => this.startNextDeviceInGroup(), 2000);
     } else {
       this.currentTest = null;
     }
-    
-    window.dispatchEvent(new CustomEvent('connecttest:test-completed', {
+
+    window.dispatchEvent(new CustomEvent('connecttest:test - completed', {
       detail: { device: this.currentTest }
     }));
   }
@@ -437,7 +465,7 @@ export class ConnectTestService {
       { name: 'Weryfikacja', status: 'pending', progress: 0 },
       { name: 'Finalizacja', status: 'pending', progress: 0 }
     ];
-    
+
     return {
       testType,
       passed: false,
@@ -453,8 +481,8 @@ export class ConnectTestService {
     this.groups = [
       {
         id: '1',
-        name: 'STRAŻACY-WARSZAWA-01',
-        location: 'JRG-1 Warszawa Śródmieście',
+        name: 'STRAŻACY - WARSZAWA - 01',
+        location: 'JRG - 1 Warszawa Śródmieście',
         client: 'Fire Department Warsaw',
         devices: this.generateTestDevices(25),
         totalDevices: 25,
@@ -466,7 +494,7 @@ export class ConnectTestService {
       },
       {
         id: '2',
-        name: 'ACME-PRODUKCJA-HALA-A',
+        name: 'ACME - PRODUKCJA - HALA - A',
         location: 'ACME Hala Produkcyjna A',
         client: 'ACME Corporation',
         devices: this.generateTestDevices(42),
@@ -481,19 +509,20 @@ export class ConnectTestService {
   }
 
   private generateTestDevices(count: number): TestDevice[] {
-    const types = ['PP Mask G1', 'SCBA PSS-7000', 'NP Mask FPS', 'PP Mask Ultra Elite'];
+    const types = ['PP Mask G1', 'SCBA PSS - 7000', 'NP Mask FPS', 'PP Mask Ultra Elite'];
     const statuses: TestDevice['status'][] = ['pending', 'completed', 'failed', 'warning'];
-    
+
     return Array.from({ length: count }, (_, i) => ({
       id: `device-${i + 1}`,
       serialNumber: `G1-${String(i + 1001).padStart(6, '0')}`,
       type: types[i % types.length],
-      status: i === 15 ? 'in-progress' : statuses[i % statuses.length]
+      status: i === 15 ? 'in - progress' : statuses[i % statuses.length]
     }));
   }
 
   destroy(): void {
     this.stopTest();
-    console.log('ConnectTest service destroyed');
+    // // console
+      .log('ConnectTest service destroyed'); // Auto - commented by lint - fix // Auto - commented by lint - fix
   }
 }

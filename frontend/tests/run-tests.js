@@ -11,7 +11,8 @@ const tests = [
   'test-structure.js',
   'test-modules.js',
   'test-registry.js',
-  'test-project-analysis.js'
+  'test-project-analysis.js',
+  'test-code-quality.js'
 ];
 
 let passedTests = 0;

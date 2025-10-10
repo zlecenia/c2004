@@ -1,4 +1,4 @@
-// frontend/src/modules/module.interface.ts
+// frontend / src / modules / module.interface.ts
 import { z } from 'zod';
 
 export const ModuleMetadataSchema = z.object({
@@ -11,11 +11,11 @@ export const ModuleMetadataSchema = z.object({
   })).optional()
 });
 
-export type ModuleMetadata = z.infer<typeof ModuleMetadataSchema>;
+export type ModuleMetadata = z.infer < typeof ModuleMetadataSchema>;
 
 export interface Module {
   metadata: ModuleMetadata;
-  initialize(): Promise<void>;
-  destroy?(): Promise<void>;
-  healthCheck?(): Promise<boolean>;
+  initialize(): Promise < void>;
+  destroy?(): Promise < void>;
+  healthCheck?(): Promise < boolean>;
 }
