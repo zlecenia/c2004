@@ -1,4 +1,4 @@
-// frontend / src / modules / connect - workshop / connect - workshop.service.ts
+// frontend/src/modules/connect-workshop/connect-workshop.service.ts
 interface ConnectWorkshopConfiguration {
   autoSync?: boolean;
   syncInterval?: number;
@@ -18,19 +18,19 @@ interface WorkshopRequest {
   deviceId: string;
   deviceName: string;
   priority: 'low' | 'medium' | 'high' | 'urgent';
-  status: 'pending' | 'in - progress' | 'completed' | 'cancelled';
+  status: 'pending' | 'in-progress' | 'completed' | 'cancelled';
   assignedTo?: string;
   createdAt: Date;
   updatedAt: Date;
   dueDate?: Date;
   description: string;
-  metadata: Record < string, any>;
+  metadata: Record<string, any>;
 }
 
 interface TransportList {
   id: string;
   name: string;
-  status: 'draft' | 'ready' | 'in - transit' | 'delivered';
+  status: 'draft' | 'ready' | 'in-transit' | 'delivered';
   items: string[];
   createdAt: Date;
   destination: string;
@@ -42,12 +42,12 @@ export class ConnectWorkshopService {
   private syncStatus: SyncStatus;
   private syncTimer: NodeJS.Timeout | null = null;
   private currentTab: string = 'requests';
-
+  
   // Data stores
   private requests: WorkshopRequest[] = [];
   private transportLists: TransportList[] = [];
   // private dispositions: any[] = []; // TODO: implement dispositions
-  // private serviceRequests: any[] = []; // TODO: implement service requests;
+  // private serviceRequests: any[] = []; // TODO: implement service requests
 
   constructor(config?: ConnectWorkshopConfiguration) {
     this.config = {
@@ -64,47 +64,34 @@ export class ConnectWorkshopService {
     };
   }
 
-  async initialize(): Promise < void> {
-    // // console
-      .log('🔧 Initializing ConnectWorkshopService
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
-    // // // console
-      .log('Config:',
-      this
-      .config); // Auto - commented by lint - fix // Auto - commented by lint - fix // Auto - commented by lint - fix
-
+  async initialize(): Promise<void> {
+    console.log('🔧 Initializing ConnectWorkshopService...');
+    console.log('Config:', this.config);
+    
     // Load initial data
     await this.loadInitialData();
-
-    // Start auto - sync if enabled;
+    
+    // Start auto-sync if enabled
     if (this.config.autoSync) {
       this.startSyncTimer();
     }
-
+    
     this.initialized = true;
-    // // console
-      .log('✅ ConnectWorkshopService initialized'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('✅ ConnectWorkshopService initialized');
   }
 
-  async destroy(): Promise < void> {
-    // // console
-      .log('🔧 Destroying ConnectWorkshopService
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
-
+  async destroy(): Promise<void> {
+    console.log('🔧 Destroying ConnectWorkshopService...');
+    
     // Stop sync timer
     this.stopSyncTimer();
-
+    
     // Clear data
     this.requests = [];
     this.transportLists = [];
-
+    
     this.initialized = false;
-    // // console
-      .log('✅ ConnectWorkshopService destroyed'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('✅ ConnectWorkshopService destroyed');
   }
 
   isHealthy(): boolean {
@@ -121,42 +108,37 @@ export class ConnectWorkshopService {
   /**
    * Force sync with server
    */
-  async forceSync(): Promise < void> {
-    // // // console
-      .log('🔄 Force syncing
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix // Auto - commented by lint - fix
-
+  async forceSync(): Promise<void> {
+    console.log('🔄 Force syncing...');
+    
     try {
       this.syncStatus.connected = false;
-
+      
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
-
+      
       await this.loadInitialData();
-
+      
       this.syncStatus = {
         lastSync: new Date(),
         connected: true,
         pendingRequests: Math.floor(Math.random() * 5)
       };
-
+      
       // Trigger sync event
-      window.dispatchEvent(new CustomEvent('connectworkshop:sync - complete', {
+      window.dispatchEvent(new CustomEvent('connectworkshop:sync-complete', {
         detail: { status: this.syncStatus }
       }));
-
-      // // // console
-        .log('✅ Sync completed'); // Auto - commented by lint - fix // Auto - commented by lint - fix // Auto - commented by lint - fix
+      
+      console.log('✅ Sync completed');
     } catch (error) {
       this.syncStatus.connected = false;
       this.syncStatus.error = error instanceof Error ? error.message : 'Sync failed';
-
-      window.dispatchEvent(new CustomEvent('connectworkshop:sync - error', {
+      
+      window.dispatchEvent(new CustomEvent('connectworkshop:sync-error', {
         detail: { error: this.syncStatus.error }
       }));
-
+      
       throw error;
     }
   }
@@ -171,7 +153,7 @@ export class ConnectWorkshopService {
     assignedTo?: string;
   }): WorkshopRequest[] {
     let filtered = [...this.requests];
-
+    
     if (filters) {
       if (filters.type && filters.type !== 'all') {
         filtered = filtered.filter(req => req.type === filters.type);
@@ -186,7 +168,7 @@ export class ConnectWorkshopService {
         filtered = filtered.filter(req => req.assignedTo === filters.assignedTo);
       }
     }
-
+    
     return filtered.sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
   }
 
@@ -200,52 +182,52 @@ export class ConnectWorkshopService {
   /**
    * Create new workshop request
    */
-  async createRequest(requestData: Omit < WorkshopRequest, 'id' | 'createdAt' | 'updatedAt'>): Promise < WorkshopRequest> {
+  async createRequest(requestData: Omit<WorkshopRequest, 'id' | 'createdAt' | 'updatedAt'>): Promise<WorkshopRequest> {
     const newRequest: WorkshopRequest = {
       id: `REQ-${Date.now()}`,
       createdAt: new Date(),
       updatedAt: new Date(),
       ...requestData
     };
-
+    
     this.requests.unshift(newRequest);
-
+    
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 300));
-
+    
     // Trigger update event
-    window.dispatchEvent(new CustomEvent('connectworkshop:request - created', {
+    window.dispatchEvent(new CustomEvent('connectworkshop:request-created', {
       detail: { request: newRequest }
     }));
-
+    
     return newRequest;
   }
 
   /**
    * Update workshop request
    */
-  async updateRequest(id: string, updates: Partial < WorkshopRequest>): Promise < WorkshopRequest> {
+  async updateRequest(id: string, updates: Partial<WorkshopRequest>): Promise<WorkshopRequest> {
     const requestIndex = this.requests.findIndex(req => req.id === id);
     if (requestIndex === -1) {
       throw new Error(`Request ${id} not found`);
     }
-
+    
     const updatedRequest = {
       ...this.requests[requestIndex],
       ...updates,
       updatedAt: new Date()
     };
-
+    
     this.requests[requestIndex] = updatedRequest;
-
+    
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 200));
-
+    
     // Trigger update event
-    window.dispatchEvent(new CustomEvent('connectworkshop:request - updated', {
+    window.dispatchEvent(new CustomEvent('connectworkshop:request-updated', {
       detail: { request: updatedRequest }
     }));
-
+    
     return updatedRequest;
   }
 
@@ -254,34 +236,34 @@ export class ConnectWorkshopService {
    */
   getTransportLists(status?: string): TransportList[] {
     let filtered = [...this.transportLists];
-
+    
     if (status && status !== 'all') {
       filtered = filtered.filter(list => list.status === status);
     }
-
+    
     return filtered.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   }
 
   /**
    * Create transport list
    */
-  async createTransportList(listData: Omit < TransportList, 'id' | 'createdAt'>): Promise < TransportList> {
+  async createTransportList(listData: Omit<TransportList, 'id' | 'createdAt'>): Promise<TransportList> {
     const newList: TransportList = {
       id: `TL-${Date.now()}`,
       createdAt: new Date(),
       ...listData
     };
-
+    
     this.transportLists.unshift(newList);
-
+    
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 300));
-
+    
     // Trigger update event
-    window.dispatchEvent(new CustomEvent('connectworkshop:transport - created', {
+    window.dispatchEvent(new CustomEvent('connectworkshop:transport-created', {
       detail: { transportList: newList }
     }));
-
+    
     return newList;
   }
 
@@ -299,15 +281,15 @@ export class ConnectWorkshopService {
     connected: boolean;
   } {
     const requests = this.getRequests();
-
+    
     return {
       totalRequests: requests.length,
       pendingRequests: requests.filter(r => r.status === 'pending').length,
-      inProgressRequests: requests.filter(r => r.status === 'in - progress').length,
+      inProgressRequests: requests.filter(r => r.status === 'in-progress').length,
       completedRequests: requests.filter(r => r.status === 'completed').length,
       urgentRequests: requests.filter(r => r.priority === 'urgent').length,
       transportLists: this.transportLists.length,
-      activeRequests: requests.filter(r => r.status === 'pending' || r.status === 'in - progress').length,
+      activeRequests: requests.filter(r => r.status === 'pending' || r.status === 'in-progress').length,
       connected: this.syncStatus.connected
     };
   }
@@ -317,8 +299,8 @@ export class ConnectWorkshopService {
    */
   setCurrentTab(tab: string): void {
     this.currentTab = tab;
-
-    window.dispatchEvent(new CustomEvent('connectworkshop:tab - changed', {
+    
+    window.dispatchEvent(new CustomEvent('connectworkshop:tab-changed', {
       detail: { tab }
     }));
   }
@@ -333,20 +315,15 @@ export class ConnectWorkshopService {
   /**
    * Load initial data from API
    */
-  private async loadInitialData(): Promise < void> {
+  private async loadInitialData(): Promise<void> {
     // Simulate loading from API
     await new Promise(resolve => setTimeout(resolve, 500));
-
+    
     // Load demo data
     this.requests = this.generateDemoRequests();
     this.transportLists = this.generateDemoTransportLists();
-
-    // console
-      .log(`Loaded ${this
-      .requests
-      .length} requests and ${this
-      .transportLists
-      .length} transport lists`); // Auto - commented by lint - fix
+    
+    console.log(`Loaded ${this.requests.length} requests and ${this.transportLists.length} transport lists`);
   }
 
   /**
@@ -356,17 +333,14 @@ export class ConnectWorkshopService {
     if (this.syncTimer) {
       clearInterval(this.syncTimer);
     }
-
+    
     this.syncTimer = setInterval(() => {
       this.forceSync().catch(error => {
-        console.warn('Auto - sync failed:', error);
+        console.warn('Auto-sync failed:', error);
       });
     }, this.config.syncInterval);
-
-    // // console
-      .log(`Auto - sync started (interval: ${this
-      .config
-      .syncInterval}ms)`); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    
+    console.log(`Auto-sync started (interval: ${this.config.syncInterval}ms)`);
   }
 
   /**
@@ -376,8 +350,7 @@ export class ConnectWorkshopService {
     if (this.syncTimer) {
       clearInterval(this.syncTimer);
       this.syncTimer = null;
-      // // // console
-        .log('Auto - sync stopped'); // Auto - commented by lint - fix // Auto - commented by lint - fix // Auto - commented by lint - fix
+      console.log('Auto-sync stopped');
     }
   }
 
@@ -386,12 +359,12 @@ export class ConnectWorkshopService {
    */
   private generateDemoRequests(): WorkshopRequest[] {
     const now = new Date();
-
+    
     return [
       {
-        id: 'REQ - 001',
+        id: 'REQ-001',
         type: 'calibration',
-        deviceId: 'G1 - 001234',
+        deviceId: 'G1-001234',
         deviceName: 'Pressure Gauge Alpha',
         priority: 'high',
         status: 'pending',
@@ -400,26 +373,26 @@ export class ConnectWorkshopService {
         updatedAt: new Date(now.getTime() - 3600000), // 1 hour ago
         dueDate: new Date(now.getTime() + 172800000), // 2 days from now
         description: 'Annual calibration due',
-        metadata: { lastCalibration: '2024 - 10 - 08', certificateRequired: true }
+        metadata: { lastCalibration: '2024-10-08', certificateRequired: true }
       },
       {
-        id: 'REQ - 002',
+        id: 'REQ-002',
         type: 'repair',
-        deviceId: 'G1 - 001235',
+        deviceId: 'G1-001235',
         deviceName: 'Flow Meter Beta',
         priority: 'urgent',
-        status: 'in - progress',
+        status: 'in-progress',
         assignedTo: 'Anna Nowak',
         createdAt: new Date(now.getTime() - 172800000), // 2 days ago
         updatedAt: new Date(now.getTime() - 1800000), // 30 minutes ago
         dueDate: new Date(now.getTime() + 86400000), // 1 day from now
         description: 'Display malfunction reported',
-        metadata: { errorCode: 'E - 004', warrantyStatus: 'active' }
+        metadata: { errorCode: 'E-004', warrantyStatus: 'active' }
       },
       {
-        id: 'REQ - 003',
+        id: 'REQ-003',
         type: 'inspection',
-        deviceId: 'G2 - 001100',
+        deviceId: 'G2-001100',
         deviceName: 'Reference Standard',
         priority: 'medium',
         status: 'completed',
@@ -437,21 +410,21 @@ export class ConnectWorkshopService {
    */
   private generateDemoTransportLists(): TransportList[] {
     const now = new Date();
-
+    
     return [
       {
-        id: 'TL - 001',
+        id: 'TL-001',
         name: 'Transport List - Week 41',
         status: 'ready',
-        items: ['G1 - 001234', 'G1 - 001235', 'G2 - 001100'],
+        items: ['G1-001234', 'G1-001235', 'G2-001100'],
         createdAt: new Date(now.getTime() - 86400000),
         destination: 'Laboratory Building A'
       },
       {
-        id: 'TL - 002',
+        id: 'TL-002',
         name: 'Emergency Transport',
-        status: 'in - transit',
-        items: ['G1 - 001240'],
+        status: 'in-transit',
+        items: ['G1-001240'],
         createdAt: new Date(now.getTime() - 43200000),
         destination: 'Workshop B'
       }

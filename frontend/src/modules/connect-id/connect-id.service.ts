@@ -1,7 +1,7 @@
-// frontend / src / modules / connect - id / connect - id.service.ts
+// frontend/src/modules/connect-id/connect-id.service.ts
 interface ConnectIdConfiguration {
   enableRFID?: boolean;
-  enableQR?: boolean;
+  enableQR?: boolean; 
   enableBarcode?: boolean;
   enableManual?: boolean;
   continuousMode?: boolean;
@@ -25,7 +25,7 @@ interface IdentificationData {
     group_name?: string;
     device_count?: number;
   };
-  metadata?: Record < string, any>;
+  metadata?: Record<string, any>;
 }
 
 interface HistoryItem {
@@ -70,48 +70,35 @@ export class ConnectIdService {
     };
   }
 
-  async initialize(): Promise < void> {
-    // // console
-      .log('🔧 Initializing ConnectIdService
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
-    // // // console
-      .log('Config:',
-      this
-      .config); // Auto - commented by lint - fix // Auto - commented by lint - fix // Auto - commented by lint - fix
-
+  async initialize(): Promise<void> {
+    console.log('🔧 Initializing ConnectIdService...');
+    console.log('Config:', this.config);
+    
     // Load identification history from localStorage
     this.loadIdentificationHistory();
-
-    // Setup keyboard shortcuts if enabled;
+    
+    // Setup keyboard shortcuts if enabled
     if (this.config.keyboardShortcuts) {
       this.setupKeyboardShortcuts();
     }
-
+    
     this.initialized = true;
-    // // console
-      .log('✅ ConnectIdService initialized'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('✅ ConnectIdService initialized');
   }
 
-  async destroy(): Promise < void> {
-    // // console
-      .log('🔧 Destroying ConnectIdService
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
-
-    // Save history to localStorage;
+  async destroy(): Promise<void> {
+    console.log('🔧 Destroying ConnectIdService...');
+    
+    // Save history to localStorage
     if (this.config.historyPersistence) {
       this.saveIdentificationHistory();
     }
-
+    
     // Clean up event listeners
     this.removeKeyboardShortcuts();
-
+    
     this.initialized = false;
-    // // console
-      .log('✅ ConnectIdService destroyed'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('✅ ConnectIdService destroyed');
   }
 
   isHealthy(): boolean {
@@ -121,7 +108,7 @@ export class ConnectIdService {
   /**
    * Initialize ConnectID component instance (now internal)
    */
-  initializeConnectID(containerId: string): Promise < any> {
+  initializeConnectID(containerId: string): Promise<any> {
     return new Promise((resolve, reject) => {
       const container = document.getElementById(containerId);
       if (!container) {
@@ -133,60 +120,45 @@ export class ConnectIdService {
       this.connectIDInstance = {
         // Mock external ConnectID interface
         setIdentificationType: (type: any) => {
-          // // console
-            
-              .log(`🔄 ConnectID: Set identification type to ${type}`); // Auto - commented by lint - fix // Auto - commented by lint - fix
+          console.log(`🔄 ConnectID: Set identification type to ${type}`);
         },
         switchMethod: (method: any) => {
-          // // console
-            
-              .log(`🔄 ConnectID: Switched to method ${method}`); // Auto - commented by lint - fix // Auto - commented by lint - fix
+          console.log(`🔄 ConnectID: Switched to method ${method}`);
         },
         clearCurrentScan: () => {
-          // // console
-            
-              .log('🧹 ConnectID: Cleared current scan'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+          console.log('🧹 ConnectID: Cleared current scan');
         },
         startScanning: () => {
-          // // console
-            .log('🔍 ConnectID: Started scanning
-            .
-            .
-            .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+          console.log('🔍 ConnectID: Started scanning...');
         },
         stopScanning: () => {
-          // // console
-            .log('⏸️ ConnectID: Stopped scanning'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+          console.log('⏸️ ConnectID: Stopped scanning');
         },
         onIdentification: (_callback: any) => {
-          // // console
-            
-              .log('📝 ConnectID: Identification handler registered'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+          console.log('📝 ConnectID: Identification handler registered');
         }
       };
 
       // Set up container UI
       container.innerHTML = `
-        <div class="connectid - internal">
-          <div class="scan - status">
-            <div class="status - indicator ready">🟢</div>
-            <span > Gotowy do identyfikacji</span>
+        <div class="connectid-internal">
+          <div class="scan-status">
+            <div class="status-indicator ready">🟢</div>
+            <span>Gotowy do identyfikacji</span>
           </div>
-          <div class="scan - info">
-            <p > Kliknij przyciski metod lub użyj skrótów klawiszowych:</p>
+          <div class="scan-info">
+            <p>Kliknij przyciski metod lub użyj skrótów klawiszowych:</p>
             <div class="shortcuts">
-              <span class="shortcut">Ctrl + R - RFID</span>
-              <span class="shortcut">Ctrl + Q - QR Code</span>
-              <span class="shortcut">Ctrl + B - Barcode</span>
-              <span class="shortcut">Ctrl + M - Manual</span>
+              <span class="shortcut">Ctrl+R - RFID</span>
+              <span class="shortcut">Ctrl+Q - QR Code</span>
+              <span class="shortcut">Ctrl+B - Barcode</span>
+              <span class="shortcut">Ctrl+M - Manual</span>
             </div>
           </div>
         </div>
       `;
 
-      // // console
-        
-          .log('✅ ConnectID internal component initialized'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+      console.log('✅ ConnectID internal component initialized');
       resolve(this.connectIDInstance);
     });
   }
@@ -194,20 +166,18 @@ export class ConnectIdService {
   /**
    * Handle identification events
    */
-  private async handleIdentification(identificationData: IdentificationData): Promise < void> {
-    // // console
-      .log('🔍 Identification received:',
-      identificationData); // Auto - commented by lint - fix // Auto - commented by lint - fix
-
+  private async handleIdentification(identificationData: IdentificationData): Promise<void> {
+    console.log('🔍 Identification received:', identificationData);
+    
     try {
-      // Add to history;
+      // Add to history
       const historyItem = this.createHistoryItem(identificationData, 'success');
       this.addToIdentificationHistory(historyItem);
 
       // Update UI
       this.updateIdentificationStats();
 
-      // Handle different types of identifications;
+      // Handle different types of identifications
       if (identificationData.type === 'user') {
         await this.handleUserIdentification(identificationData);
       } else if (identificationData.type === 'device') {
@@ -216,14 +186,14 @@ export class ConnectIdService {
         await this.handleGroupIdentification(identificationData);
       }
 
-      // Show notification;
-      const deviceName = identificationData.data?.name ||
-                        identificationData.data?.serial_number ||
-                        identificationData.rfid_uid ||
-                        identificationData.code ||
+      // Show notification
+      const deviceName = identificationData.data?.name || 
+                        identificationData.data?.serial_number || 
+                        identificationData.rfid_uid || 
+                        identificationData.code || 
                         'Unknown';
       this.showNotification(
-        `✅ ${identificationData.type} identified: ${deviceName}`,
+        `✅ ${identificationData.type} identified: ${deviceName}`, 
         'success'
       );
 
@@ -232,7 +202,7 @@ export class ConnectIdService {
         detail: identificationData
       }));
 
-      // Handle continuous mode;
+      // Handle continuous mode
       if (this.continuousMode) {
         setTimeout(() => {
           this.startScanning();
@@ -241,11 +211,11 @@ export class ConnectIdService {
 
     } catch (error) {
       console.error('❌ Error handling identification:', error);
-
-      // Add error to history;
+      
+      // Add error to history
       const errorHistoryItem = this.createHistoryItem(identificationData, 'error', (error as Error).message);
       this.addToIdentificationHistory(errorHistoryItem);
-
+      
       this.showNotification('❌ Error processing identification: ' + (error as Error).message, 'danger');
       throw error;
     }
@@ -254,11 +224,9 @@ export class ConnectIdService {
   /**
    * Handle user identification (login)
    */
-  private async handleUserIdentification(identificationData: IdentificationData): Promise < void> {
-    // // console
-      .log('👤 User identification:',
-      identificationData); // Auto - commented by lint - fix // Auto - commented by lint - fix;
-
+  private async handleUserIdentification(identificationData: IdentificationData): Promise<void> {
+    console.log('👤 User identification:', identificationData);
+    
     if (identificationData.rfid_uid && (window as any).loginWithRFID) {
       try {
         await (window as any).loginWithRFID(identificationData);
@@ -275,38 +243,32 @@ export class ConnectIdService {
   /**
    * Handle device identification
    */
-  private async handleDeviceIdentification(identificationData: IdentificationData): Promise < void> {
-    // // console
-      .log('📱 Device identification:',
-      identificationData); // Auto - commented by lint - fix // Auto - commented by lint - fix;
-
+  private async handleDeviceIdentification(identificationData: IdentificationData): Promise<void> {
+    console.log('📱 Device identification:', identificationData);
+    
     const deviceInfo = identificationData.data;
     if (deviceInfo) {
-      const message = `📱 Device: ${deviceInfo
-        .serial_number || 'Unknown'} (${deviceInfo
-        .device_type || 'Unknown type'})`;
+      const message = `📱 Device: ${deviceInfo.serial_number || 'Unknown'} (${deviceInfo.device_type || 'Unknown type'})`;
       this.showNotification(message, 'info');
-
+      
       // Optional: Navigate to device test page
-      // window.location.href = `/connect - plus?device=${deviceInfo.serial_number}`;
+      // window.location.href = `/connect-plus?device=${deviceInfo.serial_number}`;
     }
   }
 
   /**
    * Handle group identification
    */
-  private async handleGroupIdentification(identificationData: IdentificationData): Promise < void> {
-    // // console
-      .log('📦 Group identification:',
-      identificationData); // Auto - commented by lint - fix // Auto - commented by lint - fix;
-
+  private async handleGroupIdentification(identificationData: IdentificationData): Promise<void> {
+    console.log('📦 Group identification:', identificationData);
+    
     const groupInfo = identificationData.data;
     if (groupInfo) {
       const message = `📦 Group: ${groupInfo.group_name || 'Unknown'} (${groupInfo.device_count || 0} devices)`;
       this.showNotification(message, 'info');
-
+      
       // Optional: Navigate to group management page
-      // window.location.href = `/fleet - workshop - manager#device - groups`;
+      // window.location.href = `/fleet-workshop-manager#device-groups`;
     }
   }
 
@@ -318,7 +280,7 @@ export class ConnectIdService {
       timestamp: new Date(),
       type: identificationData.type,
       method: identificationData.method,
-      id: identificationData.rfid_uid || identificationData.code || identificationData.id || 'N / A',
+      id: identificationData.rfid_uid || identificationData.code || identificationData.id || 'N/A',
       data: identificationData.data || {},
       status,
       error
@@ -330,17 +292,17 @@ export class ConnectIdService {
    */
   private addToIdentificationHistory(historyItem: HistoryItem): void {
     this.identificationHistory.unshift(historyItem);
-
-    // Keep only last 50 items (like original);
+    
+    // Keep only last 50 items (like original)
     if (this.identificationHistory.length > 50) {
       this.identificationHistory = this.identificationHistory.slice(0, 50);
     }
-
-    // Save to localStorage if enabled;
+    
+    // Save to localStorage if enabled
     if (this.config.historyPersistence) {
       this.saveIdentificationHistory();
     }
-
+    
     // Update UI
     this.renderIdentificationHistory();
   }
@@ -374,25 +336,23 @@ export class ConnectIdService {
    */
   setIdentificationType(type: 'user' | 'device' | 'group' | 'test'): void {
     this.currentIdentificationType = type;
-    // // console
-      .log('🔄 Identification type changed to:',
-      type); // Auto - commented by lint - fix // Auto - commented by lint - fix;
-
+    console.log('🔄 Identification type changed to:', type);
+    
     if (this.connectIDInstance && this.connectIDInstance.setIdentificationType) {
       this.connectIDInstance.setIdentificationType(type);
     }
-
+    
     const labels = {
       'user': 'Użytkownik (Login)',
       'device': 'Urządzenie (Test)',
       'group': 'Grupa urządzeń',
       'test': 'Test (Kod testowy)'
     };
-
+    
     this.showNotification(`Wybrano typ: ${labels[type]}`, 'info');
-
+    
     // Trigger event for UI updates
-    window.dispatchEvent(new CustomEvent('connectid:type - changed', {
+    window.dispatchEvent(new CustomEvent('connectid:type-changed', {
       detail: { type, showTestSelector: type === 'device' || type === 'test' }
     }));
   }
@@ -409,19 +369,17 @@ export class ConnectIdService {
    */
   setTestType(testType: TestType): void {
     this.currentTestType = testType;
-    // // console
-      .log('🧪 Test type selected:',
-      testType); // Auto - commented by lint - fix // Auto - commented by lint - fix;
-
+    console.log('🧪 Test type selected:', testType);
+    
     const labels = {
       'pressure': 'Szczelność',
-      'flow': 'Przepływ',
+      'flow': 'Przepływ', 
       'function': 'Funkcyjny',
       'visual': 'Wizualny',
       'maintenance': 'Konserwacja',
       'calibration': 'Kalibracja'
     };
-
+    
     this.showNotification(`Wybrano test: ${labels[testType]}`, 'success');
   }
 
@@ -435,10 +393,10 @@ export class ConnectIdService {
   /**
    * Test all systems
    */
-  async testAllSystems(): Promise < void> {
+  async testAllSystems(): Promise<void> {
     this.showNotification('🧪 Testing all systems...', 'info');
-
-    // Simulate system tests;
+    
+    // Simulate system tests
     return new Promise((resolve) => {
       setTimeout(() => {
         const systems = ['RFID Reader', 'QR Camera', 'Barcode Scanner', 'Database'];
@@ -446,16 +404,16 @@ export class ConnectIdService {
           system,
           status: Math.random() > 0.1 ? 'success' : 'error'
         }));
-
+        
         const allPassed = testResults.every(result => result.status === 'success');
-
+        
         if (allPassed) {
           this.showNotification('✅ All systems test passed', 'success');
         } else {
           const failedSystems = testResults.filter(r => r.status === 'error').map(r => r.system);
           this.showNotification(`❌ System test failed: ${failedSystems.join(', ')}`, 'danger');
         }
-
+        
         resolve();
       }, 2000);
     });
@@ -465,10 +423,8 @@ export class ConnectIdService {
    * Handle manual identification
    */
   handleManualIdentification(code: string): void {
-    // // console
-      .log('⌨ Manual identification:',
-      code); // Auto - commented by lint - fix // Auto - commented by lint - fix;
-
+    console.log('⌨ Manual identification:', code);
+    
     const identificationData: IdentificationData = {
       method: 'manual',
       code: code,
@@ -479,7 +435,7 @@ export class ConnectIdService {
         device_type: 'Manual Entry'
       }
     };
-
+    
     this.handleIdentification(identificationData);
   }
 
@@ -487,10 +443,8 @@ export class ConnectIdService {
    * Handle barcode identification
    */
   handleBarcodeIdentification(code: string): void {
-    // // console
-      .log('📊 Barcode identification:',
-      code); // Auto - commented by lint - fix // Auto - commented by lint - fix;
-
+    console.log('📊 Barcode identification:', code);
+    
     const identificationData: IdentificationData = {
       method: 'barcode',
       code: code,
@@ -501,7 +455,7 @@ export class ConnectIdService {
         device_type: 'Barcode Scan'
       }
     };
-
+    
     this.handleIdentification(identificationData);
   }
 
@@ -510,17 +464,17 @@ export class ConnectIdService {
    */
   toggleVirtualKeyboard(): boolean {
     this.virtualKeyboardVisible = !this.virtualKeyboardVisible;
-
-    window.dispatchEvent(new CustomEvent('connectid:keyboard - toggle', {
+    
+    window.dispatchEvent(new CustomEvent('connectid:keyboard-toggle', {
       detail: { visible: this.virtualKeyboardVisible }
     }));
-
+    
     if (this.virtualKeyboardVisible) {
       this.showNotification('🖥️ Klawiatura wirtualna włączona', 'info');
     } else {
       this.showNotification('🖥️ Klawiatura wirtualna ukryta', 'info');
     }
-
+    
     return this.virtualKeyboardVisible;
   }
 
@@ -535,31 +489,29 @@ export class ConnectIdService {
    * Switch to specific method
    */
   switchToMethod(method: 'rfid' | 'qr' | 'barcode' | 'manual'): void {
-    // // console
-      .log('🔄 Switching to method:',
-      method); // Auto - commented by lint - fix // Auto - commented by lint - fix;
-
+    console.log('🔄 Switching to method:', method);
+    
     if (this.connectIDInstance && this.connectIDInstance.switchMethod) {
       this.connectIDInstance.switchMethod(method);
     }
-
+    
     const methodNames = {
       'rfid': 'RFID',
       'qr': 'QR Code',
       'barcode': 'Barcode',
       'manual': 'Klawiatura'
     };
-
+    
     this.showNotification(`📱 Przełączono na metodę: ${methodNames[method]}`, 'info');
-
-    // Auto - show keyboard for manual method;
+    
+    // Auto-show keyboard for manual method
     if (method === 'manual' && !this.virtualKeyboardVisible) {
       setTimeout(() => this.toggleVirtualKeyboard(), 100);
     } else if (method !== 'manual' && this.virtualKeyboardVisible) {
       this.toggleVirtualKeyboard();
     }
-
-    window.dispatchEvent(new CustomEvent('connectid:method - switch', {
+    
+    window.dispatchEvent(new CustomEvent('connectid:method-switch', {
       detail: { method }
     }));
   }
@@ -569,9 +521,7 @@ export class ConnectIdService {
    */
   toggleContinuousMode(): boolean {
     this.continuousMode = !this.continuousMode;
-    // // console
-      .log(`Continuous mode: ${this
-      .continuousMode ? 'ON' : 'OFF'}`); // Auto - commented by lint - fix // Auto - commented by lint - fix;
+    console.log(`Continuous mode: ${this.continuousMode ? 'ON' : 'OFF'}`);
     return this.continuousMode;
   }
 
@@ -598,7 +548,7 @@ export class ConnectIdService {
    */
   private loadIdentificationHistory(): void {
     if (!this.config.historyPersistence) return;
-
+    
     try {
       const stored = localStorage.getItem('connectid_history');
       if (stored) {
@@ -608,8 +558,8 @@ export class ConnectIdService {
           timestamp: new Date(item.timestamp)
         }));
       }
-
-      // Add demo data if empty (like original);
+      
+      // Add demo data if empty (like original)
       if (this.identificationHistory.length === 0) {
         this.identificationHistory = [
           {
@@ -624,24 +574,24 @@ export class ConnectIdService {
             timestamp: new Date(Date.now() - 5 * 60 * 1000),
             type: 'device' as const,
             method: 'manual' as const,
-            id: 'G1 - 001234',
-            data: { serial_number: 'G1 - 001234', device_type: 'PP Mask G1' },
+            id: 'G1-001234',
+            data: { serial_number: 'G1-001234', device_type: 'PP Mask G1' },
             status: 'success' as const
           },
           {
             timestamp: new Date(Date.now() - 8 * 60 * 1000),
             type: 'device' as const,
             method: 'qr' as const,
-            id: 'PSS - 00567',
-            data: { serial_number: 'PSS - 00567', device_type: 'SCBA PSS - 7000' },
+            id: 'PSS-00567',
+            data: { serial_number: 'PSS-00567', device_type: 'SCBA PSS-7000' },
             status: 'success' as const
           }
         ];
       }
-
+      
       this.renderIdentificationHistory();
       this.updateIdentificationStats();
-
+      
     } catch (error) {
       console.warn('Failed to load identification history:', error);
     }
@@ -670,29 +620,18 @@ export class ConnectIdService {
         'barcode': '📊',
         'manual': '⌨'
       };
-
+      
       return {
         icon: iconMap[item.method] || '🔍',
         title: item.data?.name || item.data?.serial_number || item.id,
-        description: `${item
-          .method?
-          .toUpperCase() || 'Unknown'}: ${item
-          .id}${item
-          .data?
-          .role || item
-          .data?
-          .device_type ? ` - ${item
-          .data
-          .role || item
-          .data
-          .device_type}` : ''}`,
+        description: `${item.method?.toUpperCase() || 'Unknown'}: ${item.id}${item.data?.role || item.data?.device_type ? ` - ${item.data.role || item.data.device_type}` : ''}`,
         timeAgo,
         status: item.status,
         method: item.method
       };
     });
 
-    window.dispatchEvent(new CustomEvent('connectid:history - update', {
+    window.dispatchEvent(new CustomEvent('connectid:history-update', {
       detail: { history: historyData, isEmpty: this.identificationHistory.length === 0 }
     }));
   }
@@ -702,8 +641,8 @@ export class ConnectIdService {
    */
   private updateIdentificationStats(): void {
     const successCount = this.identificationHistory.filter(item => item.status === 'success').length;
-
-    window.dispatchEvent(new CustomEvent('connectid:stats - update', {
+    
+    window.dispatchEvent(new CustomEvent('connectid:stats-update', {
       detail: { successCount, totalCount: this.identificationHistory.length }
     }));
   }
@@ -723,13 +662,13 @@ export class ConnectIdService {
     const now = new Date();
     const diffMs = now.getTime() - timestamp.getTime();
     const diffMins = Math.floor(diffMs / (1000 * 60));
-
+    
     if (diffMins < 1) return 'now';
     if (diffMins < 60) return `${diffMins} min ago`;
-
+    
     const diffHours = Math.floor(diffMins / 60);
     if (diffHours < 24) return `${diffHours}h ago`;
-
+    
     const diffDays = Math.floor(diffHours / 24);
     return `${diffDays}d ago`;
   }
@@ -764,33 +703,33 @@ export class ConnectIdService {
     if (!e.ctrlKey) return;
 
     switch (e.key.toLowerCase()) {
-      case 'r':;
+      case 'r':
         if (this.config.enableRFID) {
           e.preventDefault();
           this.simulateRFID();
         }
         break;
-      case 'q':;
+      case 'q':
         if (this.config.enableQR) {
           e.preventDefault();
           this.switchToMethod('qr');
         }
         break;
-      case 'b':;
+      case 'b':
         if (this.config.enableBarcode) {
           e.preventDefault();
           this.switchToMethod('barcode');
         }
         break;
-      case 'm':;
+      case 'm':
         if (this.config.enableManual) {
           e.preventDefault();
           this.switchToMethod('manual');
         }
         break;
     }
-
-    // Escape to clear current scan;
+    
+    // Escape to clear current scan
     if (e.key === 'Escape') {
       if (this.connectIDInstance && this.connectIDInstance.clearCurrentScan) {
         this.connectIDInstance.clearCurrentScan();
@@ -813,7 +752,7 @@ export class ConnectIdService {
         role: 'Operator'
       }
     };
-
+    
     this.handleIdentification(demoData);
   }
 }

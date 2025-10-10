@@ -1,9 +1,9 @@
 import { Module, ModuleMetadata } from '../module.interface';
-import { ConnectConfigService } from './connect - config.service';
+import { ConnectConfigService } from './connect-config.service';
 
 export class ConnectConfigModule implements Module {
   metadata: ModuleMetadata = {
-    name: 'connect - config',
+    name: 'connect-config',
     version: '1.0.0',
     dependencies: []
   };
@@ -16,7 +16,7 @@ export class ConnectConfigModule implements Module {
   }
 
   getName(): string {
-    return 'connect - config';
+    return 'connect-config';
   }
 
   getDisplayName(): string {
@@ -27,24 +27,20 @@ export class ConnectConfigModule implements Module {
     return this.service;
   }
 
-  async initialize(): Promise < void> {
-    // // console
-      .log('Initializing ConnectConfig module
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+  async initialize(): Promise<void> {
+    console.log('Initializing ConnectConfig module...');
     await this.service.initialize();
   }
 
   render(container: HTMLElement): void {
     // Dynamic import to avoid bundling issues
-    import('./connect - config.view').then(async ({ ConnectConfigView }) => {
+    import('./connect-config.view').then(async ({ ConnectConfigView }) => {
       const view = new ConnectConfigView(this);
       const element = view.render();
-
+      
       container.innerHTML = '';
       container.appendChild(element);
-
+      
       this.element = element;
     }).catch(error => {
       console.error('Failed to load ConnectConfig view:', error);
@@ -52,7 +48,7 @@ export class ConnectConfigModule implements Module {
     });
   }
 
-  async destroy(): Promise < void> {
+  async destroy(): Promise<void> {
     if (this.element) {
       this.element.remove();
       this.element = null;

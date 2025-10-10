@@ -1,9 +1,9 @@
-// frontend / src / modules / connect - reports / connect - reports.module.ts
+// frontend/src/modules/connect-reports/connect-reports.module.ts
 import { Module, ModuleMetadata } from '../module.interface';
 
 export class ConnectReportsModule implements Module {
   metadata: ModuleMetadata = {
-    name: 'connect - reports',
+    name: 'connect-reports',
     version: '1.0.0',
     dependencies: []
   };
@@ -11,7 +11,7 @@ export class ConnectReportsModule implements Module {
   private element: HTMLElement | null = null;
 
   getName(): string {
-    return 'connect - reports';
+    return 'connect-reports';
   }
 
   getDisplayName(): string {
@@ -22,25 +22,20 @@ export class ConnectReportsModule implements Module {
     return null; // No service needed for this module
   }
 
-  async initialize(): Promise < void> {
-    // // console
-      .log('🔧 Initializing ConnectReports module
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
-    // // console
-      .log('✅ ConnectReports module initialized'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+  async initialize(): Promise<void> {
+    console.log('🔧 Initializing ConnectReports module...');
+    console.log('✅ ConnectReports module initialized');
   }
 
   render(container: HTMLElement): void {
     // Dynamic import to avoid bundling issues
-    import('./connect - reports.view').then(async ({ ConnectReportsView }) => {
+    import('./connect-reports.view').then(async ({ ConnectReportsView }) => {
       const view = new ConnectReportsView(this);
       const element = view.render();
-
+      
       container.innerHTML = '';
       container.appendChild(element);
-
+      
       this.element = element;
     }).catch(error => {
       console.error('Failed to load ConnectReports view:', error);
@@ -48,7 +43,7 @@ export class ConnectReportsModule implements Module {
     });
   }
 
-  async destroy(): Promise < void> {
+  async destroy(): Promise<void> {
     if (this.element) {
       this.element.remove();
       this.element = null;

@@ -175,7 +175,7 @@ export const ROUTE_REGISTRY: Record<string, RouteDefinition> = {
 };
 
 export function getRoute(path: string): RouteDefinition | undefined {
-  return Object.values(ROUTE_REGISTRY).find(route =>
+  return Object.values(ROUTE_REGISTRY).find(route => 
     route.path === path || route.children?.some(child => child.path === path)
   );
 }
@@ -190,13 +190,13 @@ export function getAllRoutes(): RouteDefinition[] {
 
 export function buildUrl(routePath: string, params?: Record<string, string>): string {
   let url = `#${routePath}`;
-
+  
   if (params) {
     const paramValues = Object.values(params).filter(Boolean);
     if (paramValues.length > 0) {
       url += '/' + paramValues.join('/');
     }
   }
-
+  
   return url;
 }

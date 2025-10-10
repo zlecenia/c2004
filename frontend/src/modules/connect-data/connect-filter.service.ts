@@ -1,4 +1,4 @@
-// frontend / src / modules / connect - data / connect - data.service.ts
+// frontend/src/modules/connect-data/connect-data.service.ts
 interface ConnectFilterConfiguration {
   itemsPerPage?: number;
   enableAdvancedFilters?: boolean;
@@ -25,7 +25,7 @@ interface SearchResult {
   location?: string;
   group?: string;
   lastSeen?: Date;
-  metadata: Record < string, any>;
+  metadata: Record<string, any>;
 }
 
 export class ConnectFilterService {
@@ -47,39 +47,26 @@ export class ConnectFilterService {
     };
   }
 
-  async initialize(): Promise < void> {
-    // // console
-      .log('🔧 Initializing ConnectFilterService
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
-    // // // console
-      .log('Config:',
-      this
-      .config); // Auto - commented by lint - fix // Auto - commented by lint - fix // Auto - commented by lint - fix
-
+  async initialize(): Promise<void> {
+    console.log('🔧 Initializing ConnectFilterService...');
+    console.log('Config:', this.config);
+    
     // Load demo data
     this.loadDemoData();
-
+    
     this.initialized = true;
-    // // console
-      .log('✅ ConnectFilterService initialized'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('✅ ConnectFilterService initialized');
   }
 
-  async destroy(): Promise < void> {
-    // // console
-      .log('🔧 Destroying ConnectFilterService
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
-
+  async destroy(): Promise<void> {
+    console.log('🔧 Destroying ConnectFilterService...');
+    
     // Clean up any resources
     this.searchResults = [];
     this.currentFilters = {};
-
+    
     this.initialized = false;
-    // // console
-      .log('✅ ConnectFilterService destroyed'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('✅ ConnectFilterService destroyed');
   }
 
   isHealthy(): boolean {
@@ -89,11 +76,9 @@ export class ConnectFilterService {
   /**
    * Perform search with current filters
    */
-  async performSearch(additionalFilters?: Partial < FilterCriteria>): Promise < SearchResult[]> {
+  async performSearch(additionalFilters?: Partial<FilterCriteria>): Promise<SearchResult[]> {
     const filters = { ...this.currentFilters, ...additionalFilters };
-    // // console
-      .log('🔍 Performing search with filters:',
-      filters); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('🔍 Performing search with filters:', filters);
 
     try {
       // Simulate API call delay
@@ -101,41 +86,41 @@ export class ConnectFilterService {
 
       let results = this.getAllData();
 
-      // Apply text search;
+      // Apply text search
       if (filters.textSearch) {
         const searchText = filters.textSearch.toLowerCase();
-        results = results.filter(item =>
+        results = results.filter(item => 
           item.name.toLowerCase().includes(searchText) ||
           item.id.toLowerCase().includes(searchText) ||
           item.type.toLowerCase().includes(searchText)
         );
       }
 
-      // Apply device type filter;
+      // Apply device type filter
       if (filters.deviceType && filters.deviceType !== 'all') {
         results = results.filter(item => item.type === filters.deviceType);
       }
 
-      // Apply status filter;
+      // Apply status filter
       if (filters.status && filters.status !== 'all') {
         results = results.filter(item => item.status === filters.status);
       }
 
-      // Apply location filter;
+      // Apply location filter
       if (filters.location && filters.location !== 'all') {
         results = results.filter(item => item.location === filters.location);
       }
 
-      // Apply group filter;
+      // Apply group filter
       if (filters.group && filters.group !== 'all') {
         results = results.filter(item => item.group === filters.group);
       }
 
-      // Apply date range filter;
+      // Apply date range filter
       if (filters.dateRange) {
         results = results.filter(item => {
           if (!item.lastSeen) return false;
-          return item.lastSeen >= filters.dateRange!.from &&
+          return item.lastSeen >= filters.dateRange!.from && 
                  item.lastSeen <= filters.dateRange!.to;
         });
       }
@@ -162,8 +147,8 @@ export class ConnectFilterService {
       this.currentFilters = filters;
 
       // Trigger search event
-      window.dispatchEvent(new CustomEvent('connectfilter:search - complete', {
-        detail: {
+      window.dispatchEvent(new CustomEvent('connectfilter:search-complete', {
+        detail: { 
           results: this.getPagedResults(),
           totalCount: results.length,
           currentPage: this.currentPage,
@@ -199,9 +184,9 @@ export class ConnectFilterService {
    */
   setPage(page: number): void {
     this.currentPage = Math.max(1, Math.min(page, this.getTotalPages()));
-
-    window.dispatchEvent(new CustomEvent('connectfilter:page - changed', {
-      detail: {
+    
+    window.dispatchEvent(new CustomEvent('connectfilter:page-changed', {
+      detail: { 
         results: this.getPagedResults(),
         currentPage: this.currentPage,
         totalPages: this.getTotalPages()
@@ -215,7 +200,7 @@ export class ConnectFilterService {
   setSorting(sortBy: string, direction: 'asc' | 'desc'): void {
     this.sortBy = sortBy;
     this.sortDirection = direction;
-    this.performSearch(); // Re - search with new sorting
+    this.performSearch(); // Re-search with new sorting
   }
 
   /**
@@ -252,7 +237,7 @@ export class ConnectFilterService {
     groups: string[];
   } {
     const allData = this.getAllData();
-
+    
     return {
       deviceTypes: [...new Set(allData.map(item => item.type))],
       statuses: [...new Set(allData.map(item => item.status))],
@@ -292,37 +277,37 @@ export class ConnectFilterService {
    * Get all available data (would normally be from API)
    */
   private getAllData(): SearchResult[] {
-    // Demo data - in real implementation this would come from API;
+    // Demo data - in real implementation this would come from API
     return [
       {
-        id: 'G1 - 001234',
+        id: 'G1-001234',
         name: 'Test Device Alpha',
         type: 'Pressure Gauge',
         status: 'Active',
         location: 'Workshop A',
         group: 'Group 1',
-        lastSeen: new Date('2025 - 10 - 08T09:00:00'),
+        lastSeen: new Date('2025-10-08T09:00:00'),
         metadata: { calibrated: true, version: '1.2.3' }
       },
       {
-        id: 'G1 - 001235',
+        id: 'G1-001235',
         name: 'Test Device Beta',
         type: 'Flow Meter',
         status: 'Inactive',
         location: 'Workshop B',
         group: 'Group 1',
-        lastSeen: new Date('2025 - 10 - 07T15:30:00'),
+        lastSeen: new Date('2025-10-07T15:30:00'),
         metadata: { calibrated: false, version: '1.1.0' }
       },
       {
-        id: 'G2 - 001100',
+        id: 'G2-001100',
         name: 'Calibration Standard',
         type: 'Reference Device',
         status: 'Active',
         location: 'Laboratory',
         group: 'Group 2',
-        lastSeen: new Date('2025 - 10 - 08T08:45:00'),
-        metadata: { certified: true, expiry: '2026 - 01 - 01' }
+        lastSeen: new Date('2025-10-08T08:45:00'),
+        metadata: { certified: true, expiry: '2026-01-01' }
       }
     ];
   }

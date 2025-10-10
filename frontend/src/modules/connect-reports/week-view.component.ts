@@ -1,4 +1,4 @@
-// frontend / src / modules / connect - reports / week - view.component.ts
+// frontend/src/modules/connect-reports/week-view.component.ts
 
 export interface WeekData {
   weekStart: Date;
@@ -27,7 +27,7 @@ export class WeekViewComponent {
   }
 
   private setCurrentWeek(): void {
-    // Set to Monday of current week;
+    // Set to Monday of current week
     const today = new Date();
     const dayOfWeek = today.getDay();
     const daysToMonday = dayOfWeek === 0 ? -6 : 1 - dayOfWeek;
@@ -37,25 +37,25 @@ export class WeekViewComponent {
 
   public render(): string {
     const weekData = this.generateWeekData();
-
+    
     return `
-      <div class="week - view - component">
-        <div class="week - navigation">
-          <button class="btn - nav - week" id="prev - week">
-            <span class="nav - arrow">‹</span>
-            <span class="nav - text">Poprzedni tydzień</span>
+      <div class="week-view-component">
+        <div class="week-navigation">
+          <button class="btn-nav-week" id="prev-week">
+            <span class="nav-arrow">‹</span>
+            <span class="nav-text">Poprzedni tydzień</span>
           </button>
-          <div class="current - week - display">
-            <span id="current - week - range">${this.getWeekRangeText()}</span>
+          <div class="current-week-display">
+            <span id="current-week-range">${this.getWeekRangeText()}</span>
           </div>
-          <button class="btn - nav - week" id="next - week">
-            <span class="nav - text">Następny tydzień</span>
-            <span class="nav - arrow">›</span>
+          <button class="btn-nav-week" id="next-week">
+            <span class="nav-text">Następny tydzień</span>
+            <span class="nav-arrow">›</span>
           </button>
         </div>
-
-        <div class="calendar - week">
-          <div class="week - grid">
+        
+        <div class="calendar-week">
+          <div class="week-grid">
             ${weekData.days.map(day => this.renderDay(day)).join('')}
           </div>
         </div>
@@ -65,9 +65,9 @@ export class WeekViewComponent {
 
   private renderDay(day: DayData): string {
     return `
-      <div class="day - column">
-        <div class="day - header">${day.dayShort} <span class="day - date">${day.date}</span></div>
-        <div class="day - content">
+      <div class="day-column">
+        <div class="day-header">${day.dayShort} <span class="day-date">${day.date}</span></div>
+        <div class="day-content">
           ${day.tasks.map(task => this.renderTask(task)).join('')}
         </div>
       </div>
@@ -76,7 +76,7 @@ export class WeekViewComponent {
 
   private renderTask(task: TaskData): string {
     const priorityClass = task.priority !== 'normal' ? ` ${task.priority}` : '';
-    return `<div class="task - item${priorityClass}">${task.time} - ${task.title}</div>`;
+    return `<div class="task-item${priorityClass}">${task.time} - ${task.title}</div>`;
   }
 
   private generateWeekData(): WeekData {
@@ -87,7 +87,7 @@ export class WeekViewComponent {
     for (let i = 0; i < 7; i++) {
       const currentDay = new Date(this.currentWeek);
       currentDay.setDate(this.currentWeek.getDate() + i);
-
+      
       days.push({
         date: currentDay.getDate(),
         dayName: dayNames[i],
@@ -107,7 +107,7 @@ export class WeekViewComponent {
   }
 
   private generateTasksForDay(dayIndex: number): TaskData[] {
-    // Sample data for different days;
+    // Sample data for different days
     const tasksByDay: { [key: number]: TaskData[] } = {
       0: [ // Monday
         { time: '08:00', title: 'System Startup Check', priority: 'high' },
@@ -136,7 +136,7 @@ export class WeekViewComponent {
       3: [ // Thursday
         { time: '08:00', title: 'Morning System Check', priority: 'normal' },
         { time: '09:30', title: 'Security Patch Install', priority: 'high' },
-        { time: '11:30', title: 'I / O Port Testing', priority: 'normal' },
+        { time: '11:30', title: 'I/O Port Testing', priority: 'normal' },
         { time: '14:00', title: 'Performance Optimization', priority: 'normal' },
         { time: '16:00', title: 'Data Integrity Check', priority: 'normal' },
         { time: '18:00', title: 'Maintenance Tasks', priority: 'low' }
@@ -168,18 +168,18 @@ export class WeekViewComponent {
   private getWeekRangeText(): string {
     const weekEnd = new Date(this.currentWeek);
     weekEnd.setDate(this.currentWeek.getDate() + 6);
-
+    
     const monthNames = [
       'stycznia', 'lutego', 'marca', 'kwietnia', 'maja', 'czerwca',
       'lipca', 'sierpnia', 'września', 'października', 'listopada', 'grudnia'
     ];
-
+    
     const startDay = this.currentWeek.getDate();
     const endDay = weekEnd.getDate();
     const startMonth = monthNames[this.currentWeek.getMonth()];
     const endMonth = monthNames[weekEnd.getMonth()];
     const year = this.currentWeek.getFullYear();
-
+    
     if (this.currentWeek.getMonth() === weekEnd.getMonth()) {
       return `Tydzień: ${startDay}-${endDay} ${startMonth} ${year}`;
     } else {
@@ -188,16 +188,16 @@ export class WeekViewComponent {
   }
 
   public setupEventListeners(container: HTMLElement): void {
-    const prevWeekBtn = container.querySelector('#prev - week');
-    const nextWeekBtn = container.querySelector('#next - week');
-
+    const prevWeekBtn = container.querySelector('#prev-week');
+    const nextWeekBtn = container.querySelector('#next-week');
+    
     if (prevWeekBtn) {
       prevWeekBtn.addEventListener('click', () => {
         this.changeWeek(-7);
         this.refreshView(container);
       });
     }
-
+    
     if (nextWeekBtn) {
       nextWeekBtn.addEventListener('click', () => {
         this.changeWeek(7);
@@ -211,13 +211,9 @@ export class WeekViewComponent {
   }
 
   private refreshView(container: HTMLElement): void {
-    const weekViewElement = container.querySelector('.week - view - component');
+    const weekViewElement = container.querySelector('.week-view-component');
     if (weekViewElement) {
-      weekViewElement
-        .innerHTML = this
-        .render()
-        .replace('<div class="week - view - component">', '')
-        .replace('</div>', '');
+      weekViewElement.innerHTML = this.render().replace('<div class="week-view-component">', '').replace('</div>', '');
       this.setupEventListeners(container);
     }
   }
@@ -225,125 +221,125 @@ export class WeekViewComponent {
   public getStyles(): string {
     return `
       /* Week View Component Styles */
-      .week - view - component {
+      .week-view-component {
         width: 100%;
       }
-
-      .week - navigation {
+      
+      .week-navigation {
         display: flex;
-        justify - content: space - between;
-        align - items: center;
-        margin - bottom: 15px;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 15px;
         padding: 10px;
         background: #f8f9fa;
-        border - radius: 6px;
+        border-radius: 6px;
         border: 1px solid #e0e0e0;
       }
-
-      .btn - nav - week {
+      
+      .btn-nav-week {
         display: flex;
-        align - items: center;
+        align-items: center;
         gap: 6px;
         padding: 8px 12px;
-        background: linear - gradient(135deg, #667eea 0%, #764ba2 100%);
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         color: white;
         border: none;
-        border - radius: 4px;
+        border-radius: 4px;
         cursor: pointer;
-        font - size: 11px;
+        font-size: 11px;
         transition: all 0.2s;
       }
-
-      .btn - nav - week:hover {
-        background: linear - gradient(135deg, #5a67d8 0%, #6b46c1 100%);
+      
+      .btn-nav-week:hover {
+        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%);
         transform: translateY(-1px);
       }
-
-      .current - week - display {
-        font - size: 14px;
-        font - weight: 600;
+      
+      .current-week-display {
+        font-size: 14px;
+        font-weight: 600;
         color: #333;
       }
-
-      .calendar - week {
+      
+      .calendar-week {
         background: white;
-        border - radius: 8px;
+        border-radius: 8px;
         border: 1px solid #e0e0e0;
         overflow: hidden;
       }
-
-      .week - grid {
+      
+      .week-grid {
         display: grid;
-        grid - template - columns: repeat(7, 1fr);
+        grid-template-columns: repeat(7, 1fr);
         gap: 1px;
         background: #e0e0e0;
       }
-
-      .day - column {
+      
+      .day-column {
         background: white;
-        min - height: 250px;
+        min-height: 250px;
         display: flex;
-        flex - direction: column;
+        flex-direction: column;
       }
-
-      .day - header {
+      
+      .day-header {
         background: #f8f9fa;
         padding: 8px 6px;
-        text - align: center;
-        font - size: 11px;
-        font - weight: 600;
+        text-align: center;
+        font-size: 11px;
+        font-weight: 600;
         color: #333;
-        border - bottom: 1px solid #e0e0e0;
+        border-bottom: 1px solid #e0e0e0;
       }
-
-      .day - date {
+      
+      .day-date {
         display: block;
-        font - size: 14px;
-        font - weight: 700;
+        font-size: 14px;
+        font-weight: 700;
         color: #6366f1;
-        margin - top: 2px;
+        margin-top: 2px;
       }
-
-      .day - content {
+      
+      .day-content {
         flex: 1;
         padding: 6px;
         display: flex;
-        flex - direction: column;
+        flex-direction: column;
         gap: 4px;
       }
-
-      .task - item {
+      
+      .task-item {
         background: #f8f9fa;
         border: 1px solid #e9ecef;
-        border - radius: 4px;
+        border-radius: 4px;
         padding: 6px 8px;
-        font - size: 10px;
-        line - height: 1.3;
+        font-size: 10px;
+        line-height: 1.3;
         transition: all 0.2s;
         cursor: pointer;
       }
-
-      .task - item:hover {
+      
+      .task-item:hover {
         background: #e9ecef;
-        border - color: #6366f1;
+        border-color: #6366f1;
         transform: translateY(-1px);
       }
-
-      .task - item.high {
+      
+      .task-item.high {
         background: #fef2f2;
-        border - color: #fca5a5;
+        border-color: #fca5a5;
         color: #dc2626;
       }
-
-      .task - item.medium {
+      
+      .task-item.medium {
         background: #fffbeb;
-        border - color: #fcd34d;
+        border-color: #fcd34d;
         color: #d97706;
       }
-
-      .task - item.low {
+      
+      .task-item.low {
         background: #f0fdf4;
-        border - color: #86efac;
+        border-color: #86efac;
         color: #059669;
       }
     `;

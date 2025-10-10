@@ -23,7 +23,7 @@ export const MODULE_REGISTRY = {
 export class ModuleManager {
   private modules = new Map<string, Module>();
   private initialized = false;
-
+  
   /**
    * Initialize all modules
    */
@@ -31,25 +31,25 @@ export class ModuleManager {
     if (this.initialized) {
       throw new Error('Modules already initialized');
     }
-
-    // console.log('🚀 Initializing modules...'); // Auto-commented by lint-fix
-
+    
+    console.log('🚀 Initializing modules...');
+    
     for (const [name, ModuleClass] of Object.entries(MODULE_REGISTRY)) {
       try {
         const module = new ModuleClass();
         await module.initialize();
         this.modules.set(name, module);
-        // console.log(`✅ Module "${name}" initialized`); // Auto-commented by lint-fix
+        console.log(`✅ Module "${name}" initialized`);
       } catch (error) {
         console.error(`❌ Failed to initialize module "${name}":`, error);
         throw error;
       }
     }
-
+    
     this.initialized = true;
-    // console.log('✅ All modules initialized'); // Auto-commented by lint-fix
+    console.log('✅ All modules initialized');
   }
-
+  
   /**
    * Get module instance
    */
@@ -60,13 +60,13 @@ export class ModuleManager {
     }
     return module as T;
   }
-
+  
   /**
    * Health check all modules
    */
   async healthCheck(): Promise<Record<string, boolean>> {
     const health: Record<string, boolean> = {};
-
+    
     for (const [name, module] of this.modules) {
       if (module.healthCheck) {
         health[name] = await module.healthCheck();
@@ -74,7 +74,7 @@ export class ModuleManager {
         health[name] = true; // Assume healthy if no check
       }
     }
-
+    
     return health;
   }
 }

@@ -1,32 +1,23 @@
 export class ConnectConfigService {
   private initialized: boolean = false;
 
-  async initialize(): Promise < void> {
+  async initialize(): Promise<void> {
     if (this.initialized) {
       return;
     }
 
-    // // console
-      .log('🔧 ConnectConfig service initializing
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
-
+    console.log('🔧 ConnectConfig service initializing...');
+    
     // Initialize configuration management
     this.loadConfiguration();
-
+    
     this.initialized = true;
-    // // console
-      .log('✅ ConnectConfig service initialized'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('✅ ConnectConfig service initialized');
   }
 
   private loadConfiguration(): void {
     // Load system configuration
-    // // console
-      .log('📋 Loading system configuration
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('📋 Loading system configuration...');
   }
 
   getSystemSettings(): any {
@@ -49,9 +40,7 @@ export class ConnectConfigService {
   }
 
   updateSystemSettings(settings: any): void {
-    // // console
-      .log('💾 Updating system settings:',
-      settings); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('💾 Updating system settings:', settings);
   }
 
   getNetworkSettings(): any {
@@ -67,9 +56,7 @@ export class ConnectConfigService {
   }
 
   updateNetworkSettings(settings: any): void {
-    // // console
-      .log('🌐 Updating network settings:',
-      settings); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('🌐 Updating network settings:', settings);
   }
 
   exportConfiguration(): string {
@@ -83,17 +70,14 @@ export class ConnectConfigService {
   importConfiguration(configJson: string): void {
     try {
       const config = JSON.parse(configJson);
-      // // console
-        .log('📥 Importing configuration:',
-        config); // Auto - commented by lint - fix // Auto - commented by lint - fix
+      console.log('📥 Importing configuration:', config);
     } catch (error) {
       console.error('❌ Invalid configuration format:', error);
     }
   }
 
   destroy(): void {
-    // // console
-      .log('🔧 ConnectConfig service destroyed'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+    console.log('🔧 ConnectConfig service destroyed');
     this.initialized = false;
   }
 }

@@ -22,7 +22,7 @@ export class VirtualKeyboard {
     this.container = document.getElementById(containerId) as HTMLElement;
     this.targetInput = document.getElementById(options.targetInputId) as HTMLInputElement;
     this.options = options;
-
+    
     if (!this.container || !this.targetInput) {
       throw new Error('Container or target input not found');
     }
@@ -33,13 +33,13 @@ export class VirtualKeyboard {
 
   private render(): void {
     const layout = this.getLayout();
-
+    
     this.container.innerHTML = `
-      <div class="virtual - keyboard - component">
+      <div class="virtual-keyboard-component">
         ${layout.map(row => `
-          <div class="keyboard - row">
+          <div class="keyboard-row">
             ${row.map(key => `
-              <button class="key ${key.class || ''}" data - key="${key.value}" ${key.disabled ? 'disabled' : ''}>
+              <button class="key ${key.class || ''}" data-key="${key.value}" ${key.disabled ? 'disabled' : ''}>
                 ${key.display}
               </button>
             `).join('')}
@@ -53,7 +53,7 @@ export class VirtualKeyboard {
 
   private getLayout(): KeyDefinition[][] {
     switch (this.options.layout) {
-      case 'numeric':;
+      case 'numeric':
         return [
           [
             { value: '1', display: '1' },
@@ -70,13 +70,13 @@ export class VirtualKeyboard {
             { value: '0', display: '0' }
           ],
           [
-            { value: 'CLEAR', display: '🗑️', class: 'key - special' },
-            { value: 'BACKSPACE', display: '⌫', class: 'key - special' },
-            { value: 'ENTER', display: '↵', class: 'key - special key - wide' }
+            { value: 'CLEAR', display: '🗑️', class: 'key-special' },
+            { value: 'BACKSPACE', display: '⌫', class: 'key-special' },
+            { value: 'ENTER', display: '↵', class: 'key-special key-wide' }
           ]
         ];
-
-      case 'password':;
+      
+      case 'password':
         return [
           [
             { value: '1', display: '1' },
@@ -107,13 +107,13 @@ export class VirtualKeyboard {
             { value: 'P', display: 'P' }
           ],
           [
-            { value: 'BACKSPACE', display: '⌫', class: 'key - special' },
-            { value: 'CLEAR', display: '🗑️', class: 'key - special' },
-            { value: 'CANCEL', display: '❌', class: 'key - special' }
+            { value: 'BACKSPACE', display: '⌫', class: 'key-special' },
+            { value: 'CLEAR', display: '🗑️', class: 'key-special' },
+            { value: 'CANCEL', display: '❌', class: 'key-special' }
           ]
         ];
 
-      default: // 'full';
+      default: // 'full'
         return [
           [
             { value: '1', display: '1' },
@@ -149,7 +149,7 @@ export class VirtualKeyboard {
             { value: 'J', display: 'J' },
             { value: 'K', display: 'K' },
             { value: 'L', display: 'L' },
-            { value: 'CLEAR', display: '⌫', class: 'key - special' }
+            { value: 'CLEAR', display: '⌫', class: 'key-special' }
           ],
           [
             { value: 'Z', display: 'Z' },
@@ -160,7 +160,7 @@ export class VirtualKeyboard {
             { value: 'N', display: 'N' },
             { value: 'M', display: 'M' },
             { value: '-', display: '-' },
-            { value: 'ENTER', display: '↵ ENTER', class: 'key - wide' }
+            { value: 'ENTER', display: '↵ ENTER', class: 'key-wide' }
           ]
         ];
     }
@@ -170,7 +170,7 @@ export class VirtualKeyboard {
     this.container.addEventListener('click', (e) => {
       const target = e.target as HTMLElement;
       if (target.classList.contains('key')) {
-        const key = target.getAttribute('data - key');
+        const key = target.getAttribute('data-key');
         if (key) {
           this.handleKeyPress(key);
         }
@@ -189,12 +189,12 @@ export class VirtualKeyboard {
         this.targetInput.value = currentValue.slice(0, -1);
         break;
       case 'CANCEL':
-        // Cancel action - can be handled by parent;
+        // Cancel action - can be handled by parent
         if (this.options.onKeyPress) {
           this.options.onKeyPress(key, '');
         }
         break;
-      case 'ENTER':;
+      case 'ENTER':
         if (this.options.onEnter) {
           this.options.onEnter(this.targetInput.value);
         }
@@ -207,99 +207,99 @@ export class VirtualKeyboard {
     // Trigger input event for other listeners
     this.targetInput.dispatchEvent(new Event('input', { bubbles: true }));
 
-    // Custom callback;
+    // Custom callback
     if (this.options.onKeyPress) {
       this.options.onKeyPress(key, this.targetInput.value);
     }
   }
 
   private addStyles(): void {
-    // Check if styles already exist;
-    if (document.getElementById('virtual - keyboard - styles')) {
+    // Check if styles already exist
+    if (document.getElementById('virtual-keyboard-styles')) {
       return;
     }
 
     const style = document.createElement('style');
-    style.id = 'virtual - keyboard - styles';
+    style.id = 'virtual-keyboard-styles';
     style.textContent = `
       /* Virtual Keyboard Component */
-      .virtual - keyboard - component {
+      .virtual-keyboard-component {
         background: #f8f9fa;
         padding: 15px;
-        border - radius: 8px;
+        border-radius: 8px;
         border: 1px solid #e0e0e0;
-        user - select: none;
-        max - width: 600px;
+        user-select: none;
+        max-width: 600px;
         margin: 0 auto;
       }
 
-      .keyboard - row {
+      .keyboard-row {
         display: flex;
-        justify - content: center;
-        margin - bottom: 6px;
+        justify-content: center;
+        margin-bottom: 6px;
         gap: 4px;
       }
 
       .key {
-        min - width: 45px;
+        min-width: 45px;
         height: 40px;
         border: 1px solid #ccc;
         background: white;
-        border - radius: 4px;
+        border-radius: 4px;
         cursor: pointer;
-        font - size: 12px;
-        font - weight: 600;
+        font-size: 12px;
+        font-weight: 600;
         display: flex;
-        align - items: center;
-        justify - content: center;
+        align-items: center;
+        justify-content: center;
         transition: all 0.1s;
-        box - shadow: 0 2px 4px rgba(0,0,0,0.1);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
       }
 
       .key:hover:not(:disabled) {
         background: #f0f0f0;
         transform: translateY(-1px);
-        box - shadow: 0 3px 6px rgba(0,0,0,0.15);
+        box-shadow: 0 3px 6px rgba(0,0,0,0.15);
       }
 
       .key:active:not(:disabled) {
         background: #e0e0e0;
         transform: translateY(0);
-        box - shadow: 0 1px 2px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.1);
       }
 
       .key:disabled {
         background: #f8f9fa;
         color: #6c757d;
-        cursor: not - allowed;
+        cursor: not-allowed;
         opacity: 0.6;
       }
 
-      .key - special {
-        background: linear - gradient(135deg, #6c757d 0%, #5a6268 100%);
+      .key-special {
+        background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
         color: white;
-        font - weight: 600;
+        font-weight: 600;
       }
 
-      .key - special:hover:not(:disabled) {
-        background: linear - gradient(135deg, #5a6268 0%, #495057 100%);
+      .key-special:hover:not(:disabled) {
+        background: linear-gradient(135deg, #5a6268 0%, #495057 100%);
       }
 
-      .key - wide {
-        min - width: 90px;
+      .key-wide {
+        min-width: 90px;
       }
 
       /* Layout specific styles */
-      .virtual - keyboard - component[data - layout="numeric"] .key {
-        min - width: 50px;
+      .virtual-keyboard-component[data-layout="numeric"] .key {
+        min-width: 50px;
         height: 45px;
-        font - size: 14px;
+        font-size: 14px;
       }
 
-      .virtual - keyboard - component[data - layout="password"] .key {
-        min - width: 40px;
+      .virtual-keyboard-component[data-layout="password"] .key {
+        min-width: 40px;
         height: 35px;
-        font - size: 11px;
+        font-size: 11px;
       }
 
       /* Animation for key press */
@@ -310,7 +310,7 @@ export class VirtualKeyboard {
       }
 
       .key.pressed {
-        animation: keyPress 0.1s ease - in - out;
+        animation: keyPress 0.1s ease-in-out;
       }
     `;
     document.head.appendChild(style);

@@ -84,18 +84,10 @@ export const COMPONENT_REGISTRY = {
     status: 'production',
     exports: ['ConnectManagerView', 'ConnectManagerService'],
     dependencies: []
-  },
-  'connect-reports': {
-    path: '/src/modules/connect-reports/connect-reports.view.ts',
-    version: '1.0.0',
-    type: 'vanilla',
-    status: 'production',
-    exports: ['ConnectReportsView', 'ConnectReportsService'],
-    dependencies: []
   }
 } as const satisfies Record<string, Component>;
 
-// Validate registry on import;
+// Validate registry on import
 for (const [name, component] of Object.entries(COMPONENT_REGISTRY)) {
   try {
     ComponentSchema.parse(component);

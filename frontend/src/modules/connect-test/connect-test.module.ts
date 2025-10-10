@@ -1,9 +1,9 @@
 import { Module, ModuleMetadata } from '../module.interface';
-import { ConnectTestService } from './connect - test.service';
+import { ConnectTestService } from './connect-test.service';
 
 export class ConnectTestModule implements Module {
   metadata: ModuleMetadata = {
-    name: 'connect - test',
+    name: 'connect-test',
     version: '1.0.0',
     dependencies: []
   };
@@ -16,7 +16,7 @@ export class ConnectTestModule implements Module {
   }
 
   getName(): string {
-    return 'connect - test';
+    return 'connect-test';
   }
 
   getDisplayName(): string {
@@ -27,24 +27,20 @@ export class ConnectTestModule implements Module {
     return this.service;
   }
 
-  async initialize(): Promise < void> {
-    // // console
-      .log('Initializing ConnectTest module
-      .
-      .
-      .'); // Auto - commented by lint - fix // Auto - commented by lint - fix
+  async initialize(): Promise<void> {
+    console.log('Initializing ConnectTest module...');
     await this.service.initialize();
   }
 
   render(container: HTMLElement): void {
     // Dynamic import to avoid bundling issues
-    import('./connect - test.view').then(async ({ ConnectTestView }) => {
+    import('./connect-test.view').then(async ({ ConnectTestView }) => {
       const view = new ConnectTestView(this);
       const element = view.render();
-
+      
       container.innerHTML = '';
       container.appendChild(element);
-
+      
       this.element = element;
     }).catch(error => {
       console.error('Failed to load ConnectTest view:', error);
@@ -52,7 +48,7 @@ export class ConnectTestModule implements Module {
     });
   }
 
-  async destroy(): Promise < void> {
+  async destroy(): Promise<void> {
     if (this.element) {
       this.element.remove();
       this.element = null;
