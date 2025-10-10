@@ -52,21 +52,10 @@ export class ConnectWorkshopView {
             <span class="menu-icon">${IconComponent.render('search', { size: 18 })}</span>
             <span class="menu-label">Szukaj</span>
           </button>
-          <button class="menu-item" data-action="services">
-            <span class="menu-icon">${IconComponent.render('settings', { size: 18 })}</span>
-            <span class="menu-label">Serwisy</span>
-          </button>
-          <button class="menu-item" data-action="transport">
-            <span class="menu-icon">${IconComponent.render('truck', { size: 18 })}</span>
-            <span class="menu-label">Transport</span>
-          </button>
-          <button class="menu-item" data-action="dispositions">
-            <span class="menu-icon">${IconComponent.render('clipboard', { size: 18 })}</span>
-            <span class="menu-label">Dyspozycje</span>
-          </button>
+  
           <button class="menu-item" data-action="new-request">
             <span class="menu-icon">${IconComponent.render('plus', { size: 18 })}</span>
-            <span class="menu-label">Zgłoszenie</span>
+            <span class="menu-label">Dodaj</span>
           </button>
           <button class="menu-item" data-action="export">
             <span class="menu-icon">${IconComponent.render('bar-chart', { size: 18 })}</span>

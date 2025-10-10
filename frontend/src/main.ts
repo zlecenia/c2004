@@ -401,7 +401,7 @@ function setupNavigation() {
       const moduleType = target.getAttribute('data-type');
       
       if (moduleName) {
-        // Update active button
+        // Update active button - only remove active from sidebar nav buttons
         navButtons.forEach(btn => btn.classList.remove('active'));
         target.classList.add('active');
         
@@ -430,9 +430,9 @@ function handleHashChange() {
     if (moduleName) {
       console.log(`🔧 HandleHashChange: ${moduleName}/${moduleType}/${method}`);
       
-      // Update active button based on hash
-      const navButtons = document.querySelectorAll('.nav-btn');
-      navButtons.forEach(btn => {
+      // Update active button based on hash - only for sidebar navigation
+      const sidebarNavButtons = document.querySelectorAll('.sidebar-navigation .nav-btn');
+      sidebarNavButtons.forEach(btn => {
         btn.classList.remove('active');
         const btnModule = btn.getAttribute('data-module');
         const btnType = btn.getAttribute('data-type');

@@ -1,13 +1,22 @@
 import { ConnectConfigModule } from './connect-config.module';
 import { IconComponent } from '../../components/icon.component';
+import { SystemCategoryComponent } from './system-category.component';
+import { DevicesCategoryComponent } from './devices-category.component';
+import { SecurityCategoryComponent } from './security-category.component';
 
 export class ConnectConfigView {
   private currentCategory: string = 'system';
   private currentSection: string = 'system';
   private currentSubSection: string = '';
+  private systemComponent: SystemCategoryComponent;
+  private devicesComponent: DevicesCategoryComponent;
+  private securityComponent: SecurityCategoryComponent;
 
   constructor(_module: ConnectConfigModule) {
     // module parameter used for future implementations
+    this.systemComponent = new SystemCategoryComponent();
+    this.devicesComponent = new DevicesCategoryComponent();
+    this.securityComponent = new SecurityCategoryComponent();
   }
 
   render(): HTMLElement {
@@ -44,94 +53,18 @@ export class ConnectConfigView {
         <!-- Column 2: Subcategories (shown based on category) -->
         <div class="menu-column" id="subcategory-column">
           <h3 class="column-title" id="subcategory-title">System & Sieć</h3>
-          
-          <!-- System Subcategories -->
-          <div id="system-subcategories" class="subcategory-group active">
-            <button class="section-item compact active" data-section="system">
-              <span class="menu-label">System</span>
-            </button>
-            <button class="section-item compact" data-section="network">
-              <span class="menu-label">Sieć</span>
-            </button>
-            <button class="section-item compact" data-section="performance">
-              <span class="menu-label">Wydajność</span>
-            </button>
-            <button class="section-item compact" data-section="monitoring">
-              <span class="menu-label">Monitoring</span>
-            </button>
-            <button class="section-item compact" data-section="logs">
-              <span class="menu-label">Logi Systemowe</span>
-            </button>
-            <button class="section-item compact" data-section="updates">
-              <span class="menu-label">Aktualizacje</span>
-            </button>
-            <button class="section-item compact" data-section="diagnostics">
-              <span class="menu-label">Diagnostyka</span>
-            </button>
-            <button class="section-item compact" data-section="maintenance">
-              <span class="menu-label">Konserwacja</span>
-            </button>
-          </div>
-
-          <!-- Devices Subcategories -->
-          <div id="devices-subcategories" class="subcategory-group" style="display: none;">
-            <button class="section-item compact" data-section="rfid-config">
-              <span class="menu-label">RFID Reader</span>
-            </button>
-            <button class="section-item compact" data-section="qr-config">
-              <span class="menu-label">QR Scanner</span>
-            </button>
-            <button class="section-item compact" data-section="barcode-config">
-              <span class="menu-label">Barcode Scanner</span>
-            </button>
-            <button class="section-item compact" data-section="sensors">
-              <span class="menu-label">Sensory</span>
-            </button>
-            <button class="section-item compact" data-section="io-ports">
-              <span class="menu-label">Porty I/O</span>
-            </button>
-            <button class="section-item compact" data-section="power">
-              <span class="menu-label">Zasilanie</span>
-            </button>
-            <button class="section-item compact" data-section="storage">
-              <span class="menu-label">Magazyn</span>
-            </button>
-            <button class="section-item compact" data-section="calibration">
-              <span class="menu-label">Kalibracja</span>
-            </button>
-          </div>
-
-          <!-- Security Subcategories -->
-          <div id="security-subcategories" class="subcategory-group" style="display: none;">
-            <button class="section-item compact" data-section="security">
-              <span class="menu-label">Bezpieczeństwo</span>
-            </button>
-            <button class="section-item compact" data-section="users">
-              <span class="menu-label">Użytkownicy</span>
-            </button>
-            <button class="section-item compact" data-section="permissions">
-              <span class="menu-label">Uprawnienia</span>
-            </button>
-            <button class="section-item compact" data-section="backup">
-              <span class="menu-label">Backup</span>
-            </button>
-            <button class="section-item compact" data-section="labels">
-              <span class="menu-label">Etykiety</span>
-            </button>
-            <button class="section-item compact" data-section="reports">
-              <span class="menu-label">Raporty</span>
-            </button>
-          </div>
+          ${this.systemComponent.render()}
+          ${this.devicesComponent.render()}
+          ${this.securityComponent.render()}
         </div>
 
 
         <!-- Column 3: Main Content -->
         <div class="main-content">
           <div class="content-body">
-            
-            <!-- System Section -->
-            <div id="system-content" class="section-content active">
-              <div class="config-form">
+            ${this.systemComponent.renderContent()}
+            ${this.devicesComponent.renderContent()}
+            ${this.securityComponent.renderContent()}
                 <div class="form-section">
                   <h5>RFID Settings</h5>
                   <div class="form-row">
@@ -1772,25 +1705,6 @@ export class ConnectConfigView {
 
         <!-- Enhanced Status & Info Panel -->
         <div class="right-panel">
-          <div class="status-section">
-            <h3 class="status-title">💡 Status Systemu</h3>
-            <div class="status-item">
-              <span class="status-label">RFID Reader:</span>
-              <span class="status-value online">🟢 Online</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">QR Camera:</span>
-              <span class="status-value online">🟢 Connected</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">Database:</span>
-              <span class="status-value online">🟢 Active</span>
-            </div>
-            <div class="status-item">
-              <span class="status-label">Network:</span>
-              <span class="status-value online">🟢 Online</span>
-            </div>
-          </div>
 
           <div class="info-section">
             <h3 class="status-title">ℹ️ Informacje</h3>
@@ -1812,29 +1726,6 @@ export class ConnectConfigView {
             </div>
           </div>
 
-          <div class="quick-actions">
-            <h3 class="status-title">⚡ Szybkie akcje</h3>
-            <button class="quick-btn test-all">🧪 Test wszystkich</button>
-            <button class="quick-btn restart-services">🔄 Restart serwisów</button>
-            <button class="quick-btn backup-now">💾 Backup teraz</button>
-            <button class="quick-btn system-logs">📋 Logi systemowe</button>
-          </div>
-
-          <div class="recent-changes">
-            <h3 class="status-title">📝 Ostatnie zmiany</h3>
-            <div class="change-item">
-              <div class="change-time">14:25</div>
-              <div class="change-desc">RFID port zmieniony na USB1</div>
-            </div>
-            <div class="change-item">
-              <div class="change-time">13:45</div>
-              <div class="change-desc">QR kamera: rozdzielczość 640x480</div>
-            </div>
-            <div class="change-item">
-              <div class="change-time">12:30</div>
-              <div class="change-desc">Backup konfiguracji</div>
-            </div>
-          </div>
         </div>
       </div>
     `;
@@ -2309,11 +2200,14 @@ export class ConnectConfigView {
       return; // switchCategory will call switchSection again with proper setup
     }
 
-    // Update section active state (only in visible subcategory group)
-    container.querySelectorAll('.subcategory-group.active [data-section]').forEach(item => {
-      item.classList.remove('active');
-      if (item.getAttribute('data-section') === section) item.classList.add('active');
-    });
+    // Update section active state (only in the current category's subcategory group)
+    const currentSubcategoryGroup = container.querySelector(`#${this.currentCategory}-subcategories`);
+    if (currentSubcategoryGroup) {
+      currentSubcategoryGroup.querySelectorAll('[data-section]').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-section') === section) item.classList.add('active');
+      });
+    }
 
     // Hide all sections
     container.querySelectorAll('.section-content').forEach(content => {

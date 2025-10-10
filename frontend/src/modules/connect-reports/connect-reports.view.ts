@@ -1,13 +1,20 @@
 // frontend/src/modules/connect-reports/connect-reports.view.ts
 import { ConnectReportsModule } from './connect-reports.module';
 import { IconComponent } from '../../components/icon.component';
+import { WeekViewComponent } from './week-view.component';
+import { MonthViewComponent } from './month-view.component';
 
 export class ConnectReportsView {
   private currentReportType: string = 'executed';
   private currentView: string = 'week';
+  private currentMonth: Date = new Date();
+  private weekViewComponent: WeekViewComponent;
+  private monthViewComponent: MonthViewComponent;
 
   constructor(private module: ConnectReportsModule) {
     // module stored for future implementations
+    this.weekViewComponent = new WeekViewComponent();
+    this.monthViewComponent = new MonthViewComponent();
   }
 
   render(): HTMLElement {
@@ -203,299 +210,13 @@ export class ConnectReportsView {
             <!-- Planned Reports Content -->
             <div id="planned-content" class="report-content">
               <div class="reports-section">
-                <h4>📅 Planowane Raporty</h4>
                 
                 <div id="planned-week-view" class="view-content active">
-                  <div class="calendar-week">
-                    <h5>Tydzień: 9-15 Października 2025</h5>
-                    <div class="week-grid">
-                      <div class="day-column">
-                        <div class="day-header">Pon <span class="day-date">9</span></div>
-                        <div class="day-content">
-                          <div class="task-item high">08:00 - System Startup Check</div>
-                          <div class="task-item">10:00 - Test RFID Readers</div>
-                          <div class="task-item">12:00 - Database Backup</div>
-                          <div class="task-item">14:00 - Kalibracja QR Scanner</div>
-                          <div class="task-item low">16:30 - Performance Monitor</div>
-                          <div class="task-item">18:00 - Evening Cleanup</div>
-                        </div>
-                      </div>
-                      <div class="day-column">
-                        <div class="day-header">Wto <span class="day-date">10</span></div>
-                        <div class="day-content">
-                          <div class="task-item high">07:30 - Hardware Diagnostics</div>
-                          <div class="task-item">09:00 - Service Health Check</div>
-                          <div class="task-item">11:00 - User Access Audit</div>
-                          <div class="task-item">13:30 - Network Security Scan</div>
-                          <div class="task-item">15:00 - Barcode Test Sequence</div>
-                          <div class="task-item low">17:00 - Log Analysis</div>
-                        </div>
-                      </div>
-                      <div class="day-column">
-                        <div class="day-header">Śro <span class="day-date">11</span></div>
-                        <div class="day-content">
-                          <div class="task-item">08:30 - Temperature Monitoring</div>
-                          <div class="task-item high">10:00 - Critical System Update</div>
-                          <div class="task-item">11:00 - Backup Verification</div>
-                          <div class="task-item">13:00 - Device Calibration</div>
-                          <div class="task-item">15:30 - Network Connectivity</div>
-                          <div class="task-item">17:30 - Weekly Status Report</div>
-                        </div>
-                      </div>
-                      <div class="day-column">
-                        <div class="day-header">Czw <span class="day-date">12</span></div>
-                        <div class="day-content">
-                          <div class="task-item">08:00 - Morning System Check</div>
-                          <div class="task-item high">09:30 - Security Patch Install</div>
-                          <div class="task-item">11:30 - I/O Port Testing</div>
-                          <div class="task-item">14:00 - Performance Optimization</div>
-                          <div class="task-item">16:00 - Data Integrity Check</div>
-                          <div class="task-item low">18:00 - Maintenance Tasks</div>
-                        </div>
-                      </div>
-                      <div class="day-column">
-                        <div class="day-header">Pią <span class="day-date">13</span></div>
-                        <div class="day-content">
-                          <div class="task-item">08:00 - Week Summary Prep</div>
-                          <div class="task-item">10:00 - Full System Diagnostic</div>
-                          <div class="task-item high">12:00 - Weekly Full Backup</div>
-                          <div class="task-item">14:30 - Equipment Inspection</div>
-                          <div class="task-item">16:00 - Weekly Report Generation</div>
-                          <div class="task-item">17:00 - System Optimization</div>
-                          <div class="task-item low">19:00 - Weekend Prep Checklist</div>
-                        </div>
-                      </div>
-                      <div class="day-column">
-                        <div class="day-header">Sob <span class="day-date">14</span></div>
-                        <div class="day-content">
-                          <div class="task-item low">10:00 - Light Maintenance</div>
-                          <div class="task-item low">14:00 - System Status Check</div>
-                          <div class="task-item low">16:00 - Weekend Monitoring</div>
-                        </div>
-                      </div>
-                      <div class="day-column">
-                        <div class="day-header">Nie <span class="day-date">15</span></div>
-                        <div class="day-content">
-                          <div class="task-item low">12:00 - Automated Backup</div>
-                          <div class="task-item low">15:00 - Weekly Stats Summary</div>
-                          <div class="task-item low">18:00 - Next Week Planning</div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  ${this.weekViewComponent.render()}
                 </div>
 
                 <div id="planned-month-view" class="view-content">
-                  <div class="calendar-months">
-                    <!-- Previous Month -->
-                    <div class="month-calendar">
-                      <h5>Wrzesień 2025</h5>
-                      <div class="month-grid">
-                        <div class="weekday-header">Pon</div>
-                        <div class="weekday-header">Wto</div>
-                        <div class="weekday-header">Śro</div>
-                        <div class="weekday-header">Czw</div>
-                        <div class="weekday-header">Pią</div>
-                        <div class="weekday-header">Sob</div>
-                        <div class="weekday-header">Nie</div>
-                        
-                        <!-- Week 1 -->
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell tests-low">1<span class="test-count">2</span></div>
-                        
-                        <!-- Week 2 -->
-                        <div class="day-cell tests-medium">2<span class="test-count">5</span></div>
-                        <div class="day-cell tests-high">3<span class="test-count">8</span></div>
-                        <div class="day-cell tests-low">4<span class="test-count">3</span></div>
-                        <div class="day-cell tests-medium">5<span class="test-count">6</span></div>
-                        <div class="day-cell tests-high">6<span class="test-count">9</span></div>
-                        <div class="day-cell tests-low">7<span class="test-count">1</span></div>
-                        <div class="day-cell">8</div>
-                        
-                        <!-- Week 3 -->
-                        <div class="day-cell tests-medium">9<span class="test-count">4</span></div>
-                        <div class="day-cell tests-high">10<span class="test-count">7</span></div>
-                        <div class="day-cell tests-low">11<span class="test-count">2</span></div>
-                        <div class="day-cell tests-medium">12<span class="test-count">5</span></div>
-                        <div class="day-cell tests-high">13<span class="test-count">8</span></div>
-                        <div class="day-cell">14</div>
-                        <div class="day-cell">15</div>
-                        
-                        <!-- Week 4 -->
-                        <div class="day-cell tests-low">16<span class="test-count">3</span></div>
-                        <div class="day-cell tests-medium">17<span class="test-count">6</span></div>
-                        <div class="day-cell tests-high">18<span class="test-count">9</span></div>
-                        <div class="day-cell tests-low">19<span class="test-count">2</span></div>
-                        <div class="day-cell tests-medium">20<span class="test-count">4</span></div>
-                        <div class="day-cell">21</div>
-                        <div class="day-cell">22</div>
-                        
-                        <!-- Week 5 -->
-                        <div class="day-cell tests-low">23<span class="test-count">1</span></div>
-                        <div class="day-cell tests-medium">24<span class="test-count">5</span></div>
-                        <div class="day-cell tests-high">25<span class="test-count">7</span></div>
-                        <div class="day-cell tests-low">26<span class="test-count">3</span></div>
-                        <div class="day-cell tests-medium">27<span class="test-count">6</span></div>
-                        <div class="day-cell">28</div>
-                        <div class="day-cell">29</div>
-                        
-                        <!-- Week 6 -->
-                        <div class="day-cell tests-low">30<span class="test-count">2</span></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                      </div>
-                    </div>
-
-                    <!-- Current Month -->
-                    <div class="month-calendar current">
-                      <h5>Październik 2025 <span class="month-badge">Aktualny</span></h5>
-                      <div class="month-grid">
-                        <div class="weekday-header">Pon</div>
-                        <div class="weekday-header">Wto</div>
-                        <div class="weekday-header">Śro</div>
-                        <div class="weekday-header">Czw</div>
-                        <div class="weekday-header">Pią</div>
-                        <div class="weekday-header">Sob</div>
-                        <div class="weekday-header">Nie</div>
-                        
-                        <!-- Week 1 -->
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell tests-high">1<span class="test-count">8</span></div>
-                        <div class="day-cell tests-medium">2<span class="test-count">5</span></div>
-                        <div class="day-cell tests-high">3<span class="test-count">9</span></div>
-                        <div class="day-cell tests-low">4<span class="test-count">2</span></div>
-                        <div class="day-cell">5</div>
-                        <div class="day-cell">6</div>
-                        
-                        <!-- Week 2 -->
-                        <div class="day-cell tests-medium">7<span class="test-count">6</span></div>
-                        <div class="day-cell tests-high">8<span class="test-count">7</span></div>
-                        <div class="day-cell tests-current">9<span class="test-count">6</span></div>
-                        <div class="day-cell tests-medium">10<span class="test-count">4</span></div>
-                        <div class="day-cell tests-high">11<span class="test-count">8</span></div>
-                        <div class="day-cell">12</div>
-                        <div class="day-cell">13</div>
-                        
-                        <!-- Week 3 -->
-                        <div class="day-cell tests-low">14<span class="test-count">3</span></div>
-                        <div class="day-cell tests-medium">15<span class="test-count">5</span></div>
-                        <div class="day-cell tests-high">16<span class="test-count">9</span></div>
-                        <div class="day-cell tests-low">17<span class="test-count">2</span></div>
-                        <div class="day-cell tests-medium">18<span class="test-count">6</span></div>
-                        <div class="day-cell">19</div>
-                        <div class="day-cell">20</div>
-                        
-                        <!-- Week 4 -->
-                        <div class="day-cell tests-high">21<span class="test-count">7</span></div>
-                        <div class="day-cell tests-medium">22<span class="test-count">4</span></div>
-                        <div class="day-cell tests-high">23<span class="test-count">8</span></div>
-                        <div class="day-cell tests-low">24<span class="test-count">1</span></div>
-                        <div class="day-cell tests-medium">25<span class="test-count">5</span></div>
-                        <div class="day-cell">26</div>
-                        <div class="day-cell">27</div>
-                        
-                        <!-- Week 5 -->
-                        <div class="day-cell tests-low">28<span class="test-count">3</span></div>
-                        <div class="day-cell tests-medium">29<span class="test-count">6</span></div>
-                        <div class="day-cell tests-high">30<span class="test-count">9</span></div>
-                        <div class="day-cell tests-low">31<span class="test-count">2</span></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                      </div>
-                    </div>
-
-                    <!-- Next Month -->
-                    <div class="month-calendar">
-                      <h5>Listopad 2025</h5>
-                      <div class="month-grid">
-                        <div class="weekday-header">Pon</div>
-                        <div class="weekday-header">Wto</div>
-                        <div class="weekday-header">Śro</div>
-                        <div class="weekday-header">Czw</div>
-                        <div class="weekday-header">Pią</div>
-                        <div class="weekday-header">Sob</div>
-                        <div class="weekday-header">Nie</div>
-                        
-                        <!-- Week 1 -->
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell empty"></div>
-                        <div class="day-cell tests-low">1<span class="test-count">2</span></div>
-                        <div class="day-cell">2</div>
-                        
-                        <!-- Week 2 -->
-                        <div class="day-cell tests-medium">3<span class="test-count">5</span></div>
-                        <div class="day-cell tests-high">4<span class="test-count">8</span></div>
-                        <div class="day-cell tests-low">5<span class="test-count">3</span></div>
-                        <div class="day-cell tests-medium">6<span class="test-count">6</span></div>
-                        <div class="day-cell tests-high">7<span class="test-count">9</span></div>
-                        <div class="day-cell">8</div>
-                        <div class="day-cell">9</div>
-                        
-                        <!-- Week 3 -->
-                        <div class="day-cell tests-low">10<span class="test-count">1</span></div>
-                        <div class="day-cell tests-medium">11<span class="test-count">4</span></div>
-                        <div class="day-cell tests-high">12<span class="test-count">7</span></div>
-                        <div class="day-cell tests-low">13<span class="test-count">2</span></div>
-                        <div class="day-cell tests-medium">14<span class="test-count">5</span></div>
-                        <div class="day-cell">15</div>
-                        <div class="day-cell">16</div>
-                        
-                        <!-- Week 4 -->
-                        <div class="day-cell tests-high">17<span class="test-count">8</span></div>
-                        <div class="day-cell tests-low">18<span class="test-count">3</span></div>
-                        <div class="day-cell tests-medium">19<span class="test-count">6</span></div>
-                        <div class="day-cell tests-high">20<span class="test-count">9</span></div>
-                        <div class="day-cell tests-low">21<span class="test-count">1</span></div>
-                        <div class="day-cell">22</div>
-                        <div class="day-cell">23</div>
-                        
-                        <!-- Week 5 -->
-                        <div class="day-cell tests-medium">24<span class="test-count">4</span></div>
-                        <div class="day-cell tests-high">25<span class="test-count">7</span></div>
-                        <div class="day-cell tests-low">26<span class="test-count">2</span></div>
-                        <div class="day-cell tests-medium">27<span class="test-count">5</span></div>
-                        <div class="day-cell tests-high">28<span class="test-count">8</span></div>
-                        <div class="day-cell">29</div>
-                        <div class="day-cell">30</div>
-                      </div>
-                    </div>
-                    
-                    <!-- Legend -->
-                    <div class="calendar-legend">
-                      <h6>Legenda intensywności testów:</h6>
-                      <div class="legend-items">
-                        <div class="legend-item">
-                          <div class="legend-color tests-low"></div>
-                          <span>Niska (1-3 testy)</span>
-                        </div>
-                        <div class="legend-item">
-                          <div class="legend-color tests-medium"></div>
-                          <span>Średnia (4-6 testów)</span>
-                        </div>
-                        <div class="legend-item">
-                          <div class="legend-color tests-high"></div>
-                          <span>Wysoka (7+ testów)</span>
-                        </div>
-                        <div class="legend-item">
-                          <div class="legend-color tests-current"></div>
-                          <span>Dzisiaj</span>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+                  ${this.monthViewComponent.render()}
                 </div>
 
                 <div id="planned-year-view" class="view-content">
@@ -853,7 +574,6 @@ export class ConnectReportsView {
 
                 <div id="planned-custom-view" class="view-content">
                   <div class="custom-range">
-                    <h5>Niestandardowy zakres</h5>
                     <div class="date-picker-section">
                       <div class="date-range-inputs">
                         <div class="date-group">
@@ -868,34 +588,7 @@ export class ConnectReportsView {
                       </div>
                       
                       <div class="custom-results">
-                        <div class="results-header">
-                          <h6>Wyniki dla: 1 stycznia 2025 - 31 grudnia 2025</h6>
-                        </div>
-                        <div class="results-grid">
-                          <div class="result-card">
-                            <div class="result-icon">📊</div>
-                            <div class="result-value">3,105</div>
-                            <div class="result-label">Wszystkie testy</div>
-                          </div>
-                          <div class="result-card">
-                            <div class="result-icon">✅</div>
-                            <div class="result-value">2,847</div>
-                            <div class="result-label">Pomyślne</div>
-                          </div>
-                          <div class="result-card">
-                            <div class="result-icon">❌</div>
-                            <div class="result-value">258</div>
-                            <div class="result-label">Nieudane</div>
-                          </div>
-                          <div class="result-card">
-                            <div class="result-icon">📈</div>
-                            <div class="result-value">91.7%</div>
-                            <div class="result-label">Skuteczność</div>
-                          </div>
-                        </div>
-                        
                         <div class="monthly-details">
-                          <h6>Miesięczne szczegóły:</h6>
                           <div class="details-table">
                             <div class="table-header">
                               <span>Miesiąc</span>
@@ -1045,7 +738,7 @@ export class ConnectReportsView {
       .menu-icon { font-size: 18px; }
       .menu-label { font-size: 12px; font-weight: 500; text-align: center; }
       .main-content { flex: 1; display: flex; flex-direction: row; background: white; overflow: hidden; }
-      .content-body { flex: 1; padding: 10px; overflow-y: auto; }
+      .content-body { flex: 1; padding: 0px; overflow-y: auto; }
       
       .report-content { display: none; }
       .report-content.active { display: block; }
@@ -1417,9 +1110,9 @@ export class ConnectReportsView {
       }
       
       /* Custom Range View */
-      .custom-range { background: white; padding: 20px; border-radius: 10px; border: 1px solid #e0e0e0; }
+      .custom-range { background: white; padding: 2px; border-radius: 10px; border: 1px solid #e0e0e0; }
       .custom-range h5 { margin: 0 0 20px 0; font-size: 18px; color: #333; font-weight: 600; }
-      .date-picker-section { display: flex; flex-direction: column; gap: 20px; }
+      .date-picker-section { display: flex; flex-direction: column; gap: 0px; }
       .date-range-inputs { 
         display: flex; 
         gap: 20px; 
@@ -1501,6 +1194,44 @@ export class ConnectReportsView {
       .search-input { flex: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; }
       .btn-search { padding: 6px 12px; margin-right: 6px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; }
       
+      /* Month Navigation */
+      .month-navigation { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-bottom: 15px; 
+        padding: 10px; 
+        background: #f8f9fa; 
+        border-radius: 6px; 
+        border: 1px solid #e0e0e0;
+      }
+      .btn-nav-month { 
+        display: flex; 
+        align-items: center; 
+        gap: 6px; 
+        padding: 8px 12px; 
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+        color: white; 
+        border: none; 
+        border-radius: 4px; 
+        cursor: pointer; 
+        font-size: 11px; 
+        transition: all 0.2s;
+      }
+      .btn-nav-month:hover { 
+        background: linear-gradient(135deg, #5a67d8 0%, #6b46c1 100%); 
+        transform: translateY(-1px);
+      }
+      .nav-arrow { 
+        font-size: 14px; 
+        font-weight: bold; 
+      }
+      .current-month-display { 
+        font-size: 14px; 
+        font-weight: 600; 
+        color: #333; 
+      }
+      
       /* Analytics styles */
       .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
       .metric-card { background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e0e0e0; }
@@ -1572,6 +1303,10 @@ export class ConnectReportsView {
         background: #e9ecef; 
         border-color: #6366f1; 
       }
+      
+      /* Component Styles */
+      ${this.weekViewComponent.getStyles()}
+      ${this.monthViewComponent.getStyles()}
     `;
     document.head.appendChild(style);
   }
@@ -1605,6 +1340,8 @@ export class ConnectReportsView {
       });
     });
 
+    // Month navigation now handled by components
+
     // Listen for external state updates (from main.ts)
     window.addEventListener('connectreports:update-state', (e: any) => {
       const { reportType, view } = e.detail;
@@ -1616,6 +1353,10 @@ export class ConnectReportsView {
         this.switchView(view, container, false); // Don't update URL
       }
     });
+
+    // Setup component event listeners
+    this.weekViewComponent.setupEventListeners(container);
+    this.monthViewComponent.setupEventListeners(container);
   }
 
   private switchReportType(type: string, container: HTMLElement, updateURL: boolean = true): void {
@@ -1740,6 +1481,7 @@ export class ConnectReportsView {
       topBarTitle.textContent = `ConnectReports - ${reportTitles[this.currentReportType]}${viewTitle}`;
     }
   }
+
 
   // Public methods for URL routing support
   public setInitialReportType(type: string): void {
