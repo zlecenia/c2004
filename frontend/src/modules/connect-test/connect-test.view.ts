@@ -307,40 +307,7 @@ export class ConnectTestView {
               </div>
             </div>
 
-              <!-- Flow Test Protocol -->
-              <div id="flow-test-protocol" class="protocol-content">
-                <div class="protocol-form">
-                  <h4>💨 Test przepływu</h4>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label>Urządzenie:</label>
-                      <select class="form-select">
-                        <option>PSS-7000 #12345</option>
-                        <option>PSS-5000 #67890</option>
-                        <option>PSS-3000 #11111</option>
-                      </select>
-                    </div>
-                    <div class="form-group">
-                      <label>Przepływ docelowy [l/min]:</label>
-                      <input type="number" class="form-input" value="40" min="1" max="100" />
-                    </div>
-                  </div>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label>Temperatura [°C]:</label>
-                      <input type="number" class="form-input" value="20" min="0" max="100" />
-                    </div>
-                    <div class="form-group">
-                      <label>Wilgotność [%]:</label>
-                      <input type="number" class="form-input" value="45" min="0" max="100" />
-                    </div>
-                  </div>
-                  <div class="test-status">Status: <span class="status-ready">Gotowy do testu</span></div>
-                  <button class="btn-start-test">▶️ Rozpocznij Test Przepływu</button>
-                </div>
-              </div>
-
-              <!-- Function Test Protocol -->
+            <!-- Reports Section -->
               <div id="function-test-protocol" class="protocol-content">
                 <div class="protocol-form">
                   <h4>⚙️ Test funkcjonalny</h4>
@@ -735,7 +702,7 @@ export class ConnectTestView {
       .menu-column { width: 100px; background: #2a2a2a; padding: 6px 4px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #1a1a1a; }
       .column-title { color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px; }
       .menu-item { width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc; }
-      .menu-icon { font-size: 18px; }
+      .menu-icon { font-size: 13px; }
       .menu-label { font-size: 12px; font-weight: 500; text-align: center; }
       .menu-item:hover { background: #4a4a4a; color: white; }
       .menu-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
@@ -844,7 +811,7 @@ export class ConnectTestView {
       .progress-fill { height: 100%; background: linear-gradient(90deg, #667eea 0%, #764ba2 100%); transition: width 0.3s; }
       .test-steps { margin-bottom: 15px; }
       .test-step { display: flex; align-items: center; gap: 10px; padding: 10px; background: white; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 8px; }
-      .step-icon { font-size: 18px; }
+      .step-icon { font-size: 13px; }
       .step-name { flex: 1; font-size: 11px; font-weight: 500; }
       .step-status { font-size: 11px; color: #666; }
       .btn-start-test { width: 100%; padding: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 5px; cursor: pointer; font-size: 12px; font-weight: 600; }
@@ -871,10 +838,57 @@ export class ConnectTestView {
       .console-actions { display: flex; gap: 8px; }
       .btn-console { flex: 1; padding: 6px; background: #333; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; }
 
-      /* Protocol Content */
-      .protocol-content { display: none; }
-      .protocol-content.active { display: block; }
-      .protocol-form { background: #f8f9fa; padding: 20px; border-radius: 8px; }
+      /* Testing Calendar Styles */
+      .testing-calendar-container { padding: 20px; background: #f8f9fa; border-radius: 8px; }
+      .calendar-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+      .calendar-title { font-size: 13px; font-weight: 600; color: #333; margin: 0; }
+      .btn-calendar-nav { background: #667eea; color: white; border: none; border-radius: 4px; padding: 8px 12px; cursor: pointer; font-size: 14px; }
+      .btn-calendar-nav:hover { background: #5a6fd8; }
+      
+      .calendar-grid { margin-bottom: 20px; }
+      .calendar-weekdays { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; margin-bottom: 10px; }
+      .weekday { padding: 8px; text-align: center; font-weight: 600; font-size: 11px; color: #666; background: #e9ecef; }
+      .calendar-days { display: grid; grid-template-columns: repeat(7, 1fr); gap: 1px; }
+      .calendar-day { padding: 8px; text-align: center; background: white; border: 1px solid #e0e0e0; cursor: pointer; font-size: 11px; min-height: 35px; position: relative; }
+      .calendar-day:hover { background: #f0f8ff; }
+      .calendar-day.today { background: #667eea; color: white; font-weight: 600; }
+      .calendar-day.has-activities { background: #fff3cd; border-color: #ffc107; }
+      .calendar-day.has-activities::after { content: '•'; position: absolute; bottom: 2px; right: 4px; color: #ffc107; font-weight: bold; }
+      
+      .activity-navigation { display: flex; gap: 20px; }
+      .current-activity { flex: 2; }
+      .activity-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+      .activity-header h4 { margin: 0; font-size: 14px; color: #333; }
+      .activity-counter { font-size: 12px; color: #666; background: #e9ecef; padding: 4px 8px; border-radius: 12px; }
+      
+      .activity-card { background: white; border: 2px solid #e0e0e0; border-radius: 8px; padding: 15px; margin-bottom: 15px; display: flex; align-items: center; gap: 15px; transition: all 0.3s; }
+      .activity-card.active { border-color: #28a745; box-shadow: 0 4px 12px rgba(40, 167, 69, 0.2); }
+      .activity-icon { font-size: 24px; }
+      .activity-details { flex: 1; }
+      .activity-title { font-weight: 600; font-size: 13px; color: #333; margin-bottom: 4px; }
+      .activity-time { font-size: 11px; color: #666; margin-bottom: 4px; }
+      .activity-status { font-size: 11px; padding: 2px 8px; border-radius: 12px; font-weight: 500; }
+      .status-pending { background: #fff3cd; color: #856404; }
+      .status-running { background: #d4edda; color: #155724; }
+      .status-completed { background: #d1ecf1; color: #0c5460; }
+      
+      .activity-progress { width: 100px; }
+      .progress-bar { background: #e9ecef; height: 6px; border-radius: 3px; overflow: hidden; }
+      .progress-fill { background: #28a745; height: 100%; transition: width 0.3s; }
+      
+      .activity-controls { display: flex; gap: 10px; justify-content: center; }
+      .btn-activity-nav { background: #6c757d; color: white; border: none; border-radius: 4px; padding: 6px 12px; cursor: pointer; font-size: 11px; }
+      .btn-activity-nav:hover { background: #5a6268; }
+      .btn-activity-nav:disabled { background: #ced4da; cursor: not-allowed; }
+      .btn-start-activity { background: #28a745; color: white; border: none; border-radius: 4px; padding: 8px 16px; cursor: pointer; font-size: 12px; font-weight: 600; }
+      .btn-start-activity:hover { background: #218838; }
+      
+      .activity-queue { flex: 1; }
+      .activity-queue h5 { margin: 0 0 10px 0; font-size: 12px; color: #333; }
+      .queue-item { display: flex; gap: 8px; align-items: center; padding: 8px; background: white; border: 1px solid #e0e0e0; border-radius: 4px; margin-bottom: 6px; font-size: 11px; }
+      .queue-time { color: #666; font-weight: 600; min-width: 35px; }
+      .queue-activity { flex: 1; color: #333; }
+      .queue-device { color: #666; font-size: 10px; }
       .protocol-form h4 { margin: 0 0 20px 0; font-size: 14px; color: #333; font-weight: 600; }
       .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
       .form-row .form-group { flex: 1; }
@@ -948,11 +962,180 @@ export class ConnectTestView {
     // Setup test intervals component event listeners
     this.testIntervalsComponent.setupEventListeners(container, this.switchTestType.bind(this));
 
+    // Setup calendar and activity navigation
+    this.setupCalendarEventListeners(container);
+
     // Initialize default section state
     this.switchSection(this.currentSection, container);
     
     // Start pressure simulation for testing section
     this.startPressureSimulation();
+  }
+
+  private setupCalendarEventListeners(container: HTMLElement): void {
+    // Calendar navigation
+    const prevMonthBtn = container.querySelector('#prev-month');
+    const nextMonthBtn = container.querySelector('#next-month');
+    
+    if (prevMonthBtn) {
+      prevMonthBtn.addEventListener('click', () => {
+        this.navigateCalendar(-1, container);
+      });
+    }
+    
+    if (nextMonthBtn) {
+      nextMonthBtn.addEventListener('click', () => {
+        this.navigateCalendar(1, container);
+      });
+    }
+
+    // Activity navigation
+    const prevActivityBtn = container.querySelector('#prev-activity');
+    const nextActivityBtn = container.querySelector('#next-activity');
+    const startActivityBtn = container.querySelector('.btn-start-activity');
+    
+    if (prevActivityBtn) {
+      prevActivityBtn.addEventListener('click', () => {
+        this.navigateActivity(-1, container);
+      });
+    }
+    
+    if (nextActivityBtn) {
+      nextActivityBtn.addEventListener('click', () => {
+        this.navigateActivity(1, container);
+      });
+    }
+
+    if (startActivityBtn) {
+      startActivityBtn.addEventListener('click', () => {
+        this.startCurrentActivity(container);
+      });
+    }
+
+    // Initialize calendar
+    this.initializeCalendar(container);
+  }
+
+  private navigateCalendar(direction: number, container: HTMLElement): void {
+    const titleElement = container.querySelector('#current-month');
+    if (!titleElement) return;
+
+    const currentDate = new Date();
+    currentDate.setMonth(currentDate.getMonth() + direction);
+    
+    const monthNames = ['Styczeń', 'Luty', 'Marzec', 'Kwiecień', 'Maj', 'Czerwiec',
+                       'Lipiec', 'Sierpień', 'Wrzesień', 'Październik', 'Listopad', 'Grudzień'];
+    
+    titleElement.textContent = `${monthNames[currentDate.getMonth()]} ${currentDate.getFullYear()}`;
+    this.generateCalendarDays(container, currentDate);
+  }
+
+  private initializeCalendar(container: HTMLElement): void {
+    const today = new Date();
+    this.generateCalendarDays(container, today);
+  }
+
+  private generateCalendarDays(container: HTMLElement, date: Date): void {
+    const daysContainer = container.querySelector('#calendar-days');
+    if (!daysContainer) return;
+
+    const firstDay = new Date(date.getFullYear(), date.getMonth(), 1);
+    const lastDay = new Date(date.getFullYear(), date.getMonth() + 1, 0);
+    const today = new Date();
+    
+    let startDate = new Date(firstDay);
+    startDate.setDate(startDate.getDate() - (firstDay.getDay() || 7) + 1);
+
+    daysContainer.innerHTML = '';
+    
+    for (let i = 0; i < 42; i++) {
+      const dayElement = document.createElement('div');
+      dayElement.className = 'calendar-day';
+      dayElement.textContent = startDate.getDate().toString();
+      
+      if (startDate.getMonth() !== date.getMonth()) {
+        dayElement.style.color = '#ccc';
+      }
+      
+      if (startDate.toDateString() === today.toDateString()) {
+        dayElement.classList.add('today');
+      }
+      
+      // Add activities indicator for some days
+      if (startDate.getDate() === today.getDate() && startDate.getMonth() === today.getMonth()) {
+        dayElement.classList.add('has-activities');
+      }
+      
+      daysContainer.appendChild(dayElement);
+      startDate.setDate(startDate.getDate() + 1);
+    }
+  }
+
+  private currentActivityIndex = 0;
+  private activities = [
+    { icon: '🔋', title: 'Test ciśnienia - PSS-7000 #12345', time: '10:00 - 10:30', status: 'pending' },
+    { icon: '💨', title: 'Test przepływu - PSS-5000 #67890', time: '10:30 - 11:00', status: 'pending' },
+    { icon: '🔧', title: 'Konserwacja - PSS-3000 #11111', time: '11:00 - 11:30', status: 'pending' }
+  ];
+
+  private navigateActivity(direction: number, container: HTMLElement): void {
+    this.currentActivityIndex += direction;
+    
+    if (this.currentActivityIndex < 0) this.currentActivityIndex = 0;
+    if (this.currentActivityIndex >= this.activities.length) this.currentActivityIndex = this.activities.length - 1;
+    
+    this.updateCurrentActivity(container);
+  }
+
+  private updateCurrentActivity(container: HTMLElement): void {
+    const activityCard = container.querySelector('#current-activity-card');
+    const currentNum = container.querySelector('.current-activity-num');
+    const totalNum = container.querySelector('.total-activities');
+    
+    if (!activityCard || !currentNum || !totalNum) return;
+    
+    const activity = this.activities[this.currentActivityIndex];
+    
+    activityCard.innerHTML = `
+      <div class="activity-icon">${activity.icon}</div>
+      <div class="activity-details">
+        <div class="activity-title">${activity.title}</div>
+        <div class="activity-time">${activity.time}</div>
+        <div class="activity-status status-${activity.status}">${activity.status === 'pending' ? 'Oczekuje' : activity.status}</div>
+      </div>
+      <div class="activity-progress">
+        <div class="progress-bar">
+          <div class="progress-fill" style="width: ${activity.status === 'running' ? '45%' : '0%'}"></div>
+        </div>
+      </div>
+    `;
+    
+    currentNum.textContent = (this.currentActivityIndex + 1).toString();
+    totalNum.textContent = this.activities.length.toString();
+  }
+
+  private startCurrentActivity(container: HTMLElement): void {
+    const activity = this.activities[this.currentActivityIndex];
+    activity.status = 'running';
+    
+    this.updateCurrentActivity(container);
+    
+    // Simulate activity progress
+    let progress = 0;
+    const progressInterval = setInterval(() => {
+      progress += Math.random() * 10;
+      if (progress >= 100) {
+        progress = 100;
+        activity.status = 'completed';
+        clearInterval(progressInterval);
+        this.updateCurrentActivity(container);
+      }
+      
+      const progressBar = container.querySelector('.progress-fill') as HTMLElement;
+      if (progressBar) {
+        progressBar.style.width = `${progress}%`;
+      }
+    }, 1000);
   }
 
   private switchSection(section: string, container: HTMLElement): void {

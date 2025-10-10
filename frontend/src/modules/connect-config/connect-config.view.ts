@@ -156,7 +156,7 @@ export class ConnectConfigView {
       /* Subcategory groups */
       .subcategory-group { display: none; }
       .subcategory-group.active { display: block; }
-      .menu-icon { font-size: 18px; }
+      .menu-icon { font-size: 13px; }
       .menu-label { font-size: 12px; font-weight: 500; text-align: center; }
       .main-content { flex: 1; display: flex; flex-direction: row; background: white; overflow: hidden; }
       .content-body { flex: 1; max-width: 700px; padding: 10px; overflow-y: auto; border-right: 1px solid #e0e0e0; }

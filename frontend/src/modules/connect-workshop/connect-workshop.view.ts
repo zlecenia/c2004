@@ -841,7 +841,7 @@ export class ConnectWorkshopView {
       }
 
       .menu-icon {
-        font-size: 18px;
+        font-size: 13px;
       }
 
       .menu-label {

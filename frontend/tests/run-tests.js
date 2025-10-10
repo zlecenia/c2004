@@ -10,7 +10,8 @@ const __dirname = dirname(__filename);
 const tests = [
   'test-structure.js',
   'test-modules.js',
-  'test-registry.js'
+  'test-registry.js',
+  'test-project-analysis.js'
 ];
 
 let passedTests = 0;

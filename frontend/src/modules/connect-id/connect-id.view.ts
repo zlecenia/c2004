@@ -507,7 +507,7 @@ export class ConnectIdView {
       }
 
       .menu-icon {
-        font-size: 18px;
+        font-size: 13px;
       }
 
       .menu-label {
@@ -561,7 +561,7 @@ export class ConnectIdView {
       }
 
       .scan-text {
-        font-size: 16px;
+        font-size: 13px;
         font-weight: 500;
         color: #333;
         margin: 0 0 8px 0;
@@ -592,7 +592,7 @@ export class ConnectIdView {
       .code-input {
         flex: 1;
         padding: 10px;
-        font-size: 16px;
+        font-size: 13px;
         border: 2px solid #ddd;
         border-radius: 5px;
         outline: none;
@@ -838,7 +838,7 @@ export class ConnectIdView {
       }
       .login-form h4 { 
         margin: 0 0 20px 0; 
-        font-size: 18px; 
+        font-size: 13px; 
         color: #333; 
         font-weight: 600; 
       }
@@ -858,7 +858,7 @@ export class ConnectIdView {
         padding: 12px; 
         border: 2px solid #ddd; 
         border-radius: 8px; 
-        font-size: 16px;
+        font-size: 13px;
         text-align: center;
         letter-spacing: 2px;
       }
@@ -1011,7 +1011,7 @@ export class ConnectIdView {
         align-items: center; 
         justify-content: center; 
         margin-right: 10px; 
-        font-size: 16px; 
+        font-size: 13px; 
         color: white;
       }
       .user-info { flex: 1; }
@@ -1049,7 +1049,7 @@ export class ConnectIdView {
         margin-right: 20px;
         color: white;
       }
-      .user-details h3 { margin: 0 0 5px 0; font-size: 18px; color: #333; }
+      .user-details h3 { margin: 0 0 5px 0; font-size: 13px; color: #333; }
       .user-details p { margin: 2px 0; font-size: 12px; color: #666; }
 
       .password-section { width: 100%; margin-bottom: 20px; }
@@ -1060,7 +1060,7 @@ export class ConnectIdView {
         padding: 12px; 
         border: 2px solid #ddd; 
         border-radius: 6px; 
-        font-size: 16px; 
+        font-size: 13px; 
         text-align: center; 
         letter-spacing: 3px;
       }

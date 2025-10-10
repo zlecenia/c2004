@@ -114,7 +114,7 @@ style.textContent = `
   }
 
   .nav-icon {
-    font-size: 16px;
+    font-size: 13px;
   }
 
   .nav-text {
@@ -189,7 +189,7 @@ style.textContent = `
 
   .loading-text h3 {
     margin: 0 0 8px 0;
-    font-size: 18px;
+    font-size: 13px;
     color: #333;
     font-weight: 600;
   }
@@ -363,7 +363,6 @@ function createMainApplication() {
           <span class="nav-icon">${IconComponent.render('file-text', { size: 18 })}</span>
           <span class="nav-text">Raporty</span>
         </button>
-        <hr />
          <button class="nav-btn" data-module="connect-workshop">
           <span class="nav-icon">${IconComponent.render('wrench', { size: 18 })}</span>
           <span class="nav-text">Connect Workshop</span>
@@ -375,6 +374,10 @@ function createMainApplication() {
         <button class="nav-btn" data-module="connect-config">
           <span class="nav-icon">${IconComponent.render('settings', { size: 18 })}</span>
           <span class="nav-text">ConnectConfig</span>
+        </button>
+        <button class="nav-btn" data-module="connect-manager">
+          <span class="nav-icon">${IconComponent.render('clipboard-list', { size: 18 })}</span>
+          <span class="nav-text">Manager</span>
         </button>
       </div>
       
@@ -585,6 +588,10 @@ function loadModule(moduleName: string, moduleType?: string | null, method?: str
         // For reports: moduleType is report type, method is view
         loadConnectReportsModule(container, moduleType, method);
         break;
+      case 'connect-manager':
+        // For manager: moduleType is action
+        loadConnectManagerModule(container, moduleType);
+        break;
       default:
         container.innerHTML = `<div class="error">Unknown module: ${moduleName}</div>`;
     }
@@ -607,7 +614,8 @@ function showLoadingState(container: HTMLElement, moduleName: string) {
     'connect-workshop': 'ConnectWorkshop',
     'connect-data': 'ConnectData',
     'connect-config': 'ConnectConfig',
-    'connect-reports': 'ConnectReports'
+    'connect-reports': 'ConnectReports',
+    'connect-manager': 'ConnectManager'
   };
   
   const displayName = moduleNames[moduleName] || moduleName;
@@ -797,6 +805,27 @@ function loadConnectReportsModule(container: HTMLElement, reportType?: string | 
   });
 }
 
+function loadConnectManagerModule(container: HTMLElement, action?: string | null) {
+  import('./modules/connect-manager/connect-manager.view').then(async ({ ConnectManagerView }) => {
+    const view = new ConnectManagerView();
+    
+    container.innerHTML = '';
+    const viewElement = view.render();
+    container.appendChild(viewElement);
+    
+    // Set initial action from URL
+    setTimeout(() => {
+      if (action && (view as any).switchAction) {
+        (view as any).switchAction(action, viewElement);
+      }
+    }, 50);
+    
+    console.log(`✅ ConnectManager view loaded - action: ${action}`);
+  }).catch(error => {
+    container.innerHTML = `<div class="error">Failed to load ConnectManager module: ${error}</div>`;
+  });
+}
+
 function oldLoadConnectReportsModule(container: HTMLElement) {
   container.innerHTML = `
     <div class="reports-compact" style="height: 100%; overflow: hidden;">
@@ -805,11 +834,11 @@ function oldLoadConnectReportsModule(container: HTMLElement) {
         <div class="menu-column" style="width: 120px; background: #2a2a2a; padding: 6px 4px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #1a1a1a;">
           <h3 class="column-title" style="color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px;">Raporty</h3>
           <button class="report-type-item active" data-type="executed" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
-            <span class="menu-icon" style="font-size: 18px;">✅</span>
+            <span class="menu-icon" style="font-size: 13px;">✅</span>
             <span class="menu-label" style="font-size: 10px; font-weight: 500;">Wykonane</span>
           </button>
           <button class="report-type-item" data-type="planned" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
-            <span class="menu-icon" style="font-size: 18px;">📅</span>
+            <span class="menu-icon" style="font-size: 13px;">📅</span>
             <span class="menu-label" style="font-size: 10px; font-weight: 500;">Planowane</span>
           </button>
         </div>
@@ -818,15 +847,15 @@ function oldLoadConnectReportsModule(container: HTMLElement) {
         <div class="menu-column" id="calendar-column" style="width: 120px; background: #2a2a2a; padding: 6px 4px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #1a1a1a; display: none;">
           <h3 class="column-title" style="color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px;">Widok</h3>
           <button class="calendar-view-item active" data-view="week" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
-            <span class="menu-icon" style="font-size: 16px;">📅</span>
+            <span class="menu-icon" style="font-size: 13px;">📅</span>
             <span class="menu-label" style="font-size: 9px; font-weight: 500;">Tygodnie</span>
           </button>
           <button class="calendar-view-item" data-view="month" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
-            <span class="menu-icon" style="font-size: 16px;">🗓️</span>
+            <span class="menu-icon" style="font-size: 13px;">🗓️</span>
             <span class="menu-label" style="font-size: 9px; font-weight: 500;">Miesiące</span>
           </button>
           <button class="calendar-view-item" data-view="year" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
-            <span class="menu-icon" style="font-size: 16px;">📆</span>
+            <span class="menu-icon" style="font-size: 13px;">📆</span>
             <span class="menu-label" style="font-size: 9px; font-weight: 500;">Lata</span>
           </button>
         </div>

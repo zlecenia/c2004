@@ -147,6 +147,30 @@ export const ROUTE_REGISTRY: Record<string, RouteDefinition> = {
     displayName: 'Raporty',
     icon: '📋',
     params: ['type', 'period']
+  },
+  'connect-manager': {
+    path: '/connect-manager',
+    module: 'connect-manager',
+    displayName: 'Manager',
+    icon: '📋',
+    params: ['action'],
+    children: [
+      {
+        path: '/connect-manager/scenarios',
+        module: 'connect-manager',
+        displayName: 'Scenariusze Testu'
+      },
+      {
+        path: '/connect-manager/activities',
+        module: 'connect-manager',
+        displayName: 'Czynności'
+      },
+      {
+        path: '/connect-manager/test-types',
+        module: 'connect-manager',
+        displayName: 'Rodzaj Testu'
+      }
+    ]
   }
 };
 

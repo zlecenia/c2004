@@ -90,6 +90,17 @@ export const MODULE_REGISTRY = {
     dependencies: [],
     features: ['reports', 'analytics', 'data-export', 'filters'],
     route: '/connect-reports'
+  },
+  'connect-manager': {
+    name: 'connect-manager',
+    displayName: 'ConnectManager',
+    version: '1.0.0',
+    status: 'production',
+    path: '/src/modules/connect-manager',
+    icon: '📋',
+    dependencies: [],
+    features: ['scenario-management', 'activity-management', 'test-assignment', 'drag-drop'],
+    route: '/connect-manager'
   }
 } as const satisfies Record<string, ModuleDefinition>;
 

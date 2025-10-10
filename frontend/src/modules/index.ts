@@ -7,6 +7,7 @@ import { ConnectWorkshopModule } from './connect-workshop/connect-workshop.modul
 import { ConnectTestModule } from './connect-test/connect-test.module';
 import { ConnectConfigModule } from './connect-config/connect-config.module';
 import { ConnectReportsModule } from './connect-reports/connect-reports.module';
+import { ConnectManagerModule } from './connect-manager/connect-manager.module';
 
 export const MODULE_REGISTRY = {
   identification: IdentificationModule,
@@ -15,7 +16,8 @@ export const MODULE_REGISTRY = {
   'connect-workshop': ConnectWorkshopModule,
   'connect-test': ConnectTestModule,
   'connect-config': ConnectConfigModule,
-  'connect-reports': ConnectReportsModule
+  'connect-reports': ConnectReportsModule,
+  'connect-manager': ConnectManagerModule
 } as const;
 
 export class ModuleManager {

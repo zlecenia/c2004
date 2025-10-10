@@ -76,6 +76,14 @@ export const COMPONENT_REGISTRY = {
     status: 'beta',
     exports: ['IdentificationModule'],
     dependencies: []
+  },
+  'connect-manager': {
+    path: '/src/modules/connect-manager/connect-manager.view.ts',
+    version: '1.0.0',
+    type: 'vanilla',
+    status: 'production',
+    exports: ['ConnectManagerView', 'ConnectManagerService'],
+    dependencies: []
   }
 } as const satisfies Record<string, Component>;
 

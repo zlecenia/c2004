@@ -735,7 +735,7 @@ export class ConnectReportsView {
       .report-type-item, .view-item { width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 4px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc; }
       .report-type-item:hover, .view-item:hover { background: #4a4a4a; }
       .report-type-item.active, .view-item.active { background: #6366f1; color: white; }
-      .menu-icon { font-size: 18px; }
+      .menu-icon { font-size: 13px; }
       .menu-label { font-size: 12px; font-weight: 500; text-align: center; }
       .main-content { flex: 1; display: flex; flex-direction: row; background: white; overflow: hidden; }
       .content-body { flex: 1; padding: 0px; overflow-y: auto; }
@@ -745,7 +745,7 @@ export class ConnectReportsView {
       .view-content { display: none; }
       .view-content.active { display: block; }
       
-      .reports-section h4 { margin: 0 0 15px 0; font-size: 16px; color: #333; font-weight: 600; }
+      .reports-section h4 { margin: 0 0 15px 0; font-size: 13px; color: #333; font-weight: 600; }
       .search-section { background: #f8f9fa; padding: 12px; border-radius: 8px; margin-bottom: 15px; }
       .search-row { display: flex; gap: 10px; margin-bottom: 10px; }
       .filters-row { display: flex; gap: 10px; flex-wrap: wrap; }
@@ -824,7 +824,7 @@ export class ConnectReportsView {
       .month-calendar.current { border-color: #6366f1; box-shadow: 0 2px 8px rgba(99, 102, 241, 0.2); }
       .month-calendar h5 { 
         margin: 0 0 15px 0; 
-        font-size: 16px; 
+        font-size: 13px; 
         color: #333; 
         text-align: center; 
         display: flex; 
@@ -1068,7 +1068,7 @@ export class ConnectReportsView {
       }
       .year-summary h6 { 
         margin: 0 0 15px 0; 
-        font-size: 16px; 
+        font-size: 13px; 
         color: #333; 
         font-weight: 600;
       }
@@ -1093,7 +1093,7 @@ export class ConnectReportsView {
       }
       .summary-value { 
         display: block; 
-        font-size: 18px; 
+        font-size: 13px; 
         font-weight: 700; 
         color: #333; 
         margin-bottom: 4px;
@@ -1111,7 +1111,7 @@ export class ConnectReportsView {
       
       /* Custom Range View */
       .custom-range { background: white; padding: 2px; border-radius: 10px; border: 1px solid #e0e0e0; }
-      .custom-range h5 { margin: 0 0 20px 0; font-size: 18px; color: #333; font-weight: 600; }
+      .custom-range h5 { margin: 0 0 20px 0; font-size: 13px; color: #333; font-weight: 600; }
       .date-picker-section { display: flex; flex-direction: column; gap: 0px; }
       .date-range-inputs { 
         display: flex; 
@@ -1141,7 +1141,7 @@ export class ConnectReportsView {
       }
       
       .custom-results { display: flex; flex-direction: column; gap: 20px; }
-      .results-header h6 { margin: 0; font-size: 16px; color: #333; font-weight: 600; }
+      .results-header h6 { margin: 0; font-size: 13px; color: #333; font-weight: 600; }
       .results-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
       .result-card { 
         background: white; 
@@ -1236,11 +1236,11 @@ export class ConnectReportsView {
       .metrics-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 15px; }
       .metric-card { background: white; padding: 15px; border-radius: 8px; text-align: center; border: 1px solid #e0e0e0; }
       .metric-icon { font-size: 24px; margin-bottom: 8px; }
-      .metric-value { font-size: 18px; font-weight: 600; color: #333; margin-bottom: 4px; }
+      .metric-value { font-size: 13px; font-weight: 600; color: #333; margin-bottom: 4px; }
       .metric-label { font-size: 11px; color: #666; }
       
       /* Export styles */
-      .export-options { background: white; padding: 20px; border-radius: 8px; border: 1px solid #e0e0e0; }
+      .export-options { background: white; padding: 4px; }
       .export-section { margin-bottom: 20px; }
       .export-section h5 { margin: 0 0 10px 0; font-size: 14px; color: #333; }
       .radio-group { display: flex; gap: 15px; }
