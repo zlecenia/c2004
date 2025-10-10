@@ -98,7 +98,7 @@ style.textContent = `
   .nav-btn {
     background: #3a3a3a;
     border: none;
-    padding: 5px 6px;
+    padding: 3px 4px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 12px;

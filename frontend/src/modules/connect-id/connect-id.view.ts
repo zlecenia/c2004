@@ -58,28 +58,42 @@ export class ConnectIdView {
 
 
         <!-- Column 3: Users (shown only for user type with list method) -->
-        <div class="menu-column" id="users-column" style="display: none;">
+        <div class="menu-column users-column" id="users-column" style="display: none;">
           <h3 class="column-title">Użytkownicy</h3>
           <div class="users-list-menu">
-            <div class="user-menu-item" data-user="jan.kowalski">
+            <div class="user-menu-item" data-user="jan.kowalski" data-fullname="Jan Kowalski">
               <div class="user-info">
                 <div class="user-name">Jan K.</div>
                 <div class="user-role">Manager</div>
                 <div class="user-last-login">10:30</div>
               </div>
             </div>
-            <div class="user-menu-item" data-user="anna.nowak">
+            <div class="user-menu-item" data-user="anna.nowak" data-fullname="Anna Nowak">
               <div class="user-info">
                 <div class="user-name">Anna N.</div>
                 <div class="user-role">Technik</div>
                 <div class="user-last-login">09:15</div>
               </div>
             </div>
-            <div class="user-menu-item" data-user="piotr.wisniewski">
+            <div class="user-menu-item" data-user="piotr.wisniewski" data-fullname="Piotr Wiśniewski">
               <div class="user-info">
                 <div class="user-name">Piotr W.</div>
                 <div class="user-role">Operator</div>
                 <div class="user-last-login">08:45</div>
+              </div>
+            </div>
+            <div class="user-menu-item" data-user="katarzyna.kowalczyk" data-fullname="Katarzyna Kowalczyk">
+              <div class="user-info">
+                <div class="user-name">Katarzyna K.</div>
+                <div class="user-role">Administrator</div>
+                <div class="user-last-login">11:00</div>
+              </div>
+            </div>
+            <div class="user-menu-item" data-user="tomasz.nowicki" data-fullname="Tomasz Nowicki">
+              <div class="user-info">
+                <div class="user-name">Tomasz N.</div>
+                <div class="user-role">Serwisant</div>
+                <div class="user-last-login">14:20</div>
               </div>
             </div>
           </div>
@@ -91,17 +105,61 @@ export class ConnectIdView {
             
             <!-- User Login Form (shown when user is selected from menu) -->
             <div id="user-login-content" class="method-content" style="display: none;">
-              <div class="user-login-form">
-                                
-                <div class="password-section">
-                  <div class="password-input-group">
-                    <input type="password" id="user-password-input" class="password-field" placeholder="••••••••">
-                    <button id="user-login-submit" class="btn-login">🔓 Zaloguj</button>
+              <div id="login-form" class="login-form" style="display: block;">
+                <h4>Zaloguj się jako: <span id="selected-user">Wybierz użytkownika</span></h4>
+                <div class="password-input">
+                  <input type="password" id="password-input" class="password-field" placeholder="Wprowadź hasło...">
+                  <button id="password-submit" class="btn-submit">🔓 Zaloguj</button>
+                </div>
+                <div class="virtual-keyboard-login">
+                  <div class="keyboard-row">
+                    <button class="key-login" data-key="1">1</button>
+                    <button class="key-login" data-key="2">2</button>
+                    <button class="key-login" data-key="3">3</button>
+                    <button class="key-login" data-key="4">4</button>
+                    <button class="key-login" data-key="5">5</button>
+                    <button class="key-login" data-key="6">6</button>
+                    <button class="key-login" data-key="7">7</button>
+                    <button class="key-login" data-key="8">8</button>
+                    <button class="key-login" data-key="9">9</button>
+                    <button class="key-login" data-key="0">0</button>
+                  </div>
+                  <div class="keyboard-row">
+                    <button class="key-login" data-key="Q">Q</button>
+                    <button class="key-login" data-key="W">W</button>
+                    <button class="key-login" data-key="E">E</button>
+                    <button class="key-login" data-key="R">R</button>
+                    <button class="key-login" data-key="T">T</button>
+                    <button class="key-login" data-key="Y">Y</button>
+                    <button class="key-login" data-key="U">U</button>
+                    <button class="key-login" data-key="I">I</button>
+                    <button class="key-login" data-key="O">O</button>
+                    <button class="key-login" data-key="P">P</button>
+                  </div>
+                  <div class="keyboard-row">
+                    <button class="key-login" data-key="A">A</button>
+                    <button class="key-login" data-key="S">S</button>
+                    <button class="key-login" data-key="D">D</button>
+                    <button class="key-login" data-key="F">F</button>
+                    <button class="key-login" data-key="G">G</button>
+                    <button class="key-login" data-key="H">H</button>
+                    <button class="key-login" data-key="J">J</button>
+                    <button class="key-login" data-key="K">K</button>
+                    <button class="key-login" data-key="L">L</button>
+                    <button class="key-login key-special" data-key="CLEAR">⌫</button>
+                  </div>
+                  <div class="keyboard-row">
+                    <button class="key-login key-shift" data-key="SHIFT">⇧ Shift</button>
+                    <button class="key-login" data-key="Z">Z</button>
+                    <button class="key-login" data-key="X">X</button>
+                    <button class="key-login" data-key="C">C</button>
+                    <button class="key-login" data-key="V">V</button>
+                    <button class="key-login" data-key="B">B</button>
+                    <button class="key-login" data-key="N">N</button>
+                    <button class="key-login" data-key="M">M</button>
+                    <button class="key-login key-wide" data-key="ENTER">🔓 LOGIN</button>
                   </div>
                 </div>
-
-                <!-- Virtual Keyboard for Password -->
-                <div id="password-keyboard-container"></div>
               </div>
             </div>
             <!-- RFID Panel -->
@@ -146,59 +204,6 @@ export class ConnectIdView {
             <div id="list-content" class="method-content">
               <!-- User List -->
               <div id="user-list" class="list-type-content">
-                <h4>Wybierz użytkownika:</h4>
-                
-                <!-- User Profiles -->
-                <div class="user-card selectable" data-user="jan.kowalski">
-                  <div class="user-avatar">👨‍💼</div>
-                  <div class="user-details">
-                    <div class="user-name">Jan Kowalski</div>
-                    <div class="user-role">Manager</div>
-                    <div class="user-meta">ID: JK001 | Ostatnio: 10:30</div>
-                  </div>
-                  <button class="btn-login-user" data-user="jan.kowalski">🔓 Zaloguj</button>
-                </div>
-
-                <div class="user-card selectable" data-user="anna.nowak">
-                  <div class="user-avatar">👩‍🔧</div>
-                  <div class="user-details">
-                    <div class="user-name">Anna Nowak</div>
-                    <div class="user-role">Technik</div>
-                    <div class="user-meta">ID: AN002 | Ostatnio: 09:15</div>
-                  </div>
-                  <button class="btn-login-user" data-user="anna.nowak">🔓 Zaloguj</button>
-                </div>
-
-                <div class="user-card selectable" data-user="piotr.wisniewski">
-                  <div class="user-avatar">👨‍🔧</div>
-                  <div class="user-details">
-                    <div class="user-name">Piotr Wiśniewski</div>
-                    <div class="user-role">Operator</div>
-                    <div class="user-meta">ID: PW003 | Ostatnio: 08:45</div>
-                  </div>
-                  <button class="btn-login-user" data-user="piotr.wisniewski">🔓 Zaloguj</button>
-                </div>
-
-                <div class="user-card selectable" data-user="katarzyna.kowalczyk">
-                  <div class="user-avatar">👩‍💻</div>
-                  <div class="user-details">
-                    <div class="user-name">Katarzyna Kowalczyk</div>
-                    <div class="user-role">Administrator</div>
-                    <div class="user-meta">ID: KK004 | Ostatnio: 11:00</div>
-                  </div>
-                  <button class="btn-login-user" data-user="katarzyna.kowalczyk">🔓 Zaloguj</button>
-                </div>
-
-                <div class="user-card selectable" data-user="tomasz.nowicki">
-                  <div class="user-avatar">👨‍🏭</div>
-                  <div class="user-details">
-                    <div class="user-name">Tomasz Nowicki</div>
-                    <div class="user-role">Serwisant</div>
-                    <div class="user-meta">ID: TN005 | Ostatnio: 14:20</div>
-                  </div>
-                  <button class="btn-login-user" data-user="tomasz.nowicki">🔓 Zaloguj</button>
-                </div>
-                
                 <!-- Login Form -->
                 <div id="login-form" class="login-form" style="display: none;">
                   <h4>Zaloguj się jako: <span id="selected-user"></span></h4>
@@ -244,6 +249,7 @@ export class ConnectIdView {
                       <button class="key-login key-special" data-key="CLEAR">⌫</button>
                     </div>
                     <div class="keyboard-row">
+                      <button class="key-login key-shift" data-key="SHIFT">⇧ Shift</button>
                       <button class="key-login" data-key="Z">Z</button>
                       <button class="key-login" data-key="X">X</button>
                       <button class="key-login" data-key="C">C</button>
@@ -488,7 +494,7 @@ export class ConnectIdView {
         width: 100%;
         background: #3a3a3a;
         border: none;
-        padding: 5px 6px;
+        padding: 3px 4px;
         margin-bottom: 4px;
         border-radius: 5px;
         cursor: pointer;
@@ -531,7 +537,7 @@ export class ConnectIdView {
 
       .content-body {
         flex: 1;
-        padding: 15px;
+        padding: 5px;
         overflow-y: auto;
         position: relative;
       }
@@ -794,14 +800,156 @@ export class ConnectIdView {
       .user-meta { font-size: 11px; color: #666; }
       .btn-login-user { padding: 8px 15px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; transition: all 0.2s; }
       .btn-login-user:hover { transform: translateY(-1px); box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3); }
+      
+      /* Users Column Sidebar Styling */
+      .users-column { width: 140px; }
+      .users-list-menu { margin-bottom: 12px; }
+      .user-menu-item { 
+        display: flex; 
+        align-items: center; 
+        gap: 6px; 
+        background: #3a3a3a; 
+        border: none; 
+        padding: 6px; 
+        margin-bottom: 3px; 
+        border-radius: 4px; 
+        cursor: pointer; 
+        transition: all 0.2s; 
+        color: #ccc;
+      }
+      .user-menu-item:hover { background: #4a4a4a; color: white; }
+      .user-menu-item.selected { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
+      
+      .user-menu-item .user-avatar { font-size: 14px; flex-shrink: 0; }
+      .user-menu-item .user-info { flex: 1; min-width: 0; }
+      .user-menu-item .user-name { font-size: 10px; font-weight: 600; color: inherit; margin-bottom: 1px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .user-menu-item .user-role { font-size: 8px; color: inherit; opacity: 0.8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+      .user-menu-item .user-last-login { font-size: 7px; color: inherit; opacity: 0.6; }
+      
+      /* Main Login Form */
+      .login-form { 
+        background: #f8f9fa; 
+        border: 2px solid #e0e0e0; 
+        border-radius: 12px; 
+        padding: 24px; 
+        margin: 20px auto;
+        max-width: 500px;
+        text-align: center;
+      }
+      .login-form h4 { 
+        margin: 0 0 20px 0; 
+        font-size: 18px; 
+        color: #333; 
+        font-weight: 600; 
+      }
+      .login-form #selected-user { 
+        color: #28a745; 
+        font-weight: 700; 
+      }
+      .password-input { 
+        display: flex; 
+        gap: 12px; 
+        margin-bottom: 20px; 
+        justify-content: center;
+      }
+      .password-field { 
+        flex: 1; 
+        max-width: 250px;
+        padding: 12px; 
+        border: 2px solid #ddd; 
+        border-radius: 8px; 
+        font-size: 16px;
+        text-align: center;
+        letter-spacing: 2px;
+      }
+      .password-field:focus { 
+        border-color: #28a745; 
+        outline: none; 
+        box-shadow: 0 0 0 3px rgba(40, 167, 69, 0.1); 
+      }
+      .btn-submit { 
+        padding: 12px 20px; 
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
+        color: white; 
+        border: none; 
+        border-radius: 8px; 
+        cursor: pointer; 
+        font-size: 14px; 
+        font-weight: 600;
+        transition: all 0.2s ease;
+      }
+      .btn-submit:hover { 
+        transform: translateY(-2px); 
+        box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3); 
+      }
+      
+      /* Virtual Keyboard Login */
+      .virtual-keyboard-login { 
+        display: flex; 
+        flex-direction: column; 
+        gap: 8px; 
+        margin-top: 20px;
+      }
+      .keyboard-row { 
+        display: flex; 
+        gap: 6px; 
+        justify-content: center; 
+      }
+      .key-login { 
+        padding: 12px; 
+        background: #fff; 
+        border: 2px solid #ddd; 
+        border-radius: 6px; 
+        cursor: pointer; 
+        font-size: 14px; 
+        font-weight: 600; 
+        transition: all 0.2s ease; 
+        min-width: 45px; 
+        height: 45px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .key-login:hover { 
+        background: #e9ecef; 
+        border-color: #007bff; 
+        transform: translateY(-1px);
+      }
+      .key-login:active { 
+        background: #007bff; 
+        color: white; 
+        transform: translateY(0);
+      }
+      .key-login.key-special { 
+        background: #ffc107; 
+        border-color: #e0a800;
+      }
+      .key-login.key-wide { 
+        flex: 1; 
+        background: linear-gradient(135deg, #28a745 0%, #20c997 100%); 
+        color: white; 
+        border-color: #28a745;
+        max-width: 120px;
+      }
+      .key-login.key-shift { 
+        background: #e9ecef; 
+        border-color: #adb5bd;
+        min-width: 60px;
+        font-size: 11px;
+      }
+      .key-login.key-shift.active { 
+        background: linear-gradient(135deg, #007bff 0%, #0056b3 100%); 
+        color: white; 
+        border-color: #007bff;
+      }
 
       /* Scenario Type Items */
-      .scenario-type-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
+      .scenario-type-item { width: 100%; padding: 3px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
       .scenario-type-item:hover { background: #4a4a4a; color: white; }
       .scenario-type-item.active { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; }
 
       /* Protocol Items */
-      .protocol-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
+      .protocol-item { width: 100%; padding: 3px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
       .protocol-item:hover { background: #4a4a4a; color: white; }
       .protocol-item.active { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
 
@@ -1079,6 +1227,15 @@ export class ConnectIdView {
       }
     });
     
+    // Listen for external state updates (from main.ts)
+    window.addEventListener('connectid:update-method', (e: any) => {
+      const { method } = e.detail;
+      console.log(`🔧 ConnectID: Received update-method event: ${method}`);
+      if (method && method !== this.currentMethod) {
+        this.switchMethod(method, container, false); // Don't update URL for external events
+      }
+    });
+    
     // Mark event listeners as setup
     this.eventListenersSetup = true;
     console.log('🔧 ConnectID: Event listeners setup completed');
@@ -1113,13 +1270,27 @@ export class ConnectIdView {
     }
   }
 
-  private switchMethod(method: string, container: HTMLElement): void {
+  private switchMethod(method: string, container: HTMLElement, updateURL: boolean = true): void {
+    console.log(`🔧 ConnectID: switchMethod to ${method}, updateURL: ${updateURL}`);
     this.currentMethod = method;
 
-    // Update URL hash with method
-    const currentHash = window.location.hash.slice(2); // Remove '#/'
-    const [moduleName] = currentHash.split('/');
-    window.location.hash = `#/${moduleName}/${method}`;
+    // Update URL hash with method (but only if requested)
+    if (updateURL) {
+      const currentHash = window.location.hash.slice(2); // Remove '#/'
+      const [moduleName, moduleType] = currentHash.split('/');
+      const newHash = `#/${moduleName}/${moduleType || 'user'}/${method}`;
+      console.log(`🔧 ConnectID: Updating URL to: ${newHash}`);
+      
+      // Temporarily disable hashchange listener to prevent re-render
+      window.removeEventListener('hashchange', (window as any).handleHashChangeRef);
+      window.location.hash = newHash;
+      // Re-enable after short delay
+      setTimeout(() => {
+        if ((window as any).handleHashChangeRef) {
+          window.addEventListener('hashchange', (window as any).handleHashChangeRef);
+        }
+      }, 100);
+    }
 
     // Update method menu
     container.querySelectorAll('.method-item').forEach(item => {
@@ -1599,6 +1770,174 @@ export class ConnectIdView {
       container.querySelectorAll('.user-menu-item').forEach(item => {
         item.classList.remove('selected');
       });
+    }
+  }
+
+  private showUserLoginForm(userId: string, container: HTMLElement): void {
+    console.log(`🔧 ConnectID: Showing login form for user: ${userId}`);
+    
+    // Update selected user in sidebar
+    container.querySelectorAll('.user-menu-item').forEach(item => {
+      item.classList.remove('selected');
+      if (item.getAttribute('data-user') === userId) {
+        item.classList.add('selected');
+      }
+    });
+
+    // Get user full name from data attribute
+    const userItem = container.querySelector(`[data-user="${userId}"]`);
+    const fullName = userItem?.getAttribute('data-fullname') || userId;
+    
+    // Show login form in main content
+    this.switchToUserLogin(container);
+    
+    // Update selected user name in form
+    const selectedUserSpan = container.querySelector('#selected-user') as HTMLElement;
+    if (selectedUserSpan) {
+      selectedUserSpan.textContent = fullName;
+    }
+    
+    // Focus on password input and clear it
+    const passwordInput = container.querySelector('#password-input') as HTMLInputElement;
+    if (passwordInput) {
+      passwordInput.focus();
+      passwordInput.value = '';
+    }
+
+    // Setup main keyboard event listeners
+    this.setupMainKeyboard(container);
+  }
+
+  private switchToUserLogin(container: HTMLElement): void {
+    // Hide all method contents
+    container.querySelectorAll('.method-content').forEach(content => {
+      (content as HTMLElement).style.display = 'none';
+    });
+    
+    // Show user login content
+    const loginContent = container.querySelector('#user-login-content') as HTMLElement;
+    if (loginContent) {
+      loginContent.style.display = 'block';
+    }
+  }
+
+  private setupMainKeyboard(container: HTMLElement): void {
+    const passwordInput = container.querySelector('#password-input') as HTMLInputElement;
+    const submitBtn = container.querySelector('#password-submit') as HTMLButtonElement;
+    let isShiftActive = false;
+    
+    // Virtual keyboard keys
+    container.querySelectorAll('.key-login').forEach(key => {
+      key.addEventListener('click', (e) => {
+        const target = e.currentTarget as HTMLElement;
+        const keyValue = target.getAttribute('data-key');
+        
+        if (!passwordInput) return;
+        
+        if (keyValue === 'CLEAR') {
+          passwordInput.value = '';
+        } else if (keyValue === 'ENTER') {
+          this.handleMainLogin(container);
+        } else if (keyValue === 'SHIFT') {
+          // Toggle shift state
+          isShiftActive = !isShiftActive;
+          this.updateKeyboardCase(container, isShiftActive);
+          
+          // Update shift key visual state
+          const shiftKeys = container.querySelectorAll('.key-shift');
+          shiftKeys.forEach(shiftKey => {
+            if (isShiftActive) {
+              shiftKey.classList.add('active');
+            } else {
+              shiftKey.classList.remove('active');
+            }
+          });
+        } else if (keyValue && keyValue.length === 1) {
+          // Handle letter keys with shift
+          const finalValue = isShiftActive ? keyValue.toUpperCase() : keyValue.toLowerCase();
+          passwordInput.value += finalValue;
+          
+          // Auto-disable shift after typing a letter (like real keyboards)
+          if (isShiftActive) {
+            isShiftActive = false;
+            this.updateKeyboardCase(container, false);
+            const shiftKeys = container.querySelectorAll('.key-shift');
+            shiftKeys.forEach(shiftKey => shiftKey.classList.remove('active'));
+          }
+        } else {
+          // Handle other keys (numbers, etc.)
+          if (keyValue) passwordInput.value += keyValue;
+        }
+      });
+    });
+
+    // Submit button
+    if (submitBtn) {
+      submitBtn.addEventListener('click', () => {
+        this.handleMainLogin(container);
+      });
+    }
+
+    // Enter key on input
+    if (passwordInput) {
+      passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+          this.handleMainLogin(container);
+        }
+      });
+    }
+  }
+
+  private updateKeyboardCase(container: HTMLElement, isUpperCase: boolean): void {
+    // Update all letter keys to show uppercase or lowercase
+    const letterKeys = container.querySelectorAll('.key-login[data-key]');
+    letterKeys.forEach(key => {
+      const keyValue = key.getAttribute('data-key');
+      if (keyValue && keyValue.length === 1 && keyValue.match(/[A-Za-z]/)) {
+        key.textContent = isUpperCase ? keyValue.toUpperCase() : keyValue.toLowerCase();
+      }
+    });
+  }
+
+  private handleMainLogin(container: HTMLElement): void {
+    const passwordInput = container.querySelector('#password-input') as HTMLInputElement;
+    const selectedUser = container.querySelector('.user-menu-item.selected');
+    
+    if (!passwordInput || !selectedUser) return;
+    
+    const password = passwordInput.value.trim();
+    const userId = selectedUser.getAttribute('data-user');
+    const fullName = selectedUser.getAttribute('data-fullname');
+    
+    if (password) {
+      console.log(`🔧 ConnectID: Attempting login for ${userId} with password: ${password}`);
+      
+      // Simulate login success
+      this.showNotification(`✅ Zalogowano jako: ${fullName}`, 'success');
+      
+      // Hide login form and return to current method
+      const activeMethodContent = container.querySelector(`#${this.currentMethod}-content`) as HTMLElement;
+      if (activeMethodContent) {
+        // Hide login form
+        const loginContent = container.querySelector('#user-login-content') as HTMLElement;
+        if (loginContent) {
+          loginContent.style.display = 'none';
+        }
+        
+        // Show active method content
+        activeMethodContent.style.display = 'block';
+      }
+      
+      // Clear selection
+      container.querySelectorAll('.user-menu-item').forEach(item => {
+        item.classList.remove('selected');
+      });
+      
+      // Clear password
+      passwordInput.value = '';
+      
+    } else {
+      this.showNotification(`❌ Wprowadź hasło`, 'error');
     }
   }
 }

@@ -99,7 +99,7 @@ style.textContent = `
   .nav-btn {
     background: #3a3a3a;
     border: none;
-    padding: 5px 6px;
+    padding: 3px 4px;
     border-radius: 5px;
     cursor: pointer;
     font-size: 12px;
@@ -157,6 +157,132 @@ style.textContent = `
     font-size: 12px;
   }
 
+  /* Professional Loading States */
+  .loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .loading-spinner {
+    margin-bottom: 20px;
+  }
+
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid #6366f1;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 0 auto;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  .loading-text h3 {
+    margin: 0 0 8px 0;
+    font-size: 18px;
+    color: #333;
+    font-weight: 600;
+  }
+
+  .loading-text p {
+    margin: 0;
+    font-size: 14px;
+    color: #666;
+  }
+
+  .loading-progress {
+    width: 200px;
+    margin-top: 20px;
+  }
+
+  .progress-bar {
+    width: 100%;
+    height: 4px;
+    background: #e0e0e0;
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    width: 0%;
+    transition: width 0.8s ease-out;
+  }
+
+  /* Professional Error States */
+  .error-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 300px;
+    text-align: center;
+    padding: 40px;
+  }
+
+  .error-icon {
+    font-size: 48px;
+    margin-bottom: 20px;
+  }
+
+  .error-content h3 {
+    margin: 0 0 12px 0;
+    font-size: 20px;
+    color: #dc3545;
+    font-weight: 600;
+  }
+
+  .error-message {
+    margin: 0 0 20px 0;
+    font-size: 14px;
+    color: #666;
+    max-width: 400px;
+  }
+
+  .error-actions {
+    display: flex;
+    gap: 12px;
+  }
+
+  .btn-retry, .btn-home {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+  }
+
+  .btn-retry {
+    background: #6366f1;
+    color: white;
+  }
+
+  .btn-retry:hover {
+    background: #5856eb;
+  }
+
+  .btn-home {
+    background: #6c757d;
+    color: white;
+  }
+
+  .btn-home:hover {
+    background: #5a6268;
+  }
+
   /* Scrollbar styling */
   .module-container::-webkit-scrollbar {
     width: 6px;
@@ -178,6 +304,13 @@ style.textContent = `
   ${IconStyles}
 `;
 document.head.appendChild(style);
+
+// Track current module to prevent unnecessary re-renders
+let currentModuleState = {
+  moduleName: '',
+  moduleType: '',
+  method: ''
+};
 
 async function initializeApp() {
   try {
@@ -283,6 +416,7 @@ function setupNavigation() {
   });
   
   // Handle hash change events
+  (window as any).handleHashChangeRef = handleHashChange; // Store reference for temporary disabling
   window.addEventListener('hashchange', handleHashChange);
   
   // Load initial route from hash
@@ -294,6 +428,8 @@ function handleHashChange() {
   if (hash) {
     const [moduleName, moduleType, method] = hash.split('/');
     if (moduleName) {
+      console.log(`🔧 HandleHashChange: ${moduleName}/${moduleType}/${method}`);
+      
       // Update active button based on hash
       const navButtons = document.querySelectorAll('.nav-btn');
       navButtons.forEach(btn => {
@@ -306,8 +442,32 @@ function handleHashChange() {
         }
       });
       
-      // Load module and pass method for later handling
-      loadModule(moduleName, moduleType, method);
+      // Check if we need to reload the module or just update state
+      const sameModule = currentModuleState.moduleName === moduleName;
+      const sameType = currentModuleState.moduleType === (moduleType || '');
+      const sameMethod = currentModuleState.method === (method || '');
+      
+      if (sameModule && sameType && sameMethod) {
+        console.log(`🔧 Same module state, skipping reload: ${moduleName}`);
+        return; // No change needed
+      }
+      
+      // Update state
+      currentModuleState = {
+        moduleName: moduleName || '',
+        moduleType: moduleType || '',
+        method: method || ''
+      };
+      
+      // Only reload if it's a different module
+      if (!sameModule) {
+        console.log(`🔧 Loading different module: ${moduleName}`);
+        loadModule(moduleName, moduleType, method);
+      } else {
+        // Same module, just update internal state
+        console.log(`🔧 Same module, updating state: ${moduleType}/${method}`);
+        updateModuleState(moduleName, moduleType, method);
+      }
     }
   } else {
     // Default to first module if no hash
@@ -323,20 +483,92 @@ function handleHashChange() {
   }
 }
 
+// Update module state without re-rendering
+function updateModuleState(moduleName: string, moduleType?: string | null, method?: string | null) {
+  console.log(`🔧 UpdateModuleState: ${moduleName}/${moduleType}/${method}`);
+  
+  switch (moduleName) {
+    case 'connect-id':
+      // Try to find existing ConnectID view and update its state
+      const connectIdElement = document.querySelector('.connect-id-compact');
+      if (connectIdElement) {
+        // Send message to ConnectID to update method
+        const event = new CustomEvent('connectid:update-method', {
+          detail: { method: method || 'rfid' }
+        });
+        window.dispatchEvent(event);
+      }
+      break;
+      
+    case 'connect-workshop':
+      // Update ConnectWorkshop state directly
+      const workshopElement = document.querySelector('.connect-workshop-compact');
+      if (workshopElement) {
+        const event = new CustomEvent('connectworkshop:update-state', {
+          detail: { section: moduleType, action: method }
+        });
+        window.dispatchEvent(event);
+      }
+      break;
+      
+    case 'connect-config':
+      // Update ConnectConfig state directly
+      const configElement = document.querySelector('.connect-config-layout');
+      if (configElement) {
+        const event = new CustomEvent('connectconfig:update-state', {
+          detail: { section: moduleType, subsection: method }
+        });
+        window.dispatchEvent(event);
+      }
+      break;
+      
+    case 'connect-test':
+      // Update ConnectTest state directly
+      const testElement = document.querySelector('.connect-test-compact');
+      if (testElement) {
+        const event = new CustomEvent('connecttest:update-state', {
+          detail: { section: moduleType, method: method }
+        });
+        window.dispatchEvent(event);
+      }
+      break;
+      
+    case 'connect-reports':
+      // Update ConnectReports state directly
+      const reportsElement = document.querySelector('.connect-reports-layout');
+      if (reportsElement) {
+        const event = new CustomEvent('connectreports:update-state', {
+          detail: { reportType: moduleType, view: method }
+        });
+        window.dispatchEvent(event);
+      }
+      break;
+      
+    default:
+      console.log(`🔧 No state update handler for module: ${moduleName}`);
+      // Fall back to full reload for unsupported modules
+      loadModule(moduleName, moduleType, method);
+  }
+}
+
 function loadModule(moduleName: string, moduleType?: string | null, method?: string | null) {
   const container = document.getElementById('module-container');
   if (!container) return;
   
   try {
-    // Clear container
-    container.innerHTML = '<div class="loading">Loading module...</div>';
+    // Show professional loading state
+    showLoadingState(container, moduleName);
+    
+    // Add performance timing
+    const startTime = performance.now();
     
     switch (moduleName) {
       case 'connect-id':
         loadConnectIdModule(container, moduleType || 'user', method);
         break;
       case 'connect-test':
-        loadConnectTestModule(container, method);
+        // For test: moduleType could be section or method depending on URL structure
+        loadConnectTestModule(container, moduleType, method);
         break;
       case 'connect-data':  // Renamed from connect-data
         loadConnectDataModule(container, method);
@@ -346,17 +578,81 @@ function loadModule(moduleName: string, moduleType?: string | null, method?: str
         loadConnectWorkshopModule(container, moduleType, method);
         break;
       case 'connect-config':
-        loadConnectConfigModule(container, method);
+        // For config: moduleType is section
+        loadConnectConfigModule(container, moduleType);
         break;
       case 'connect-reports':
-        loadConnectReportsModule(container);
+        // For reports: moduleType is report type, method is view
+        loadConnectReportsModule(container, moduleType, method);
         break;
       default:
         container.innerHTML = `<div class="error">Unknown module: ${moduleName}</div>`;
     }
+    
+    // Track loading performance
+    const loadTime = performance.now() - startTime;
+    console.log(`📊 Module ${moduleName} load time: ${loadTime.toFixed(2)}ms`);
+    
   } catch (error) {
-    container.innerHTML = `<div class="error">Failed to load ${moduleName}: ${error}</div>`;
+    showErrorState(container, moduleName, error);
+    console.error(`❌ Failed to load module ${moduleName}:`, error);
   }
+}
+
+// Professional loading state
+function showLoadingState(container: HTMLElement, moduleName: string) {
+  const moduleNames: Record<string, string> = {
+    'connect-id': 'ConnectID',
+    'connect-test': 'ConnectTest', 
+    'connect-workshop': 'ConnectWorkshop',
+    'connect-data': 'ConnectData',
+    'connect-config': 'ConnectConfig',
+    'connect-reports': 'ConnectReports'
+  };
+  
+  const displayName = moduleNames[moduleName] || moduleName;
+  
+  container.innerHTML = `
+    <div class="loading-container">
+      <div class="loading-spinner">
+        <div class="spinner"></div>
+      </div>
+      <div class="loading-text">
+        <h3>Loading ${displayName}...</h3>
+        <p>Preparing module components</p>
+      </div>
+      <div class="loading-progress">
+        <div class="progress-bar">
+          <div class="progress-fill"></div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  // Add loading animation
+  setTimeout(() => {
+    const progressFill = container.querySelector('.progress-fill') as HTMLElement;
+    if (progressFill) {
+      progressFill.style.width = '100%';
+    }
+  }, 100);
+}
+
+// Professional error state
+function showErrorState(container: HTMLElement, moduleName: string, error: any) {
+  container.innerHTML = `
+    <div class="error-container">
+      <div class="error-icon">⚠️</div>
+      <div class="error-content">
+        <h3>Failed to load ${moduleName}</h3>
+        <p class="error-message">${error.message || error}</p>
+        <div class="error-actions">
+          <button class="btn-retry" onclick="window.location.reload()">🔄 Retry</button>
+          <button class="btn-home" onclick="window.location.hash = '#/'">🏠 Home</button>
+        </div>
+      </div>
+    </div>
+  `;
 }
 
 
@@ -384,7 +680,7 @@ function loadConnectIdModule(container: HTMLElement, type: string = 'user', meth
   });
 }
 
-function loadConnectTestModule(container: HTMLElement, method?: string | null) {
+function loadConnectTestModule(container: HTMLElement, section?: string | null, params?: string | null) {
   import('./modules/connect-test/connect-test.module').then(async () => {
     const module = moduleManager.getModule('connect-test');
     const { ConnectTestView } = await import('./modules/connect-test/connect-test.view');
@@ -394,14 +690,17 @@ function loadConnectTestModule(container: HTMLElement, method?: string | null) {
     const viewElement = view.render();
     container.appendChild(viewElement);
     
-    // Set method if provided
-    if (method) {
-      setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('connecttest:set-method', { detail: { method } }));
-      }, 50);
-    }
+    // Set initial state from URL
+    setTimeout(() => {
+      if (section && (view as any).setInitialSection) {
+        (view as any).setInitialSection(section);
+      }
+      if (params && (view as any).setInitialParams) {
+        (view as any).setInitialParams(params);
+      }
+    }, 50);
     
-    console.log('✅ ConnectTest view loaded');
+    console.log(`✅ ConnectTest view loaded - section: ${section}, params: ${params}`);
   }).catch(error => {
     container.innerHTML = `<div class="error">Failed to load ConnectTest module: ${error}</div>`;
   });
@@ -449,7 +748,7 @@ function loadConnectWorkshopModule(container: HTMLElement, section?: string | nu
   });
 }
 
-function loadConnectConfigModule(container: HTMLElement, method?: string | null) {
+function loadConnectConfigModule(container: HTMLElement, section?: string | null) {
   import('./modules/connect-config/connect-config.module').then(async () => {
     const module = moduleManager.getModule('connect-config');
     const { ConnectConfigView } = await import('./modules/connect-config/connect-config.view');
@@ -459,31 +758,57 @@ function loadConnectConfigModule(container: HTMLElement, method?: string | null)
     const viewElement = view.render();
     container.appendChild(viewElement);
     
-    // Set method if provided
-    if (method) {
-      setTimeout(() => {
-        window.dispatchEvent(new CustomEvent('connectconfig:set-method', { detail: { method } }));
-      }, 50);
-    }
+    // Set initial section from URL
+    setTimeout(() => {
+      if (section && (view as any).setInitialSection) {
+        (view as any).setInitialSection(section);
+      }
+    }, 50);
     
-    console.log('✅ ConnectConfig view loaded');
+    console.log(`✅ ConnectConfig view loaded - section: ${section}`);
   }).catch(error => {
     container.innerHTML = `<div class="error">Failed to load ConnectConfig module: ${error}</div>`;
   });
 }
 
-function loadConnectReportsModule(container: HTMLElement) {
+function loadConnectReportsModule(container: HTMLElement, reportType?: string | null, view?: string | null) {
+  import('./modules/connect-reports/connect-reports.module').then(async () => {
+    const module = moduleManager.getModule('connect-reports');
+    const { ConnectReportsView } = await import('./modules/connect-reports/connect-reports.view');
+    const reportView = new ConnectReportsView(module as any);
+    
+    container.innerHTML = '';
+    const viewElement = reportView.render();
+    container.appendChild(viewElement);
+    
+    // Set initial state from URL
+    setTimeout(() => {
+      if (reportType && (reportView as any).setInitialReportType) {
+        (reportView as any).setInitialReportType(reportType);
+      }
+      if (view && (reportView as any).setInitialView) {
+        (reportView as any).setInitialView(view);
+      }
+    }, 50);
+    
+    console.log(`✅ ConnectReports view loaded - type: ${reportType}, view: ${view}`);
+  }).catch(error => {
+    container.innerHTML = `<div class="error">Failed to load ConnectReports module: ${error}</div>`;
+  });
+}
+
+function oldLoadConnectReportsModule(container: HTMLElement) {
   container.innerHTML = `
     <div class="reports-compact" style="height: 100%; overflow: hidden;">
       <div class="compact-layout" style="display: flex; height: 365px; background: #f5f5f5;">
         <!-- Column 1: Report Types -->
         <div class="menu-column" style="width: 120px; background: #2a2a2a; padding: 6px 4px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #1a1a1a;">
           <h3 class="column-title" style="color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px;">Raporty</h3>
-          <button class="report-type-item active" data-type="executed" style="width: 100%; background: #3a3a3a; border: none; padding: 5px 6px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
+          <button class="report-type-item active" data-type="executed" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
             <span class="menu-icon" style="font-size: 18px;">✅</span>
             <span class="menu-label" style="font-size: 10px; font-weight: 500;">Wykonane</span>
           </button>
-          <button class="report-type-item" data-type="planned" style="width: 100%; background: #3a3a3a; border: none; padding: 5px 6px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
+          <button class="report-type-item" data-type="planned" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
             <span class="menu-icon" style="font-size: 18px;">📅</span>
             <span class="menu-label" style="font-size: 10px; font-weight: 500;">Planowane</span>
           </button>
@@ -492,15 +817,15 @@ function loadConnectReportsModule(container: HTMLElement) {
         <!-- Column 2: Calendar Options (shown only for planned) -->
         <div class="menu-column" id="calendar-column" style="width: 120px; background: #2a2a2a; padding: 6px 4px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #1a1a1a; display: none;">
           <h3 class="column-title" style="color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px;">Widok</h3>
-          <button class="calendar-view-item active" data-view="week" style="width: 100%; background: #3a3a3a; border: none; padding: 8px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
+          <button class="calendar-view-item active" data-view="week" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
             <span class="menu-icon" style="font-size: 16px;">📅</span>
             <span class="menu-label" style="font-size: 9px; font-weight: 500;">Tygodnie</span>
           </button>
-          <button class="calendar-view-item" data-view="month" style="width: 100%; background: #3a3a3a; border: none; padding: 8px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
+          <button class="calendar-view-item" data-view="month" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
             <span class="menu-icon" style="font-size: 16px;">🗓️</span>
             <span class="menu-label" style="font-size: 9px; font-weight: 500;">Miesiące</span>
           </button>
-          <button class="calendar-view-item" data-view="year" style="width: 100%; background: #3a3a3a; border: none; padding: 8px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
+          <button class="calendar-view-item" data-view="year" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
             <span class="menu-icon" style="font-size: 16px;">📆</span>
             <span class="menu-label" style="font-size: 9px; font-weight: 500;">Lata</span>
           </button>

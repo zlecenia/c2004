@@ -235,7 +235,7 @@ export class ConnectIdView {
         width: 100%;
         background: #3a3a3a;
         border: none;
-        padding: 5px 6px;
+        padding: 3px 4px;
         margin-bottom: 4px;
         border-radius: 5px;
         cursor: pointer;

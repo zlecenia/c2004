@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ConnectDisplay - URL Routing Tests</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f6fa;
+            margin: 0;
+            padding: 20px;
+        }
+        
+        .test-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .header h1 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 28px;
+        }
+        
+        .header p {
+            margin: 0;
+            color: #7f8c8d;
+            font-size: 16px;
+        }
+        
+        .test-controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            justify-content: center;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 172, 254, 0.4);
+        }
+        
+        .test-iframe {
+            width: 100%;
+            height: 600px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+        
+        .test-results {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-top: 20px;
+        }
+        
+        .quick-tests {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .quick-test {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-align: center;
+        }
+        
+        .quick-test:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.3);
+        }
+        
+        .quick-test h3 {
+            margin: 0 0 8px 0;
+            font-size: 16px;
+        }
+        
+        .quick-test p {
+            margin: 0;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        
+        .status-loading {
+            background: #ffc107;
+            animation: pulse 1.5s infinite;
+        }
+        
+        .status-success {
+            background: #28a745;
+        }
+        
+        .status-error {
+            background: #dc3545;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+        
+        .console-log {
+            background: #1a1a1a;
+            color: #00ff00;
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 300px;
+            overflow-y: auto;
+            font-size: 12px;
+            line-height: 1.4;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <div class="header">
+            <h1>🧪 ConnectDisplay URL Routing Tests</h1>
+            <p>Comprehensive testing suite for all module routing patterns</p>
+        </div>
+        
+        <div class="test-controls">
+            <button class="btn btn-primary" onclick="runAllTests()">
+                🚀 Run All Tests
+            </button>
+            <button class="btn btn-secondary" onclick="runQuickTests()">
+                ⚡ Quick Tests
+            </button>
+            <button class="btn btn-success" onclick="openMainApp()">
+                🏠 Open Main App
+            </button>
+        </div>
+        
+        <div class="quick-tests">
+            <div class="quick-test" onclick="testURL('#/connect-id/user/qr')">
+                <h3>ConnectID QR</h3>
+                <p>#/connect-id/user/qr</p>
+            </div>
+            <div class="quick-test" onclick="testURL('#/connect-workshop/services/export')">
+                <h3>Workshop Export</h3>
+                <p>#/connect-workshop/services/export</p>
+            </div>
+            <div class="quick-test" onclick="testURL('#/connect-config/devices/rfid')">
+                <h3>Config RFID</h3>
+                <p>#/connect-config/devices/rfid</p>
+            </div>
+            <div class="quick-test" onclick="testURL('#/connect-test/testing/usage')">
+                <h3>Test Module</h3>
+                <p>#/connect-test/testing/usage</p>
+            </div>
+        </div>
+        
+        <iframe class="test-iframe" id="testFrame" src="http://localhost:8200"></iframe>
+        
+        <div class="test-results">
+            <h3>🔍 Test Console</h3>
+            <div class="console-log" id="console">
+                Ready for testing... Click "Run All Tests" to start comprehensive testing.
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const consoleEl = document.getElementById('console');
+        const testFrame = document.getElementById('testFrame');
+        
+        function log(message) {
+            const timestamp = new Date().toLocaleTimeString();
+            consoleEl.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+            consoleEl.scrollTop = consoleEl.scrollHeight;
+        }
+        
+        function clearConsole() {
+            consoleEl.innerHTML = '';
+        }
+        
+        async function runAllTests() {
+            clearConsole();
+            log('🚀 Starting comprehensive URL routing tests...');
+            
+            // Load the test script in iframe
+            testFrame.contentWindow.postMessage({
+                action: 'runTests',
+                type: 'comprehensive'
+            }, '*');
+            
+            log('📊 Tests initiated. Check the iframe for real-time results.');
+        }
+        
+        async function runQuickTests() {
+            clearConsole();
+            log('⚡ Running quick tests...');
+            
+            const quickTestUrls = [
+                '#/connect-id/user/rfid',
+                '#/connect-workshop/services',
+                '#/connect-config/devices',
+                '#/connect-test'
+            ];
+            
+            for (const url of quickTestUrls) {
+                await testURL(url);
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+            
+            log('✅ Quick tests completed!');
+        }
+        
+        async function testURL(url) {
+            log(`🧪 Testing URL: ${url}`);
+            
+            try {
+                // Navigate iframe to URL
+                testFrame.src = `http://localhost:8200/${url}`;
+                
+                // Wait for load
+                await new Promise(resolve => {
+                    testFrame.onload = resolve;
+                    setTimeout(resolve, 3000); // Timeout after 3s
+                });
+                
+                log(`✅ Successfully loaded: ${url}`);
+                return true;
+                
+            } catch (error) {
+                log(`❌ Failed to load: ${url} - ${error.message}`);
+                return false;
+            }
+        }
+        
+        function openMainApp() {
+            window.open('http://localhost:8200', '_blank');
+        }
+        
+        // Listen for messages from iframe
+        window.addEventListener('message', (event) => {
+            if (event.data.type === 'testResult') {
+                log(event.data.message);
+            }
+        });
+        
+        log('🎯 URL Routing Test Suite loaded successfully!');
+        log('📍 Main app available at: http://localhost:8200');
+    </script>
+</body>
+</html>

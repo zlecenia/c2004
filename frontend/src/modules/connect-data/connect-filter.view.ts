@@ -1,4 +1,5 @@
 import { ConnectFilterModule } from './connect-data.module';
+import { IconComponent } from '../../components/icon.component';
 
 export class ConnectDataView {
   // private module: ConnectFilterModule; // Reserved for future use
@@ -27,27 +28,27 @@ export class ConnectDataView {
         <div class="menu-column">
           <h3 class="column-title">Obiekty</h3>
           <button class="object-item active" data-object="users">
-            <span class="menu-icon">👥</span>
+            <span class="menu-icon">${IconComponent.render('user', { size: 18 })}</span>
             <span class="menu-label">Użytkownicy</span>
           </button>
           <button class="object-item" data-object="test-scenarios">
-            <span class="menu-icon">🧪</span>
+            <span class="menu-icon">${IconComponent.render('flask', { size: 18 })}</span>
             <span class="menu-label">Scenariusze</span>
           </button>
           <button class="object-item" data-object="devices">
-            <span class="menu-icon">📱</span>
+            <span class="menu-icon">${IconComponent.render('smartphone', { size: 18 })}</span>
             <span class="menu-label">Urządzenia</span>
           </button>
           <button class="object-item" data-object="groups">
-            <span class="menu-icon">👥</span>
+            <span class="menu-icon">${IconComponent.render('user-circle', { size: 18 })}</span>
             <span class="menu-label">Grupy</span>
           </button>
           <button class="object-item" data-object="warehouses">
-            <span class="menu-icon">🏭</span>
+            <span class="menu-icon">${IconComponent.render('hard-drive', { size: 18 })}</span>
             <span class="menu-label">Magazyny</span>
           </button>
           <button class="object-item" data-object="clients">
-            <span class="menu-icon">🏢</span>
+            <span class="menu-icon">${IconComponent.render('monitor', { size: 18 })}</span>
             <span class="menu-label">Klienci</span>
           </button>
         </div>
@@ -56,27 +57,27 @@ export class ConnectDataView {
         <div class="menu-column">
           <h3 class="column-title">Akcje</h3>
           <button class="menu-item active" data-action="search">
-            <span class="menu-icon">🔍</span>
+            <span class="menu-icon">${IconComponent.render('search', { size: 18 })}</span>
             <span class="menu-label">Szukaj</span>
           </button>
           <button class="menu-item" data-action="add">
-            <span class="menu-icon">➕</span>
+            <span class="menu-icon">${IconComponent.render('plus', { size: 18 })}</span>
             <span class="menu-label">Dodaj</span>
           </button>
           <button class="menu-item" data-action="edit">
-            <span class="menu-icon">✏️</span>
+            <span class="menu-icon">${IconComponent.render('edit', { size: 18 })}</span>
             <span class="menu-label">Edytuj</span>
           </button>
           <button class="menu-item" data-action="export">
-            <span class="menu-icon">📊</span>
+            <span class="menu-icon">${IconComponent.render('bar-chart', { size: 18 })}</span>
             <span class="menu-label">Export</span>
           </button>
           <button class="menu-item" data-action="import">
-            <span class="menu-icon">📥</span>
+            <span class="menu-icon">${IconComponent.render('download', { size: 18 })}</span>
             <span class="menu-label">Import</span>
           </button>
           <button class="menu-item" data-action="sync">
-            <span class="menu-icon">🔄</span>
+            <span class="menu-icon">${IconComponent.render('refresh', { size: 18 })}</span>
             <span class="menu-label">Sync</span>
           </button>
         </div>
@@ -309,27 +310,6 @@ export class ConnectDataView {
 
           </div>
         </div>
-
-        <div class="right-panel">
-          <!-- Notification Panel -->
-          <div id="right-panel-notifications" class="notifications-panel"></div>
-          
-          <div class="params-section">
-            <h3 class="params-title">Statistyki</h3>
-            <div class="param-item">
-              <span class="param-label">Znaleziono:</span>
-              <span class="param-value" id="results-count">2</span>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Obiekt:</span>
-              <span class="param-value" id="selected-object">Użytkownicy</span>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Akcja:</span>
-              <span class="param-value" id="selected-action">Szukaj</span>
-            </div>
-          </div>
-        </div>
       </div>
     `;
 
@@ -347,12 +327,12 @@ export class ConnectDataView {
       .column-title { color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px; }
       
       /* Object Items */
-      .object-item { width: 100%; background: #3a3a3a; border: none; padding: 5px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc; }
+      .object-item { width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc; }
       .object-item:hover { background: #4a4a4a; color: white; }
       .object-item.active { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
       
       /* Menu Items */
-      .menu-item { width: 100%; background: #3a3a3a; border: none; padding: 5px 6px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc; }
+      .menu-item { width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc; }
       .menu-icon { font-size: 18px; }
       .menu-label { font-size: 12px; font-weight: 500; text-align: center; }
       .menu-item:hover { background: #4a4a4a; color: white; }
@@ -377,48 +357,8 @@ export class ConnectDataView {
       .btn-card-action { padding: 6px 8px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 4px; cursor: pointer; font-size: 12px; transition: all 0.2s; }
       .btn-card-action:hover { background: #e9ecef; border-color: #adb5bd; }
       
-      .right-panel { width: 200px; background: #2a2a2a; padding: 10px; overflow-y: auto; }
-      
-      /* Notifications in Right Panel */
-      .notifications-panel { margin-bottom: 10px; }
-      .right-notification { 
-        background: #4a4a4a; 
-        border-left: 3px solid #28a745; 
-        padding: 8px 10px; 
-        margin-bottom: 6px; 
-        border-radius: 4px; 
-        font-size: 10px; 
-        color: white; 
-        animation: slideInRight 0.3s ease;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
-      .right-notification.success { border-left-color: #28a745; }
-      .right-notification.error { border-left-color: #dc3545; }
-      .right-notification.info { border-left-color: #17a2b8; }
-      .right-notification.warning { border-left-color: #ffc107; }
-      .right-notification:hover { background: #5a5a5a; }
-      .right-notification.removing { 
-        animation: slideOutRight 0.3s ease;
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      
-      @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      
-      @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-      }
-      
-      .params-section { margin-bottom: 15px; }
-      .params-title { color: #FFF; font-size: 11px; font-weight: 600; text-transform: uppercase; margin: 0 0 8px 0; }
-      .param-item { background: #3a3a3a; padding: 8px; margin-bottom: 6px; border-radius: 4px; display: flex; flex-direction: column; gap: 4px; }
-      .param-label { font-size: 10px; color: #999; }
-      .param-value { font-size: 13px; color: #fff; font-weight: 600; }
+      /* Content Layout Full Width */
+      .main-content { flex: 1; }
       /* Quick action buttons removed - actions moved to main menu */
 
       /* Action Content */
@@ -426,37 +366,37 @@ export class ConnectDataView {
       .action-content.active { display: block; }
       
       /* Form Styles */
-      .form-container { background: #f8f9fa; padding: 20px; border-radius: 8px; }
-      .form-row { display: flex; gap: 15px; margin-bottom: 15px; }
+      .form-container { background: #f8f9fa; padding: 12px; border-radius: 6px; }
+      .form-row { display: flex; gap: 10px; margin-bottom: 10px; }
       .form-group { flex: 1; }
-      .form-group label { display: block; margin-bottom: 5px; font-size: 11px; font-weight: 600; color: #666; }
-      .form-input, .form-select { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
-      .btn-submit { width: 100%; padding: 12px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
-      .btn-delete { width: 100%; padding: 12px; background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
-      .btn-archive { width: 100%; padding: 12px; background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
-      .delete-warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 15px; border-radius: 6px; margin-bottom: 15px; }
-      .delete-warning p { margin: 0 0 10px 0; color: #856404; font-weight: 600; }
-      .archive-options { margin: 15px 0; }
-      .archive-options label { display: block; margin-bottom: 8px; font-size: 12px; cursor: pointer; }
-      .archive-options input[type="checkbox"] { margin-right: 8px; }
+      .form-group label { display: block; margin-bottom: 3px; font-size: 10px; font-weight: 600; color: #666; }
+      .form-input, .form-select { width: 100%; padding: 6px; border: 1px solid #ddd; border-radius: 3px; font-size: 11px; }
+      .btn-submit { width: 100%; padding: 8px; background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; }
+      .btn-delete { width: 100%; padding: 8px; background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; }
+      .btn-archive { width: 100%; padding: 8px; background: linear-gradient(135deg, #17a2b8 0%, #138496 100%); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; font-weight: 600; }
+      .delete-warning { background: #fff3cd; border: 1px solid #ffeaa7; padding: 10px; border-radius: 4px; margin-bottom: 10px; }
+      .delete-warning p { margin: 0 0 6px 0; color: #856404; font-weight: 600; }
+      .archive-options { margin: 10px 0; }
+      .archive-options label { display: block; margin-bottom: 6px; font-size: 11px; cursor: pointer; }
+      .archive-options input[type="checkbox"] { margin-right: 6px; }
 
       /* Import Options */
-      .import-options { margin: 15px 0; }
-      .import-options label { display: block; margin-bottom: 8px; font-size: 12px; cursor: pointer; }
-      .import-options input[type="checkbox"] { margin-right: 8px; }
+      .import-options { margin: 10px 0; }
+      .import-options label { display: block; margin-bottom: 6px; font-size: 11px; cursor: pointer; }
+      .import-options input[type="checkbox"] { margin-right: 6px; }
 
       /* Sync Styles */
-      .sync-data-container { padding: 20px; }
-      .sync-status-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
-      .sync-status-header h4 { margin: 0; font-size: 14px; color: #333; }
-      .sync-indicator { display: flex; align-items: center; gap: 8px; }
-      .sync-dot { width: 8px; height: 8px; background: #28a745; border-radius: 50%; }
-      .sync-status-text { font-size: 12px; color: #28a745; font-weight: 600; }
-      .sync-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
-      .sync-info-item { display: flex; justify-content: space-between; padding: 8px 12px; background: #f8f9fa; border-radius: 4px; }
-      .sync-label { font-size: 11px; color: #666; font-weight: 600; }
-      .sync-value { font-size: 11px; color: #333; font-weight: 600; }
-      .sync-options { margin-bottom: 20px; }
+      .sync-data-container { padding: 12px; }
+      .sync-status-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+      .sync-status-header h4 { margin: 0; font-size: 13px; color: #333; }
+      .sync-indicator { display: flex; align-items: center; gap: 6px; }
+      .sync-dot { width: 6px; height: 6px; background: #28a745; border-radius: 50%; }
+      .sync-status-text { font-size: 11px; color: #28a745; font-weight: 600; }
+      .sync-info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 12px; }
+      .sync-info-item { display: flex; justify-content: space-between; padding: 6px 8px; background: #f8f9fa; border-radius: 3px; }
+      .sync-label { font-size: 10px; color: #666; font-weight: 600; }
+      .sync-value { font-size: 10px; color: #333; font-weight: 600; }
+      .sync-options { margin-bottom: 12px; }
       .sync-option-row { display: flex; gap: 20px; margin-bottom: 8px; }
       .sync-option-row label { font-size: 12px; cursor: pointer; }
       .sync-option-row input[type="checkbox"] { margin-right: 6px; }
@@ -969,37 +909,7 @@ export class ConnectDataView {
   }
 
   private showNotification(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
-    const notificationsPanel = document.getElementById('right-panel-notifications');
-    if (!notificationsPanel) return;
-
-    // Limit to max 2 notifications
-    const existing = notificationsPanel.querySelectorAll('.right-notification');
-    if (existing.length >= 2) {
-      // Remove oldest notification
-      const oldest = existing[0];
-      oldest.classList.add('removing');
-      setTimeout(() => oldest.remove(), 300);
-    }
-
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `right-notification ${type}`;
-    notification.textContent = message;
-
-    // Add click to dismiss
-    notification.addEventListener('click', () => {
-      notification.classList.add('removing');
-      setTimeout(() => notification.remove(), 300);
-    });
-
-    // Auto-remove after 4 seconds
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.classList.add('removing');
-        setTimeout(() => notification.remove(), 300);
-      }
-    }, 4000);
-
-    notificationsPanel.appendChild(notification);
+    // Use console logging instead of right panel notifications
+    console.log(`${type.toUpperCase()}: ${message}`);
   }
 }

@@ -52,6 +52,18 @@ export class ConnectWorkshopView {
             <span class="menu-icon">${IconComponent.render('search', { size: 18 })}</span>
             <span class="menu-label">Szukaj</span>
           </button>
+          <button class="menu-item" data-action="services">
+            <span class="menu-icon">${IconComponent.render('settings', { size: 18 })}</span>
+            <span class="menu-label">Serwisy</span>
+          </button>
+          <button class="menu-item" data-action="transport">
+            <span class="menu-icon">${IconComponent.render('truck', { size: 18 })}</span>
+            <span class="menu-label">Transport</span>
+          </button>
+          <button class="menu-item" data-action="dispositions">
+            <span class="menu-icon">${IconComponent.render('clipboard', { size: 18 })}</span>
+            <span class="menu-label">Dyspozycje</span>
+          </button>
           <button class="menu-item" data-action="new-request">
             <span class="menu-icon">${IconComponent.render('plus', { size: 18 })}</span>
             <span class="menu-label">Zgłoszenie</span>
@@ -75,29 +87,467 @@ export class ConnectWorkshopView {
           <div class="content-body">
             <!-- Search Action Content -->
             <div id="search-content" class="action-content active">
-              <div class="search-workshop">
-                <div class="search-input-row">
-                  <input type="text" id="workshop-search-input" class="search-input" placeholder="Szukaj w zgłoszeniach...">
-                  <button id="workshop-search-btn" class="btn-search">🔍</button>
-                </div>
-                
-                <div class="search-filters">
-                  <select class="filter-select">
-                    <option>📋 Wszystkie zgłoszenia</option>
-                    <option>⏳ Oczekujące</option>
-                    <option>⚙️ W trakcie</option>
-                    <option>✅ Zakończone</option>
-                  </select>
-                  <select class="filter-select">
-                    <option>📅 Ostatni tydzień</option>
-                    <option>📆 Ostatni miesiąc</option>
-                    <option>🗓️ Ostatnie 3 miesiące</option>
-                    <option>📅 Cały rok</option>
-                  </select>
+              <div class="search-workshop-layout">
+                <!-- Left Sidebar with Filters -->
+                <div class="search-sidebar">
+                  <div class="search-input-row">
+                    <input type="text" id="workshop-search-input" class="search-input" placeholder="Szukaj w zgłoszeniach...">
+                    <button id="workshop-search-btn" class="btn-search">🔍</button>
+                  </div>
+                  
+                  <div class="search-filters">
+                    <div class="filter-group">
+                      <label class="filter-label">Status zgłoszenia:</label>
+                      <select class="filter-select">
+                        <option>📋 Wszystkie zgłoszenia</option>
+                        <option>⏳ Oczekujące</option>
+                        <option>⚙️ W trakcie</option>
+                        <option>✅ Zakończone</option>
+                        <option>❌ Odrzucone</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                      <label class="filter-label">Okres czasowy:</label>
+                      <select class="filter-select">
+                        <option>📅 Ostatni tydzień</option>
+                        <option>📆 Ostatni miesiąc</option>
+                        <option>🗓️ Ostatnie 3 miesiące</option>
+                        <option>📅 Cały rok</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                      <label class="filter-label">Priorytet:</label>
+                      <select class="filter-select">
+                        <option>🔥 Wszystkie priorytety</option>
+                        <option>🔴 Wysoki</option>
+                        <option>🟡 Średni</option>
+                        <option>🟢 Niski</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-actions">
+                      <button class="btn-filter-apply">✅ Zastosuj</button>
+                      <button class="btn-filter-clear">🗑️ Wyczyść</button>
+                    </div>
+                  </div>
                 </div>
 
+                <!-- Right Content Area with Results -->
                 <div class="search-results">
-                  <!-- Results will be dynamically updated based on selected section -->
+                  <div class="results-header">
+                    <h4>📋 Wyniki wyszukiwania zgłoszeń</h4>
+                    <div class="results-count">Znaleziono: <strong>23</strong> zgłoszeń</div>
+                  </div>
+                  
+                  <div class="results-table-container">
+                    <table class="results-table">
+                      <thead>
+                        <tr>
+                          <th>ID</th>
+                          <th>Tytuł</th>
+                          <th>Status</th>
+                          <th>Priorytet</th>
+                          <th>Data</th>
+                          <th>Akcje</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>#WS-001</td>
+                          <td>Naprawa czujnika temperatury</td>
+                          <td><span class="status-warning">⚙️ W trakcie</span></td>
+                          <td><span class="priority-high">🔴 Wysoki</span></td>
+                          <td>2025-10-09</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action edit">✏️</button>
+                            <button class="btn-action close">✅</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>#WS-002</td>
+                          <td>Kalibracja RFID readera</td>
+                          <td><span class="status-success">✅ Zakończone</span></td>
+                          <td><span class="priority-medium">🟡 Średni</span></td>
+                          <td>2025-10-08</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action report">📄</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>#WS-003</td>
+                          <td>Wymiana baterii w skanera</td>
+                          <td><span class="status-pending">⏳ Oczekujące</span></td>
+                          <td><span class="priority-low">🟢 Niski</span></td>
+                          <td>2025-10-07</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action start">▶️</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Services Content -->
+            <div id="services-content" class="action-content">
+              <div class="search-workshop-layout">
+                <!-- Left Sidebar with Filters -->
+                <div class="search-sidebar">
+                  <div class="search-input-row">
+                    <input type="text" class="search-input" placeholder="Szukaj serwisów...">
+                    <button class="btn-search">🔍</button>
+                  </div>
+                  
+                  <div class="search-filters">
+                    <div class="filter-group">
+                      <label class="filter-label">Status serwisu:</label>
+                      <select class="filter-select">
+                        <option>🔧 Wszystkie serwisy</option>
+                        <option>🟢 Aktywne</option>
+                        <option>🔴 Nieaktywne</option>
+                        <option>⚙️ W konserwacji</option>
+                        <option>⚠️ Wymagają uwagi</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                      <label class="filter-label">Typ serwisu:</label>
+                      <select class="filter-select">
+                        <option>🛠️ Wszystkie typy</option>
+                        <option>📡 RFID Service</option>
+                        <option>📷 QR Service</option>
+                        <option>📊 Barcode Service</option>
+                        <option>🌡️ Sensor Service</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                      <label class="filter-label">Lokalizacja:</label>
+                      <select class="filter-select">
+                        <option>🏢 Wszystkie lokalizacje</option>
+                        <option>🏭 Hala A</option>
+                        <option>🏭 Hala B</option>
+                        <option>🏢 Biuro</option>
+                        <option>🚚 Magazyn</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-actions">
+                      <button class="btn-filter-apply">✅ Zastosuj</button>
+                      <button class="btn-filter-clear">🗑️ Wyczyść</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right Content Area with Results -->
+                <div class="search-results">
+                  <div class="results-header">
+                    <h4>🔧 Lista serwisów</h4>
+                    <div class="results-count">Znaleziono: <strong>15</strong> serwisów</div>
+                  </div>
+                  
+                  <div class="results-table-container">
+                    <table class="results-table">
+                      <thead>
+                        <tr>
+                          <th>ID Serwisu</th>
+                          <th>Nazwa</th>
+                          <th>Typ</th>
+                          <th>Status</th>
+                          <th>Lokalizacja</th>
+                          <th>Ostatnia aktywność</th>
+                          <th>Akcje</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>#SRV-001</td>
+                          <td>RFID Reader Service</td>
+                          <td>📡 RFID</td>
+                          <td><span class="status-success">🟢 Aktywny</span></td>
+                          <td>Hala A</td>
+                          <td>2025-10-10 06:30</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action restart">🔄</button>
+                            <button class="btn-action stop">⏹️</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>#SRV-002</td>
+                          <td>QR Scanner Service</td>
+                          <td>📷 QR</td>
+                          <td><span class="status-warning">⚙️ Konserwacja</span></td>
+                          <td>Hala B</td>
+                          <td>2025-10-09 18:45</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action config">⚙️</button>
+                            <button class="btn-action start">▶️</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>#SRV-003</td>
+                          <td>Temperature Monitor</td>
+                          <td>🌡️ Sensor</td>
+                          <td><span class="status-success">🟢 Aktywny</span></td>
+                          <td>Magazyn</td>
+                          <td>2025-10-10 06:25</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action alert">🔔</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Transport Content -->
+            <div id="transport-content" class="action-content">
+              <div class="search-workshop-layout">
+                <!-- Left Sidebar with Filters -->
+                <div class="search-sidebar">
+                  <div class="search-input-row">
+                    <input type="text" class="search-input" placeholder="Szukaj transportów...">
+                    <button class="btn-search">🔍</button>
+                  </div>
+                  
+                  <div class="search-filters">
+                    <div class="filter-group">
+                      <label class="filter-label">Status transportu:</label>
+                      <select class="filter-select">
+                        <option>🚚 Wszystkie transporty</option>
+                        <option>📅 Zaplanowane</option>
+                        <option>🚛 W drodze</option>
+                        <option>✅ Dostarczone</option>
+                        <option>⚠️ Opóźnione</option>
+                        <option>❌ Anulowane</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                      <label class="filter-label">Typ ładunku:</label>
+                      <select class="filter-select">
+                        <option>📦 Wszystkie typy</option>
+                        <option>⚙️ Części zamienne</option>
+                        <option>🔧 Narzędzia</option>
+                        <option>📱 Elektronika</option>
+                        <option>🧪 Materiały testowe</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                      <label class="filter-label">Kierowca:</label>
+                      <select class="filter-select">
+                        <option>👤 Wszyscy kierowcy</option>
+                        <option>Jan Kowalski</option>
+                        <option>Anna Nowak</option>
+                        <option>Piotr Wiśniewski</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-actions">
+                      <button class="btn-filter-apply">✅ Zastosuj</button>
+                      <button class="btn-filter-clear">🗑️ Wyczyść</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right Content Area with Results -->
+                <div class="search-results">
+                  <div class="results-header">
+                    <h4>🚚 Lista transportów</h4>
+                    <div class="results-count">Znaleziono: <strong>8</strong> transportów</div>
+                  </div>
+                  
+                  <div class="results-table-container">
+                    <table class="results-table">
+                      <thead>
+                        <tr>
+                          <th>ID Transportu</th>
+                          <th>Ładunek</th>
+                          <th>Kierowca</th>
+                          <th>Status</th>
+                          <th>Data dostawy</th>
+                          <th>Lokalizacja</th>
+                          <th>Akcje</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>#TRP-001</td>
+                          <td>⚙️ Części do RFID</td>
+                          <td>Jan Kowalski</td>
+                          <td><span class="status-warning">🚛 W drodze</span></td>
+                          <td>2025-10-10</td>
+                          <td>Warszawa → Kraków</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action track">📍</button>
+                            <button class="btn-action contact">📞</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>#TRP-002</td>
+                          <td>📱 Skanery QR</td>
+                          <td>Anna Nowak</td>
+                          <td><span class="status-success">✅ Dostarczone</span></td>
+                          <td>2025-10-09</td>
+                          <td>Gdańsk → Wrocław</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action receipt">🧾</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>#TRP-003</td>
+                          <td>🧪 Materiały testowe</td>
+                          <td>Piotr Wiśniewski</td>
+                          <td><span class="status-pending">📅 Zaplanowane</span></td>
+                          <td>2025-10-11</td>
+                          <td>Poznań → Łódź</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action edit">✏️</button>
+                            <button class="btn-action start">▶️</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Dispositions Content -->
+            <div id="dispositions-content" class="action-content">
+              <div class="search-workshop-layout">
+                <!-- Left Sidebar with Filters -->
+                <div class="search-sidebar">
+                  <div class="search-input-row">
+                    <input type="text" class="search-input" placeholder="Szukaj dyspozycji...">
+                    <button class="btn-search">🔍</button>
+                  </div>
+                  
+                  <div class="search-filters">
+                    <div class="filter-group">
+                      <label class="filter-label">Status dyspozycji:</label>
+                      <select class="filter-select">
+                        <option>📋 Wszystkie dyspozycje</option>
+                        <option>🆕 Nowe</option>
+                        <option>👀 Przeglądane</option>
+                        <option>⚙️ W realizacji</option>
+                        <option>✅ Zakończone</option>
+                        <option>❌ Odrzucone</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                      <label class="filter-label">Typ dyspozycji:</label>
+                      <select class="filter-select">
+                        <option>📝 Wszystkie typy</option>
+                        <option>🔧 Naprawa</option>
+                        <option>📊 Konserwacja</option>
+                        <option>🔍 Inspekcja</option>
+                        <option>⚠️ Awaria</option>
+                        <option>🔄 Wymiana</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-group">
+                      <label class="filter-label">Priorytet:</label>
+                      <select class="filter-select">
+                        <option>🔥 Wszystkie priorytety</option>
+                        <option>🔴 Krytyczny</option>
+                        <option>🟡 Wysoki</option>
+                        <option>🟢 Normalny</option>
+                        <option>⚪ Niski</option>
+                      </select>
+                    </div>
+                    
+                    <div class="filter-actions">
+                      <button class="btn-filter-apply">✅ Zastosuj</button>
+                      <button class="btn-filter-clear">🗑️ Wyczyść</button>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Right Content Area with Results -->
+                <div class="search-results">
+                  <div class="results-header">
+                    <h4>📋 Lista dyspozycji</h4>
+                    <div class="results-count">Znaleziono: <strong>12</strong> dyspozycji</div>
+                  </div>
+                  
+                  <div class="results-table-container">
+                    <table class="results-table">
+                      <thead>
+                        <tr>
+                          <th>ID Dyspozycji</th>
+                          <th>Tytuł</th>
+                          <th>Typ</th>
+                          <th>Priorytet</th>
+                          <th>Status</th>
+                          <th>Wykonawca</th>
+                          <th>Termin</th>
+                          <th>Akcje</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td>#DSP-001</td>
+                          <td>Wymiana baterii w czytniku RFID</td>
+                          <td>🔄 Wymiana</td>
+                          <td><span class="priority-high">🟡 Wysoki</span></td>
+                          <td><span class="status-warning">⚙️ W realizacji</span></td>
+                          <td>Jan Kowalski</td>
+                          <td>2025-10-10</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action edit">✏️</button>
+                            <button class="btn-action complete">✅</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>#DSP-002</td>
+                          <td>Inspekcja czujników temperatury</td>
+                          <td>🔍 Inspekcja</td>
+                          <td><span class="priority-medium">🟢 Normalny</span></td>
+                          <td><span class="status-pending">🆕 Nowa</span></td>
+                          <td>Anna Nowak</td>
+                          <td>2025-10-12</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action assign">👤</button>
+                            <button class="btn-action start">▶️</button>
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>#DSP-003</td>
+                          <td>Naprawa skanera QR #2</td>
+                          <td>🔧 Naprawa</td>
+                          <td><span class="priority-high">🔴 Krytyczny</span></td>
+                          <td><span class="status-success">✅ Zakończone</span></td>
+                          <td>Piotr Wiśniewski</td>
+                          <td>2025-10-09</td>
+                          <td>
+                            <button class="btn-action view">👁️</button>
+                            <button class="btn-action report">📄</button>
+                          </td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
             </div>
@@ -337,29 +787,6 @@ export class ConnectWorkshopView {
             </div>
           </div>
         </div>
-
-        <!-- Right Panel - Parameters -->
-        <div class="right-panel">
-          <!-- Notification Panel -->
-          <div id="right-panel-notifications" class="notifications-panel"></div>
-          
-          <div class="params-section">
-            <h3 class="params-title">Status Sync</h3>
-            <div class="param-item">
-              <span class="param-label">Połączenie:</span>
-              <span class="param-value" id="connection-status">✅ Aktywne</span>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Ostatni sync:</span>
-              <span class="param-value" id="last-sync">teraz</span>
-            </div>
-            <div class="param-item">
-              <span class="param-label">Oczekujące:</span>
-              <span class="param-value" id="pending-count">0</span>
-            </div>
-          </div>
-
-        </div>
       </div>
 
       <!-- Notification Container -->
@@ -412,7 +839,7 @@ export class ConnectWorkshopView {
         width: 100%;
         background: #3a3a3a;
         border: none;
-        padding: 5px 6px;
+        padding: 3px 4px;
         margin-bottom: 4px;
         border-radius: 5px;
         cursor: pointer;
@@ -599,82 +1026,9 @@ export class ConnectWorkshopView {
         font-weight: 600;
       }
 
-      /* Right Panel */
-      .right-panel {
-        width: 200px;
-        background: #2a2a2a;
-        padding: 10px;
-        overflow-y: auto;
-        flex-shrink: 0;
-      }
+      /* Content Layout Full Width */
+      .main-content { flex: 1; }
 
-      /* Notifications in Right Panel */
-      .notifications-panel { margin-bottom: 10px; }
-      .right-notification { 
-        background: #4a4a4a; 
-        border-left: 3px solid #28a745; 
-        padding: 8px 10px; 
-        margin-bottom: 6px; 
-        border-radius: 4px; 
-        font-size: 10px; 
-        color: white; 
-        animation: slideInRight 0.3s ease;
-        cursor: pointer;
-        transition: all 0.3s;
-      }
-      .right-notification.success { border-left-color: #28a745; }
-      .right-notification.error { border-left-color: #dc3545; }
-      .right-notification.info { border-left-color: #17a2b8; }
-      .right-notification.warning { border-left-color: #ffc107; }
-      .right-notification:hover { background: #5a5a5a; }
-      .right-notification.removing { 
-        animation: slideOutRight 0.3s ease;
-        transform: translateX(100%);
-        opacity: 0;
-      }
-      
-      @keyframes slideInRight {
-        from { transform: translateX(100%); opacity: 0; }
-        to { transform: translateX(0); opacity: 1; }
-      }
-      
-      @keyframes slideOutRight {
-        from { transform: translateX(0); opacity: 1; }
-        to { transform: translateX(100%); opacity: 0; }
-      }
-
-      .params-section {
-        margin-bottom: 15px;
-      }
-
-      .params-title {
-        color: #999;
-        font-size: 11px;
-        font-weight: 600;
-        text-transform: uppercase;
-        margin: 0 0 8px 0;
-      }
-
-      .param-item {
-        background: #3a3a3a;
-        padding: 8px;
-        margin-bottom: 6px;
-        border-radius: 4px;
-        display: flex;
-        flex-direction: column;
-        gap: 4px;
-      }
-
-      .param-label {
-        font-size: 10px;
-        color: #999;
-      }
-
-      .param-value {
-        font-size: 13px;
-        color: #fff;
-        font-weight: 600;
-      }
 
       /* Quick action button removed - actions moved to main menu */
 
@@ -689,13 +1043,11 @@ export class ConnectWorkshopView {
 
       /* Scrollbars */
       .menu-column::-webkit-scrollbar,
-      .content-body::-webkit-scrollbar,
-      .right-panel::-webkit-scrollbar {
+      .content-body::-webkit-scrollbar {
         width: 4px;
       }
 
-      .menu-column::-webkit-scrollbar-track,
-      .right-panel::-webkit-scrollbar-track {
+      .menu-column::-webkit-scrollbar-track {
         background: #1a1a1a;
       }
 
@@ -703,8 +1055,7 @@ export class ConnectWorkshopView {
         background: #f0f0f0;
       }
 
-      .menu-column::-webkit-scrollbar-thumb,
-      .right-panel::-webkit-scrollbar-thumb {
+      .menu-column::-webkit-scrollbar-thumb {
         background: #555;
         border-radius: 2px;
       }
@@ -753,12 +1104,51 @@ export class ConnectWorkshopView {
       .badge-completed { background: #d4edda; color: #155724; padding: 2px 8px; border-radius: 4px; font-size: 10px; }
 
       /* Search Workshop Styles */
-      .search-workshop { padding: 20px; }
-      .search-input-row { display: flex; gap: 10px; margin-bottom: 15px; }
-      .search-input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px; }
-      .btn-search { padding: 10px 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px; }
-      .search-filters { display: flex; gap: 10px; margin-bottom: 20px; }
-      .filter-select { padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; background: white; }
+      .search-workshop-layout { display: flex; gap: 15px; padding: 10px; }
+      .search-sidebar { 
+        min-width: 240px; 
+        background: #f8f9fa; 
+        padding: 12px; 
+        border-radius: 6px; 
+        border: 1px solid #e0e0e0;
+        height: fit-content;
+      }
+      .search-input-row { display: flex; gap: 6px; margin-bottom: 12px; }
+      .search-input { flex: 1; padding: 6px 10px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; }
+      .btn-search { padding: 6px 12px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 11px; }
+      
+      .search-filters { display: flex; flex-direction: column; gap: 10px; }
+      .filter-group { display: flex; flex-direction: column; gap: 3px; }
+      .filter-label { font-size: 10px; font-weight: 600; color: #333; }
+      .filter-select { padding: 5px 6px; border: 1px solid #ddd; border-radius: 3px; font-size: 10px; background: white; }
+      
+      .filter-actions { display: flex; gap: 6px; margin-top: 8px; }
+      .btn-filter-apply { padding: 4px 10px; background: #28a745; color: white; border: none; border-radius: 3px; font-size: 9px; cursor: pointer; }
+      .btn-filter-clear { padding: 4px 10px; background: #6c757d; color: white; border: none; border-radius: 3px; font-size: 9px; cursor: pointer; }
+      
+      .search-results { flex: 1; }
+      .results-header { 
+        display: flex; 
+        justify-content: space-between; 
+        align-items: center; 
+        margin-bottom: 10px; 
+        padding-bottom: 6px; 
+        border-bottom: 1px solid #e0e0e0;
+      }
+      .results-header h4 { margin: 0; font-size: 14px; color: #333; }
+      .results-count { font-size: 11px; color: #666; }
+      
+      .results-table-container { background: white; border-radius: 6px; border: 1px solid #e0e0e0; overflow: hidden; }
+      .results-table { width: 100%; border-collapse: collapse; }
+      .results-table th { background: #f8f9fa; padding: 6px 8px; text-align: left; font-size: 10px; font-weight: 600; border-bottom: 1px solid #e0e0e0; }
+      .results-table td { padding: 6px 8px; font-size: 10px; border-bottom: 1px solid #f0f0f0; }
+      .results-table tr:hover { background: #f8f9fa; }
+      
+      .priority-high { color: #dc3545; font-weight: 600; }
+      .priority-medium { color: #ffc107; font-weight: 600; }
+      .priority-low { color: #28a745; font-weight: 600; }
+      .status-pending { color: #6c757d; font-weight: 600; }
+      .status-warning { color: #ffc107; font-weight: 600; }
       
       /* Search Results */
       .search-results { max-height: 250px; overflow-y: auto; }
@@ -822,17 +1212,55 @@ export class ConnectWorkshopView {
   // Public methods for URL routing support
   public setInitialSection(section: string): void {
     console.log(`🔧 ConnectWorkshop: Setting initial section from URL: ${section}`);
+    this.currentSection = section;
+    
     const container = document.querySelector('.connect-workshop-compact');
     if (container) {
-      this.switchSection(section, container as HTMLElement);
+      // Update UI without triggering URL change
+      container.querySelectorAll('[data-section]').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-section') === section) {
+          item.classList.add('active');
+        }
+      });
+      
+      // Update content visibility
+      container.querySelectorAll('.section-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      const activeContent = container.querySelector(`#${section}-content`);
+      if (activeContent) {
+        activeContent.classList.add('active');
+      }
+      
+      this.updateActionFormsContext(container as HTMLElement, this.currentAction);
     }
   }
 
   public setInitialAction(action: string): void {
     console.log(`🔧 ConnectWorkshop: Setting initial action from URL: ${action}`);
+    this.currentAction = action;
+    
     const container = document.querySelector('.connect-workshop-compact');
     if (container) {
-      this.handleAction(action, container as HTMLElement);
+      // Update UI without triggering URL change
+      container.querySelectorAll('[data-action]').forEach(item => {
+        item.classList.remove('active');
+        if (item.getAttribute('data-action') === action) {
+          item.classList.add('active');
+        }
+      });
+      
+      // Update action content visibility
+      container.querySelectorAll('.action-content').forEach(content => {
+        content.classList.remove('active');
+      });
+      const activeContent = container.querySelector(`#${action}-content`);
+      if (activeContent) {
+        activeContent.classList.add('active');
+      }
+      
+      this.updateActionFormsContext(container as HTMLElement, action);
     }
   }
 
@@ -1098,37 +1526,7 @@ export class ConnectWorkshopView {
   }
 
   private showNotification(message: string, type: 'success' | 'error' | 'info' | 'warning' = 'info'): void {
-    const notificationsPanel = document.getElementById('right-panel-notifications');
-    if (!notificationsPanel) return;
-
-    // Limit to max 2 notifications
-    const existing = notificationsPanel.querySelectorAll('.right-notification');
-    if (existing.length >= 2) {
-      // Remove oldest notification
-      const oldest = existing[0];
-      oldest.classList.add('removing');
-      setTimeout(() => oldest.remove(), 300);
-    }
-
-    // Create notification element
-    const notification = document.createElement('div');
-    notification.className = `right-notification ${type}`;
-    notification.textContent = message;
-
-    // Add click to dismiss
-    notification.addEventListener('click', () => {
-      notification.classList.add('removing');
-      setTimeout(() => notification.remove(), 300);
-    });
-
-    // Auto-remove after 4 seconds
-    setTimeout(() => {
-      if (notification.parentNode) {
-        notification.classList.add('removing');
-        setTimeout(() => notification.remove(), 300);
-      }
-    }, 4000);
-
-    notificationsPanel.appendChild(notification);
+    // Use console logging instead of right panel notifications
+    console.log(`${type.toUpperCase()}: ${message}`);
   }
 }

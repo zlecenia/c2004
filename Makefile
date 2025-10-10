@@ -4,6 +4,7 @@
 # Variables
 SERVICE_NAME := identification
 FRONTEND_PORT := 8100
+DEV_FRONTEND_PORT := 8200
 BACKEND_PORT := 8101
 
 # Docker Compose command detection
@@ -190,7 +191,8 @@ test-api:
 test-integration:
 	@echo "🧪 Testing integration..."
 	@echo "Testing frontend accessibility..."
-	@curl -s http://localhost:$(FRONTEND_PORT) > /dev/null 2>&1 && echo "✅ Frontend OK" || echo "⚠️  Frontend not accessible"
+	@curl -s http://localhost:$(DEV_FRONTEND_PORT) > /dev/null 2>&1 && echo "✅ Frontend OK (dev mode)" || \
+		(curl -s http://localhost:$(FRONTEND_PORT) > /dev/null 2>&1 && echo "✅ Frontend OK (prod mode)" || echo "⚠️  Frontend not accessible")
 	@echo "Testing backend-frontend communication..."
 	@curl -s http://localhost:$(BACKEND_PORT)/openapi.json > /dev/null 2>&1 && echo "✅ API schema OK" || echo "⚠️  API schema not accessible"
 

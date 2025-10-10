@@ -79,6 +79,17 @@ export const MODULE_REGISTRY = {
     dependencies: [],
     features: ['system-config', 'network-config', 'backup', 'import-export'],
     route: '/connect-config'
+  },
+  'connect-reports': {
+    name: 'connect-reports',
+    displayName: 'ConnectReports',
+    version: '1.0.0',
+    status: 'production', 
+    path: '/src/modules/connect-reports',
+    icon: '📋',
+    dependencies: [],
+    features: ['reports', 'analytics', 'data-export', 'filters'],
+    route: '/connect-reports'
   }
 } as const satisfies Record<string, ModuleDefinition>;
 

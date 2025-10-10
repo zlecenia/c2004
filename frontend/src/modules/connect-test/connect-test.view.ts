@@ -11,8 +11,10 @@ export class ConnectTestView {
   }
 
   private updateNavigationURL(): void {
+    console.log(`🔧 ConnectTest: Updating URL - section: ${this.currentSection}, method: ${this.currentMethod}, scenarioType: ${this.currentScenarioType}, protocol: ${this.currentProtocol}`);
+    
     // Build URL based on current navigation state
-    let url = `#/connect-test`;
+    let url = `connect-test`;
     
     if (this.currentSection === 'testing') {
       url += `/${this.currentSection}`;
@@ -27,10 +29,15 @@ export class ConnectTestView {
       if (this.currentMethod) {
         url += `/${this.currentMethod}`;
       }
+      // For identification section, also include protocol if it's not the default
+      if (this.currentSection === 'identification' && this.currentProtocol && this.currentProtocol !== 'service') {
+        url += `/${this.currentProtocol}`;
+      }
     }
     
-    // Update URL without triggering page reload
-    window.history.replaceState(null, '', url);
+    // Update URL hash (proper SPA routing)
+    window.location.hash = `#/${url}`;
+    console.log(`🔧 ConnectTest: Updated URL to: ${window.location.hash}`);
     
     console.log(`🔗 Navigation URL updated: ${url}`);
   }
@@ -731,7 +738,7 @@ export class ConnectTestView {
       .compact-layout { display: flex; height: 365px; background: #f5f5f5; }
       .menu-column { width: 100px; background: #2a2a2a; padding: 6px 4px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #1a1a1a; }
       .column-title { color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px; }
-      .menu-item { width: 100%; background: #3a3a3a; border: none; padding: 5px 6px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc; }
+      .menu-item { width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc; }
       .menu-icon { font-size: 18px; }
       .menu-label { font-size: 12px; font-weight: 500; text-align: center; }
       .menu-item:hover { background: #4a4a4a; color: white; }
@@ -755,17 +762,17 @@ export class ConnectTestView {
       .method-content.active { display: block; }
       
       /* Method Items */
-      .method-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
+      .method-item { width: 100%; padding: 3px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
       .method-item:hover { background: #4a4a4a; color: white; }
       .method-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
 
       /* Scenario Type Items */
-      .scenario-type-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
+      .scenario-type-item { width: 100%; padding: 3px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
       .scenario-type-item:hover { background: #4a4a4a; color: white; }
       .scenario-type-item.active { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; }
 
       /* Protocol Items */
-      .protocol-item { width: 100%; padding: 8px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
+      .protocol-item { width: 100%; padding: 3px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
       .protocol-item:hover { background: #4a4a4a; color: white; }
       .protocol-item.active { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
       
@@ -923,6 +930,9 @@ export class ConnectTestView {
       });
     });
 
+    // Initialize default section state
+    this.switchSection(this.currentSection, container);
+    
     // Start pressure simulation for testing section
     this.startPressureSimulation();
   }
@@ -956,7 +966,7 @@ export class ConnectTestView {
       if (section === 'identification') {
         interfaceColumn.style.display = 'block';
         scenarioTypesColumn.style.display = 'none';
-        protocolsColumn.style.display = 'none';
+        protocolsColumn.style.display = 'block'; // Show protocols for identification
       } else if (section === 'testing') {
         interfaceColumn.style.display = 'none';
         scenarioTypesColumn.style.display = 'block';

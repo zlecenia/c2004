@@ -1,81 +1,113 @@
 // frontend/src/components/icon.component.ts - Professional Icon System with Lucide Icons
 
-import * as LucideIcons from 'lucide';
+// Try different import approaches for Lucide  
+let LucideIcons: any = null;
 
-// Lucide Icon mapping - preferred icons
-const lucideMap: Record<string, any> = {
+// Method 1: Try dynamic import with individual icons
+const importLucideIcon = async (iconName: string) => {
+  try {
+    // Import individual icons from lucide (more reliable than * import)
+    const iconModule = await import(`lucide/dist/esm/icons/${iconName.replace(/-([a-z])/g, (_, letter) => letter.toUpperCase())}.js`);
+    return iconModule.default;
+  } catch (error) {
+    console.warn(`Failed to import Lucide icon ${iconName}:`, error);
+    return null;
+  }
+};
+
+// Method 2: Try direct Lucide library import
+try {
+  // Import Lucide factory function
+  import('lucide').then((lucide) => {
+    LucideIcons = lucide;
+    console.log('✅ Lucide library loaded successfully');
+  }).catch((error) => {
+    console.warn('❌ Failed to load Lucide library:', error);
+  });
+} catch (error) {
+  console.warn('❌ Lucide import failed:', error);
+}
+
+// Lucide Icon mapping - preferred icons (safe initialization)
+const lucideMap: Record<string, any> = {};
+
+if (LucideIcons) {
   // Users & Authentication
-  'user': LucideIcons.User,
-  'user-circle': LucideIcons.UserCircle,
-  'lock': LucideIcons.Lock,
-  'key': LucideIcons.Key,
+  lucideMap['user'] = LucideIcons.User;
+  lucideMap['user-circle'] = LucideIcons.UserCircle;
+  lucideMap['lock'] = LucideIcons.Lock;
+  lucideMap['key'] = LucideIcons.Key;
   
   // Testing & Lab
-  'flask': LucideIcons.FlaskConical,
-  'clipboard-check': LucideIcons.ClipboardCheck,
-  'check-circle': LucideIcons.CheckCircle,
-  'check': LucideIcons.Check,
+  lucideMap['flask'] = LucideIcons.FlaskConical;
+  lucideMap['clipboard-check'] = LucideIcons.ClipboardCheck;
+  lucideMap['check-circle'] = LucideIcons.CheckCircle;
+  lucideMap['check'] = LucideIcons.Check;
   
   // Reports & Analytics
-  'file-text': LucideIcons.FileText,
-  'bar-chart': LucideIcons.BarChart3,
-  'calendar': LucideIcons.Calendar,
-  'calendar-days': LucideIcons.CalendarDays,
+  lucideMap['file-text'] = LucideIcons.FileText;
+  lucideMap['bar-chart'] = LucideIcons.BarChart3;
+  lucideMap['calendar'] = LucideIcons.Calendar;
+  lucideMap['calendar-days'] = LucideIcons.CalendarDays;
   
   // Workshop & Tools
-  'wrench': LucideIcons.Wrench,
-  'hard-hat': LucideIcons.HardHat,
-  'settings': LucideIcons.Settings,
-  'sliders': LucideIcons.Sliders,
+  lucideMap['wrench'] = LucideIcons.Wrench;
+  lucideMap['hard-hat'] = LucideIcons.HardHat;
+  lucideMap['settings'] = LucideIcons.Settings;
+  lucideMap['sliders'] = LucideIcons.Sliders;
   
   // Data & Storage
-  'database': LucideIcons.Database,
-  'hard-drive': LucideIcons.HardDrive,
-  'save': LucideIcons.Save,
-  'download': LucideIcons.Download,
-  'upload': LucideIcons.Upload,
+  lucideMap['database'] = LucideIcons.Database;
+  lucideMap['hard-drive'] = LucideIcons.HardDrive;
+  lucideMap['save'] = LucideIcons.Save;
+  lucideMap['download'] = LucideIcons.Download;
+  lucideMap['upload'] = LucideIcons.Upload;
   
   // Hardware & Devices
-  'smartphone': LucideIcons.Smartphone,
-  'credit-card': LucideIcons.CreditCard,
-  'qr-code': LucideIcons.QrCode,
-  'barcode': LucideIcons.ScanLine,
+  lucideMap['smartphone'] = LucideIcons.Smartphone;
+  lucideMap['credit-card'] = LucideIcons.CreditCard;
+  lucideMap['qr-code'] = LucideIcons.QrCode;
+  lucideMap['barcode'] = LucideIcons.ScanLine;
   
   // Network & System
-  'monitor': LucideIcons.Monitor,
-  'network': LucideIcons.Network,
-  'wifi': LucideIcons.Wifi,
-  'globe': LucideIcons.Globe,
+  lucideMap['monitor'] = LucideIcons.Monitor;
+  lucideMap['network'] = LucideIcons.Network;
+  lucideMap['wifi'] = LucideIcons.Wifi;
+  lucideMap['globe'] = LucideIcons.Globe;
   
   // Navigation & UI
-  'search': LucideIcons.Search,
-  'home': LucideIcons.Home,
-  'menu': LucideIcons.Menu,
-  'arrow-left': LucideIcons.ArrowLeft,
-  'arrow-right': LucideIcons.ArrowRight,
+  lucideMap['search'] = LucideIcons.Search;
+  lucideMap['home'] = LucideIcons.Home;
+  lucideMap['menu'] = LucideIcons.Menu;
+  lucideMap['arrow-left'] = LucideIcons.ArrowLeft;
+  lucideMap['arrow-right'] = LucideIcons.ArrowRight;
   
   // Actions
-  'edit': LucideIcons.Edit,
-  'trash': LucideIcons.Trash2,
-  'plus': LucideIcons.Plus,
-  'x': LucideIcons.X,
-  'play': LucideIcons.Play,
-  'pause': LucideIcons.Pause,
-  'stop': LucideIcons.Square,
+  lucideMap['edit'] = LucideIcons.Edit;
+  lucideMap['trash'] = LucideIcons.Trash2;
+  lucideMap['plus'] = LucideIcons.Plus;
+  lucideMap['x'] = LucideIcons.X;
+  lucideMap['play'] = LucideIcons.Play;
+  lucideMap['pause'] = LucideIcons.Pause;
+  lucideMap['stop'] = LucideIcons.Square;
   
   // Status & Alerts
-  'alert-triangle': LucideIcons.AlertTriangle,
-  'alert-circle': LucideIcons.AlertCircle,
-  'shield': LucideIcons.Shield,
-  'shield-check': LucideIcons.ShieldCheck,
+  lucideMap['alert-triangle'] = LucideIcons.AlertTriangle;
+  lucideMap['alert-circle'] = LucideIcons.AlertCircle;
+  lucideMap['shield'] = LucideIcons.Shield;
+  lucideMap['shield-check'] = LucideIcons.ShieldCheck;
   
   // Utility
-  'refresh': LucideIcons.RefreshCw,
-  'power': LucideIcons.Power,
-  'eye': LucideIcons.Eye,
-  'eye-off': LucideIcons.EyeOff,
-  'bell': LucideIcons.Bell
-};
+  lucideMap['refresh'] = LucideIcons.RefreshCw;
+  lucideMap['power'] = LucideIcons.Power;
+  lucideMap['eye'] = LucideIcons.Eye;
+  lucideMap['eye-off'] = LucideIcons.EyeOff;
+  lucideMap['bell'] = LucideIcons.Bell;
+  
+  console.log('✅ Lucide icons loaded successfully');
+} else {
+  console.warn('⚠️ Lucide icons not available, using emoji fallback');
+}
 
 // Emoji fallback mapping for when Lucide is not available
 const emojiMap: Record<string, string> = {
@@ -194,37 +226,54 @@ export class IconComponent {
       className = ''
     } = config;
     
-    // Try Lucide icon first
-    const LucideIcon = lucideMap[name];
-    if (LucideIcon) {
-      try {
-        // Create Lucide icon element
-        const iconElement = LucideIcon({
-          size,
-          color,
-          strokeWidth,
-          class: `lucide-icon icon-${name} ${className}`
+    // Try to render Lucide icon first (async fallback to emoji)
+    this.tryRenderLucideIcon(name, { size, color, strokeWidth, className }).then((lucideIcon) => {
+      if (lucideIcon) {
+        // Replace emoji with Lucide icon when loaded
+        const elements = document.querySelectorAll(`.icon-${name}`);
+        elements.forEach(el => {
+          if (el.textContent && el.textContent.length === 1) { // It's an emoji
+            el.innerHTML = lucideIcon;
+            el.classList.add('lucide-loaded');
+          }
         });
-        
-        // Convert to string if it's a DOM element
-        if (iconElement instanceof HTMLElement) {
-          return iconElement.outerHTML;
-        }
-        return iconElement;
-      } catch (error) {
-        console.warn(`Failed to render Lucide icon "${name}":`, error);
       }
-    }
+    });
     
-    // Fallback to emoji
+    // Return emoji immediately (will be replaced by Lucide when loaded)
     const emoji = emojiMap[name];
     if (emoji) {
-      return `<span class="icon icon-emoji icon-${name} ${className}" style="font-size: ${size}px;">${emoji}</span>`;
+      return `<span class="icon icon-emoji icon-${name} ${className}" style="font-size: ${size}px;" data-lucide="${name}">${emoji}</span>`;
     }
     
     // Last resort - missing icon
-    console.warn(`Icon "${name}" not found in Lucide or emoji fallback`);
+    console.warn(`Icon "${name}" not found in emoji fallback`);
     return `<span class="icon-missing ${className}" style="font-size: ${size}px;">?</span>`;
+  }
+
+  // Async method to try loading Lucide icon
+  private static async tryRenderLucideIcon(name: IconName, config: any): Promise<string | null> {
+    try {
+      const lucideIcon = await importLucideIcon(name);
+      if (lucideIcon && typeof lucideIcon === 'function') {
+        // Create SVG string
+        const svgElement = lucideIcon({
+          size: config.size,
+          color: config.color,
+          strokeWidth: config.strokeWidth,
+          class: `lucide-icon icon-${name} ${config.className}`
+        });
+        
+        if (typeof svgElement === 'string') {
+          return svgElement;
+        } else if (svgElement instanceof Element) {
+          return svgElement.outerHTML;
+        }
+      }
+    } catch (error) {
+      console.warn(`Failed to render Lucide icon "${name}":`, error);
+    }
+    return null;
   }
   
   static renderDOMElement(name: IconName, config: IconConfig = {}): HTMLElement {
