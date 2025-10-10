@@ -366,7 +366,7 @@ function createMainApplication() {
         <hr />
          <button class="nav-btn" data-module="connect-workshop">
           <span class="nav-icon">${IconComponent.render('wrench', { size: 18 })}</span>
-          <span class="nav-text">ConnectWorkshop</span>
+          <span class="nav-text">Connect Workshop</span>
         </button>
         <button class="nav-btn" data-module="connect-data">
           <span class="nav-icon">${IconComponent.render('database', { size: 18 })}</span>

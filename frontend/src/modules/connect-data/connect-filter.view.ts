@@ -80,6 +80,14 @@ export class ConnectDataView {
             <span class="menu-icon">${IconComponent.render('refresh', { size: 18 })}</span>
             <span class="menu-label">Sync</span>
           </button>
+          <button class="menu-item" data-action="activities">
+            <span class="menu-icon">${IconComponent.render('list', { size: 18 })}</span>
+            <span class="menu-label">Czynności</span>
+          </button>
+          <button class="menu-item" data-action="test-types">
+            <span class="menu-icon">${IconComponent.render('clock', { size: 18 })}</span>
+            <span class="menu-label">Rodzaj Testu</span>
+          </button>
         </div>
 
         <div class="main-content">
@@ -307,6 +315,112 @@ export class ConnectDataView {
               </div>
             </div>
 
+            <!-- Activities Content -->
+            <div id="activities-content" class="action-content">
+              <div class="form-container">
+                <h4>🔧 Zarządzanie Czynnościami</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Wybierz scenariusz:</label>
+                    <select class="form-select">
+                      <option value="">-- Wybierz scenariusz --</option>
+                      <option value="scenario-c20">Scenariusz C20</option>
+                      <option value="pressure-test">Test ciśnienia</option>
+                      <option value="flow-test">Test przepływu</option>
+                      <option value="function-test">Test funkcjonalny</option>
+                      <option value="visual-inspection">Kontrola wizualna</option>
+                      <option value="maintenance">Konserwacja</option>
+                      <option value="calibration">Kalibracja</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="activities-list">
+                  <div class="activity-item" draggable="true">
+                    <span class="activity-handle">⋮⋮</span>
+                    <span class="activity-name">Sprawdzenie ciśnienia wejściowego</span>
+                    <div class="activity-actions">
+                      <button class="btn-activity-edit">✏️</button>
+                      <button class="btn-activity-delete">🗑️</button>
+                    </div>
+                  </div>
+                  <div class="activity-item" draggable="true">
+                    <span class="activity-handle">⋮⋮</span>
+                    <span class="activity-name">Test szczelności</span>
+                    <div class="activity-actions">
+                      <button class="btn-activity-edit">✏️</button>
+                      <button class="btn-activity-delete">🗑️</button>
+                    </div>
+                  </div>
+                  <div class="activity-item" draggable="true">
+                    <span class="activity-handle">⋮⋮</span>
+                    <span class="activity-name">Kontrola wizualna</span>
+                    <div class="activity-actions">
+                      <button class="btn-activity-edit">✏️</button>
+                      <button class="btn-activity-delete">🗑️</button>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn-submit">+ Dodaj Nową Czynność</button>
+              </div>
+            </div>
+
+            <!-- Test Types Content -->
+            <div id="test-types-content" class="action-content">
+              <div class="form-container">
+                <h4>⏰ Rodzaj Testu - Interwały</h4>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Przypisz Urządzenie:</label>
+                    <select class="form-select">
+                      <option value="">-- Wybierz urządzenie --</option>
+                      <option value="device-001">Regulator ciśnienia REG-001</option>
+                      <option value="device-002">Zawór bezpieczeństwa ZB-002</option>
+                      <option value="device-003">Przepływomierz PF-003</option>
+                      <option value="device-004">Manometr MN-004</option>
+                      <option value="device-005">Reduktor ciśnienia RC-005</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="form-row">
+                  <div class="form-group">
+                    <label>Przypisz interwał do scenariusza:</label>
+                    <select class="form-select">
+                      <option value="">-- Wybierz interwał --</option>
+                      <option value="usage">Po użyciu</option>
+                      <option value="monthly">Po miesiącu</option>
+                      <option value="6months">Po 6 miesiącach</option>
+                      <option value="yearly">Roczny</option>
+                      <option value="emergency">Awaryjny</option>
+                      <option value="preventive">Prewencyjny</option>
+                    </select>
+                  </div>
+                </div>
+                <div class="assignments-list">
+                  <div class="assignment-item">
+                    <div class="assignment-info">
+                      <span class="device-name">📊 Regulator ciśnienia REG-001</span>
+                      <span class="interval-name">⏰ Po użyciu</span>
+                    </div>
+                    <div class="assignment-actions">
+                      <button class="btn-assignment-edit">✏️</button>
+                      <button class="btn-assignment-delete">🗑️</button>
+                    </div>
+                  </div>
+                  <div class="assignment-item">
+                    <div class="assignment-info">
+                      <span class="device-name">📊 Zawór bezpieczeństwa ZB-002</span>
+                      <span class="interval-name">⏰ Po miesiącu</span>
+                    </div>
+                    <div class="assignment-actions">
+                      <button class="btn-assignment-edit">✏️</button>
+                      <button class="btn-assignment-delete">🗑️</button>
+                    </div>
+                  </div>
+                </div>
+                <button class="btn-submit">+ Przypisz Nowe</button>
+              </div>
+            </div>
+
 
           </div>
         </div>
@@ -379,6 +493,32 @@ export class ConnectDataView {
       .archive-options { margin: 10px 0; }
       .archive-options label { display: block; margin-bottom: 6px; font-size: 11px; cursor: pointer; }
       .archive-options input[type="checkbox"] { margin-right: 6px; }
+      
+      /* Activities Styles */
+      .activities-list { margin: 15px 0; }
+      .activity-item { display: flex; align-items: center; gap: 10px; background: white; border: 1px solid #e0e0e0; border-radius: 6px; padding: 8px; margin-bottom: 8px; cursor: move; transition: all 0.2s; }
+      .activity-item:hover { border-color: #667eea; box-shadow: 0 2px 8px rgba(102, 126, 234, 0.2); }
+      .activity-item.dragging { opacity: 0.5; transform: rotate(2deg); }
+      .activity-handle { color: #666; cursor: grab; font-weight: bold; }
+      .activity-handle:active { cursor: grabbing; }
+      .activity-name { flex: 1; font-size: 12px; font-weight: 500; }
+      .activity-actions { display: flex; gap: 4px; }
+      .btn-activity-edit, .btn-activity-delete { padding: 4px 6px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 3px; cursor: pointer; font-size: 10px; transition: all 0.2s; }
+      .btn-activity-edit:hover { background: #007bff; color: white; }
+      .btn-activity-delete:hover { background: #dc3545; color: white; }
+      
+      /* Test Types Assignment Styles */
+      .assignments-list { margin: 15px 0; }
+      .assignment-item { display: flex; align-items: center; justify-content: space-between; background: white; border: 1px solid #e0e0e0; border-radius: 6px; padding: 10px; margin-bottom: 8px; transition: all 0.2s; }
+      .assignment-item:hover { border-color: #28a745; box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2); }
+      .assignment-info { display: flex; flex-direction: column; gap: 4px; }
+      .device-name, .interval-name { font-size: 11px; }
+      .device-name { font-weight: 600; color: #333; }
+      .interval-name { color: #666; }
+      .assignment-actions { display: flex; gap: 4px; }
+      .btn-assignment-edit, .btn-assignment-delete { padding: 4px 6px; background: #f8f9fa; border: 1px solid #dee2e6; border-radius: 3px; cursor: pointer; font-size: 10px; transition: all 0.2s; }
+      .btn-assignment-edit:hover { background: #007bff; color: white; }
+      .btn-assignment-delete:hover { background: #dc3545; color: white; }
 
       /* Import Options */
       .import-options { margin: 10px 0; }
@@ -425,6 +565,60 @@ export class ConnectDataView {
         const target = e.currentTarget as HTMLElement;
         const action = target.getAttribute('data-action');
         if (action) this.handleAction(action, container);
+      });
+    });
+
+    // Setup drag and drop for activities
+    this.setupActivitiesDragDrop(container);
+  }
+
+  private setupActivitiesDragDrop(container: HTMLElement): void {
+    // Use event delegation to handle dynamically added activities
+    container.addEventListener('dragstart', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('activity-item')) {
+        target.classList.add('dragging');
+        if (e.dataTransfer) {
+          e.dataTransfer.effectAllowed = 'move';
+          e.dataTransfer.setData('text/html', target.outerHTML);
+        }
+      }
+    });
+
+    container.addEventListener('dragend', (e) => {
+      const target = e.target as HTMLElement;
+      if (target.classList.contains('activity-item')) {
+        target.classList.remove('dragging');
+      }
+    });
+
+    container.addEventListener('dragover', (e) => {
+      e.preventDefault();
+      const activitiesList = container.querySelector('.activities-list');
+      if (activitiesList && activitiesList.contains(e.target as Node)) {
+        e.dataTransfer!.dropEffect = 'move';
+      }
+    });
+
+    container.addEventListener('drop', (e) => {
+      e.preventDefault();
+      const activitiesList = container.querySelector('.activities-list');
+      if (activitiesList && activitiesList.contains(e.target as Node)) {
+        const draggingElement = container.querySelector('.dragging');
+        if (draggingElement && e.target !== draggingElement) {
+          const targetElement = (e.target as HTMLElement).closest('.activity-item');
+          if (targetElement) {
+            activitiesList.insertBefore(draggingElement, targetElement.nextSibling);
+          }
+        }
+      }
+    });
+
+    // Make activity items draggable
+    container.addEventListener('DOMNodeInserted', () => {
+      const activityItems = container.querySelectorAll('.activity-item');
+      activityItems.forEach(item => {
+        (item as HTMLElement).draggable = true;
       });
     });
   }
@@ -515,7 +709,9 @@ export class ConnectDataView {
       'edit': 'Edytuj', 
       'export': 'Eksport i Archiwizacja',
       'import': 'Import Danych',
-      'sync': 'Synchronizacja'
+      'sync': 'Synchronizacja',
+      'activities': 'Zarządzanie Czynnościami',
+      'test-types': 'Rodzaj Testu - Interwały'
     };
 
     const topBarTitle = document.getElementById('top-bar-section-title');

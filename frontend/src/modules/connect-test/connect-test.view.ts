@@ -1,17 +1,20 @@
 import { ConnectTestModule } from './connect-test.module';
+import { TestIntervalsComponent } from './test-intervals.component';
 
 export class ConnectTestView {
   private currentSection: string = 'identification';
   private currentMethod: string = 'list';
-  private currentProtocol: string = 'service';
   private currentScenarioType: string = 'usage';
+  private currentTestType: string = '';
+  private testIntervalsComponent: TestIntervalsComponent;
 
   constructor(_module: ConnectTestModule) {
     // module parameter used for future implementations
+    this.testIntervalsComponent = new TestIntervalsComponent();
   }
 
   private updateNavigationURL(): void {
-    console.log(`🔧 ConnectTest: Updating URL - section: ${this.currentSection}, method: ${this.currentMethod}, scenarioType: ${this.currentScenarioType}, protocol: ${this.currentProtocol}`);
+    console.log(`🔧 ConnectTest: Updating URL - section: ${this.currentSection}, method: ${this.currentMethod}, testType: ${this.currentTestType}`);
     
     // Build URL based on current navigation state
     let url = `connect-test`;
@@ -21,17 +24,14 @@ export class ConnectTestView {
       if (this.currentScenarioType) {
         url += `/${this.currentScenarioType}`;
       }
-      if (this.currentProtocol) {
-        url += `/${this.currentProtocol}`;
-      }
     } else {
       url += `/${this.currentSection}`;
       if (this.currentMethod) {
         url += `/${this.currentMethod}`;
       }
-      // For identification section, also include protocol if it's not the default
-      if (this.currentSection === 'identification' && this.currentProtocol && this.currentProtocol !== 'service') {
-        url += `/${this.currentProtocol}`;
+      // For identification section, also include test type if search method is selected
+      if (this.currentSection === 'identification' && this.currentMethod === 'search' && this.currentTestType) {
+        url += `/${this.currentTestType}`;
       }
     }
     
@@ -61,88 +61,43 @@ export class ConnectTestView {
         <!-- Column 2A: Interface (shown only for Identification) -->
         <div class="menu-column" id="interface-column" style="display: block;">
           <h3 class="column-title">Interfejs</h3>
-          <button class="method-item" data-method="rfid">
+          <button class="method-item compact" data-method="rfid">
             <span class="menu-icon">📡</span>
             <span class="menu-label">RFID</span>
           </button>
-          <button class="method-item" data-method="qr">
+          <button class="method-item compact" data-method="qr">
             <span class="menu-icon">📷</span>
             <span class="menu-label">QR</span>
           </button>
-          <button class="method-item" data-method="barcode">
+          <button class="method-item compact" data-method="barcode">
             <span class="menu-icon">📊</span>
             <span class="menu-label">Barcode</span>
           </button>
-          <button class="method-item" data-method="search">
+          <button class="method-item compact" data-method="search">
             <span class="menu-icon">🔍</span>
             <span class="menu-label">Szukaj</span>
           </button>
-          <button class="method-item active" data-method="list">
-            <span class="menu-icon">📋</span>
-            <span class="menu-label">Z listy</span>
-          </button>
         </div>
 
-        <!-- Column 2B: Scenario Types (shown only for Testing) -->
-        <div class="menu-column" id="scenario-types-column" >
+        <!-- Column 2B: Test Intervals Component -->
+        ${this.testIntervalsComponent.render()}
+
+        <!-- Column 2C: Scenario Types (shown only for Testing) -->
+        <div class="menu-column" id="scenario-types-column" style="display: none;">
           <h3 class="column-title">Rodzaj testu</h3>
-          <button class="scenario-type-item active" data-scenario-type="usage">
+          <button class="scenario-type-item compact active" data-scenario-type="usage">
             <span class="menu-icon">🔄</span>
             <span class="menu-label">Po użyciu</span>
           </button>
-          <button class="scenario-type-item" data-scenario-type="6months">
+          <button class="scenario-type-item compact" data-scenario-type="6months">
             <span class="menu-icon">📅</span>
             <span class="menu-label">Po 6 miesiącach</span>
           </button>
-          <button class="scenario-type-item" data-scenario-type="yearly">
+          <button class="scenario-type-item compact" data-scenario-type="yearly">
             <span class="menu-icon">📆</span>
             <span class="menu-label">Roczny</span>
           </button>
-          <button class="scenario-type-item" data-scenario-type="emergency">
-            <span class="menu-icon">🚨</span>
-            <span class="menu-label">Awaryjny</span>
-          </button>
-          <button class="scenario-type-item" data-scenario-type="preventive">
-            <span class="menu-icon">🛡️</span>
-            <span class="menu-label">Prewencyjny</span>
-          </button>
-        </div>
-
-        <!-- Column 3: Protocols (shown only for Testing) -->
-        <div class="menu-column" id="protocols-column" style="display: none;">
-          <h3 class="column-title">Czynności</h3>
-
-          <!-- Test Procedures -->
-          <button class="protocol-item active" data-protocol="pressure-test">
-            <span class="menu-label">Test ciśnienia</span>
-          </button>
-          <button class="protocol-item" data-protocol="flow-test">
-            <span class="menu-label">Test przepływu</span>
-          </button>
-          <button class="protocol-item" data-protocol="function-test">
-            <span class="menu-label">Test funkcjonalny</span>
-          </button>
-          <button class="protocol-item" data-protocol="visual-inspection">
-            <span class="menu-label">Kontrola wizualna</span>
-          </button>
-          <button class="protocol-item" data-protocol="maintenance">
-            <span class="menu-label">Konserwacja</span>
-          </button>
-          <button class="protocol-item" data-protocol="calibration">
-            <span class="menu-label">Kalibracja</span>
-          </button>
           
-          <!-- Administrative Actions -->
-          <div class="protocol-separator"></div>
-          <button class="protocol-item" data-protocol="service">
-            <span class="menu-label">Serwis</span>
-          </button>
-          <button class="protocol-item" data-protocol="notes">
-            <span class="menu-label">Uwagi</span>
-          </button>
-          <button class="protocol-item" data-protocol="create-report">
-            <span class="menu-label">Stwórz Raport</span>
-          </button>
         </div>
 
         <div class="main-content">
@@ -278,38 +233,79 @@ export class ConnectTestView {
 
             <!-- Testing Section -->
             <div id="testing-content" class="section-content">
-              <!-- Pressure Test Protocol -->
-              <div id="pressure-test-protocol" class="protocol-content active">
-                <div class="protocol-form">
-                  <h4>🔋 Test ciśnienia</h4>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label>Urządzenie:</label>
-                      <select class="form-select">
-                        <option>PSS-7000 #12345</option>
-                        <option>PSS-5000 #67890</option>
-                        <option>PSS-3000 #11111</option>
-                      </select>
+              <!-- Calendar View for Testing Activities -->
+              <div class="testing-calendar-container">
+                <!-- Calendar Header -->
+                <div class="calendar-header">
+                  <button class="btn-calendar-nav" id="prev-month">‹</button>
+                  <h3 class="calendar-title" id="current-month">Październik 2024</h3>
+                  <button class="btn-calendar-nav" id="next-month">›</button>
+                </div>
+                
+                <!-- Calendar Grid -->
+                <div class="calendar-grid">
+                  <div class="calendar-weekdays">
+                    <div class="weekday">Pn</div>
+                    <div class="weekday">Wt</div>
+                    <div class="weekday">Śr</div>
+                    <div class="weekday">Cz</div>
+                    <div class="weekday">Pt</div>
+                    <div class="weekday">Sb</div>
+                    <div class="weekday">Nd</div>
+                  </div>
+                  <div class="calendar-days" id="calendar-days">
+                    <!-- Days will be populated dynamically -->
+                  </div>
+                </div>
+                
+                <!-- Activity Navigation -->
+                <div class="activity-navigation">
+                  <div class="current-activity">
+                    <div class="activity-header">
+                      <h4>📅 Dzisiejsze Czynności</h4>
+                      <div class="activity-counter">
+                        <span class="current-activity-num">1</span> z <span class="total-activities">3</span>
+                      </div>
                     </div>
-                    <div class="form-group">
-                      <label>Ciśnienie docelowe [bar]:</label>
-                      <input type="number" class="form-input" value="300" min="0" max="1000" />
+                    
+                    <div class="activity-card active" id="current-activity-card">
+                      <div class="activity-icon">🔋</div>
+                      <div class="activity-details">
+                        <div class="activity-title">Test ciśnienia - PSS-7000 #12345</div>
+                        <div class="activity-time">10:00 - 10:30</div>
+                        <div class="activity-status status-pending">Oczekuje</div>
+                      </div>
+                      <div class="activity-progress">
+                        <div class="progress-bar">
+                          <div class="progress-fill" style="width: 0%"></div>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    <div class="activity-controls">
+                      <button class="btn-activity-nav" id="prev-activity">‹ Poprzednia</button>
+                      <button class="btn-start-activity">▶️ Rozpocznij</button>
+                      <button class="btn-activity-nav" id="next-activity">Następna ›</button>
                     </div>
                   </div>
-                  <div class="form-row">
-                    <div class="form-group">
-                      <label>Czas trwania testu [min]:</label>
-                      <input type="number" class="form-input" value="5" min="1" max="60" />
+                  
+                  <!-- Quick Activity List -->
+                  <div class="activity-queue">
+                    <h5>Kolejne czynności:</h5>
+                    <div class="queue-item">
+                      <span class="queue-time">10:30</span>
+                      <span class="queue-activity">💨 Test przepływu</span>
+                      <span class="queue-device">PSS-5000 #67890</span>
                     </div>
-                    <div class="form-group">
-                      <label>Tolerancja [%]:</label>
-                      <input type="number" class="form-input" value="2" min="0" max="10" />
+                    <div class="queue-item">
+                      <span class="queue-time">11:00</span>
+                      <span class="queue-activity">🔧 Konserwacja</span>
+                      <span class="queue-device">PSS-3000 #11111</span>
                     </div>
                   </div>
-                  <div class="test-status">Status: <span class="status-ready">Gotowy do testu</span></div>
-                  <button class="btn-start-test">▶️ Rozpocznij Test Ciśnienia</button>
                 </div>
               </div>
+            </div>
 
               <!-- Flow Test Protocol -->
               <div id="flow-test-protocol" class="protocol-content">
@@ -761,23 +757,52 @@ export class ConnectTestView {
       .method-content { display: none; }
       .method-content.active { display: block; }
       
-      /* Method Items */
-      .method-item { width: 100%; padding: 3px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
-      .method-item:hover { background: #4a4a4a; color: white; }
-      .method-item.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+      /* Method Items - Compact */
+      .method-item.compact { 
+        width: 100%; 
+        padding: 2px 4px; 
+        background: #3a3a3a; 
+        border: none; 
+        color: #ccc; 
+        cursor: pointer; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        gap: 2px; 
+        border-radius: 3px; 
+        margin-bottom: 2px; 
+        transition: all 0.2s; 
+        min-height: 32px;
+      }
+      .method-item.compact:hover { background: #4a4a4a; color: white; }
+      .method-item.compact.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+      .method-item.compact .menu-icon { font-size: 14px; }
+      .method-item.compact .menu-label { font-size: 9px; font-weight: 600; text-align: center; line-height: 1.1; }
 
-      /* Scenario Type Items */
-      .scenario-type-item { width: 100%; padding: 3px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
-      .scenario-type-item:hover { background: #4a4a4a; color: white; }
-      .scenario-type-item.active { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; }
-
-      /* Protocol Items */
-      .protocol-item { width: 100%; padding: 3px 4px; background: #3a3a3a; border: none; color: #ccc; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; border-radius: 4px; margin-bottom: 3px; transition: all 0.2s; }
-      .protocol-item:hover { background: #4a4a4a; color: white; }
-      .protocol-item.active { background: linear-gradient(135deg, #28a745 0%, #20c997 100%); color: white; }
+      /* Scenario Type Items - Compact */
+      .scenario-type-item.compact { 
+        width: 100%; 
+        padding: 2px 4px; 
+        background: #3a3a3a; 
+        border: none; 
+        color: #ccc; 
+        cursor: pointer; 
+        display: flex; 
+        flex-direction: column; 
+        align-items: center; 
+        gap: 2px; 
+        border-radius: 3px; 
+        margin-bottom: 2px; 
+        transition: all 0.2s; 
+        min-height: 32px;
+      }
+      .scenario-type-item.compact:hover { background: #4a4a4a; color: white; }
+      .scenario-type-item.compact.active { background: linear-gradient(135deg, #dc3545 0%, #c82333 100%); color: white; }
+      .scenario-type-item.compact .menu-icon { font-size: 14px; }
+      .scenario-type-item.compact .menu-label { font-size: 9px; font-weight: 600; text-align: center; line-height: 1.1; }
       
-      /* Protocol Separator */
-      .protocol-separator { height: 1px; background: #555; margin: 8px 6px; }
+      /* Component Styles */
+      ${this.testIntervalsComponent.getStyles()}
 
       /* Test Form */
       .test-form { background: #f8f9fa; padding: 15px; border-radius: 5px; }
@@ -920,15 +945,8 @@ export class ConnectTestView {
       });
     });
 
-    // Protocol buttons (for Testing)
-    const protocolItems = container.querySelectorAll('[data-protocol]');
-    protocolItems.forEach(item => {
-      item.addEventListener('click', (e) => {
-        const target = e.currentTarget as HTMLElement;
-        const protocol = target.getAttribute('data-protocol');
-        if (protocol) this.switchProtocol(protocol, container);
-      });
-    });
+    // Setup test intervals component event listeners
+    this.testIntervalsComponent.setupEventListeners(container, this.switchTestType.bind(this));
 
     // Initialize default section state
     this.switchSection(this.currentSection, container);
@@ -960,21 +978,17 @@ export class ConnectTestView {
     // Show/hide columns based on section
     const interfaceColumn = container.querySelector('#interface-column') as HTMLElement;
     const scenarioTypesColumn = container.querySelector('#scenario-types-column') as HTMLElement;
-    const protocolsColumn = container.querySelector('#protocols-column') as HTMLElement;
     
-    if (interfaceColumn && scenarioTypesColumn && protocolsColumn) {
+    if (interfaceColumn && scenarioTypesColumn) {
       if (section === 'identification') {
         interfaceColumn.style.display = 'block';
         scenarioTypesColumn.style.display = 'none';
-        protocolsColumn.style.display = 'block'; // Show protocols for identification
       } else if (section === 'testing') {
         interfaceColumn.style.display = 'none';
         scenarioTypesColumn.style.display = 'block';
-        protocolsColumn.style.display = 'block';
       } else {
         interfaceColumn.style.display = 'none';
         scenarioTypesColumn.style.display = 'none';
-        protocolsColumn.style.display = 'none';
       }
     }
 
@@ -1027,11 +1041,20 @@ export class ConnectTestView {
       activeMethod.classList.add('active');
     }
 
+    // Show/Hide test types column based on method using component
+    if (method === 'search') {
+      this.testIntervalsComponent.show();
+    } else {
+      this.testIntervalsComponent.hide();
+      this.currentTestType = ''; // Reset test type when not in search mode
+    }
+
     // Update top-bar
     const methodTitles: any = {
       'rfid': 'RFID',
       'qr': 'QR Code', 
       'barcode': 'Barcode',
+      'search': 'Szukaj',
       'manual': 'Keyboard',
       'list': 'Z listy'
     };
@@ -1047,6 +1070,23 @@ export class ConnectTestView {
     this.updateNavigationURL();
   }
 
+  private switchTestType(testType: string, container: HTMLElement): void {
+    this.currentTestType = testType;
+
+    // Update test type menu active state using component
+    this.testIntervalsComponent.setActive(testType);
+
+    // Update top-bar title using component data
+    const testTypeTitles = this.testIntervalsComponent.getTestTypeTitles();
+    const topBarTitle = document.getElementById('top-bar-section-title');
+    if (topBarTitle) {
+      topBarTitle.textContent = `ConnectTest - Urządzenia - Szukaj - ${testTypeTitles[testType]}`;
+    }
+
+    // Update navigation URL
+    this.updateNavigationURL();
+  }
+
   private switchScenarioType(scenarioType: string, container: HTMLElement): void {
     this.currentScenarioType = scenarioType;
 
@@ -1056,11 +1096,6 @@ export class ConnectTestView {
       if (item.getAttribute('data-scenario-type') === scenarioType) item.classList.add('active');
     });
 
-    // Show protocols column when scenario type is selected
-    const protocolsColumn = container.querySelector('#protocols-column') as HTMLElement;
-    if (protocolsColumn) {
-      protocolsColumn.style.display = 'block';
-    }
 
     this.updateTestingTopBar();
     
@@ -1068,67 +1103,6 @@ export class ConnectTestView {
     this.updateNavigationURL();
   }
 
-  private switchProtocol(protocol: string, container: HTMLElement): void {
-    this.currentProtocol = protocol;
-
-    // Update protocol menu active state
-    container.querySelectorAll('[data-protocol]').forEach(item => {
-      item.classList.remove('active');
-      if (item.getAttribute('data-protocol') === protocol) item.classList.add('active');
-    });
-
-    // Hide all protocol contents
-    container.querySelectorAll('.protocol-content').forEach(content => {
-      content.classList.remove('active');
-    });
-
-    // Show selected protocol
-    const activeProtocol = container.querySelector(`#${protocol}-protocol`);
-    if (activeProtocol) {
-      activeProtocol.classList.add('active');
-    }
-
-    this.updateTestingTopBar();
-
-    // Update URL menu for protocol change  
-    const topBarTitle = document.getElementById('top-bar-section-title');
-    if (topBarTitle) {
-      const protocolTitles: any = {
-        'pressure-test': 'Test ciśnienia',
-        'flow-test': 'Test przepływu', 
-        'function-test': 'Test funkcjonalny',
-        'visual-inspection': 'Kontrola wizualna',
-        'maintenance': 'Konserwacja',
-        'calibration': 'Kalibracja',
-        'service': 'Serwis',
-        'notes': 'Uwagi',
-        'create-report': 'Stwórz Raport'
-      };
-      
-      const protocolName = protocolTitles[protocol] || protocol;
-      topBarTitle.textContent = `ConnectTest - Testowanie - ${this.currentScenarioType || 'Po użyciu'} - ${protocolName}`;
-    }
-
-    // Update params
-    const protocolTitles: any = {
-      'pressure-test': 'Test ciśnienia',
-      'flow-test': 'Test przepływu', 
-      'function-test': 'Test funkcjonalny',
-      'visual-inspection': 'Kontrola wizualna',
-      'maintenance': 'Konserwacja',
-      'calibration': 'Kalibracja',
-      'service': 'Serwis',
-      'scenario-c20': 'Scenariusz C20',
-      'notes': 'Uwagi',
-      'create-report': 'Stwórz Raport'
-    };
-
-    const activeProtocolParam = document.querySelector('#active-protocol');
-    if (activeProtocolParam) activeProtocolParam.textContent = protocolTitles[protocol];
-    
-    // Update navigation URL
-    this.updateNavigationURL();
-  }
 
   private updateTestingTopBar(): void {
     const scenarioTypeTitles: any = {
@@ -1139,16 +1113,9 @@ export class ConnectTestView {
       'preventive': 'Prewencyjny'
     };
 
-    const protocolTitles: any = {
-      'service': 'Serwis',
-      'scenario-c20': 'Scenariusz C20',
-      'notes': 'Uwagi',
-      'create-report': 'Stwórz Raport'
-    };
-
     const topBarTitle = document.getElementById('top-bar-section-title');
     if (topBarTitle) {
-      topBarTitle.textContent = `ConnectTest - Testowanie - ${scenarioTypeTitles[this.currentScenarioType]} - ${protocolTitles[this.currentProtocol]}`;
+      topBarTitle.textContent = `ConnectTest - Testowanie - ${scenarioTypeTitles[this.currentScenarioType]}`;
     }
   }
 
@@ -1167,5 +1134,39 @@ export class ConnectTestView {
       if (mediumElement) mediumElement.textContent = `${mediumPressure} mbar`;
       if (highElement) highElement.textContent = `${highPressure} mbar`;
     }, 2000);
+  }
+
+  // Public method for URL routing support
+  public setInitialState(section: string, method: string = '', testType: string = '', scenarioType: string = ''): void {
+    console.log(`🔧 ConnectTest: Setting initial state - section: ${section}, method: ${method}, testType: ${testType}, scenarioType: ${scenarioType}`);
+    
+    const container = document.querySelector('.connect-test-compact');
+    if (!container) return;
+
+    // Set current values
+    this.currentSection = section;
+    this.currentMethod = method || 'list';
+    this.currentTestType = testType || '';
+    this.currentScenarioType = scenarioType || 'usage';
+
+    // Update section
+    if (section) {
+      this.switchSection(section, container as HTMLElement);
+    }
+
+    // Update method if provided
+    if (method) {
+      this.switchMethod(method, container as HTMLElement);
+    }
+
+    // Update test type if provided (for search method)
+    if (testType && method === 'search') {
+      this.switchTestType(testType, container as HTMLElement);
+    }
+
+    // Update scenario type if provided (for testing section)
+    if (scenarioType && section === 'testing') {
+      this.switchScenarioType(scenarioType, container as HTMLElement);
+    }
   }
 }
