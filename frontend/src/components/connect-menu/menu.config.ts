@@ -349,13 +349,13 @@ export const routeMenuMappings: RouteMenuMapping[] = [
     activeItems: ['dispositions', 'import']
   },
   {
-    route: '/connect-reports',
+    route: '/connect-reports', 
     menuId: 'connect-reports-menu',
     activeItems: ['executed']
   },
   {
     route: '/connect-test',
-    menuId: 'connect-test-menu',
+    menuId: 'connect-test-menu', 
     activeItems: ['identification']
   },
   {

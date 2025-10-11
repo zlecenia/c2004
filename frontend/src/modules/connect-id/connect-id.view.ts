@@ -411,4 +411,20 @@ export class ConnectIdView {
   getCurrentMethod(): string {
     return this.currentMethod;
   }
+
+  // Set initial type (called from main.ts)
+  setInitialType(type: string): void {
+    this.currentType = type;
+    console.log(`🔧 ConnectId initial type set to: ${type}`);
+    
+    // Update UI to reflect the type if needed
+    const sectionTitle = document.getElementById('top-bar-section-title');
+    if (sectionTitle && type) {
+      const typeLabel = type === 'user' ? 'Użytkownik' : 
+                       type === 'device' ? 'Urządzenie' : 
+                       type === 'group' ? 'Grupa' : 
+                       type === 'test' ? 'Test' : 'Identyfikacja';
+      sectionTitle.textContent = `ConnectId - ${typeLabel}`;
+    }
+  }
 }

@@ -55,16 +55,25 @@ test('main.ts loads modules', () => {
 
 test('main.ts has navigation for all modules', () => {
   const content = readFileSync('src/main.ts', 'utf8');
+  
+  // Check that main.ts uses MenuManager for navigation
+  assert(content.includes('MenuManager'), 'main.ts should use MenuManager');
+  assert(content.includes('createMenu'), 'main.ts should use createMenu function');
+  
+  // Check menu configuration file has all required modules
+  const menuConfigContent = readFileSync('src/components/connect-menu/menu.config.ts', 'utf8');
   const requiredModules = [
     'connect-id',
     'connect-test',
+    'connect-reports',
+    'connect-manager',
+    'connect-workshop',
     'connect-data',
-    'connect-workshop', 
     'connect-config'
   ];
   
   requiredModules.forEach(module => {
-    assert(content.includes(`data-module="${module}"`), `Navigation should include ${module}`);
+    assert(menuConfigContent.includes(`'${module}'`), `Menu configuration should include ${module}`);
   });
 });
 
@@ -109,9 +118,9 @@ test('connect-config module structure', () => {
 test('modules have proper routing setup', () => {
   const mainContent = readFileSync('src/main.ts', 'utf8');
   
-  // Check for hash routing
-  assert(mainContent.includes('window.location.hash'), 'main.ts should implement hash routing');
-  assert(mainContent.includes('handleHashChange'), 'main.ts should handle hash changes');
+  // Check for path routing
+  assert(mainContent.includes('window.history.pushState'), 'main.ts should implement path routing');
+  assert(mainContent.includes('handlePathChange'), 'main.ts should handle path changes');
   
   // Check load functions exist
   const loadFunctions = [

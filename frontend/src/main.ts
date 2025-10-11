@@ -3,6 +3,7 @@ import './config/env.config'; // Validate environment on startup
 import './config/service.manifest'; // Validate service manifest
 import { moduleManager } from './modules';
 import { IconComponent } from './components/icon.component';
+import { MenuManager, createMenu } from './components/connect-menu';
 
 // Add basic CSS for 1280×400px touchscreen
 const style = document.createElement('style');
@@ -73,65 +74,7 @@ style.textContent = `
     overflow: hidden;
   }
 
-  .sidebar-navigation {
-    width: 120px;
-    background: #2a2a2a;
-    display: flex;
-    flex-direction: column;
-    padding: 4px;
-    gap: 2px;
-    box-shadow: 2px 0 4px rgba(0,0,0,0.2);
-    flex-shrink: 0;
-  }
-
-  .sidebar-title {
-    color: #FFF;
-    font-size: 9px;
-    font-weight: 600;
-    text-transform: uppercase;
-    margin: 0 0 6px 0;
-    padding: 4px;
-    text-align: center;
-    background: #1a1a1a;
-    border-radius: 3px;
-  }
-
-  .nav-btn {
-    background: #3a3a3a;
-    border: none;
-    padding: 3px 4px;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 12px;
-    transition: all 0.2s;
-    text-align: center;
-    color: #ccc;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 3px;
-    user-select: none;
-  }
-
-  .nav-icon {
-    font-size: 13px;
-  }
-
-  .nav-text {
-    font-size: 12px;
-    font-weight: 500;
-  }
-
-  .nav-btn:hover {
-    background: #4a4a4a;
-    color: white;
-  }
-
-  .nav-btn.active {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    box-shadow: 0 2px 6px rgba(102, 126, 234, 0.4);
-  }
+  /* Sidebar navigation styles moved to connect-menu component */
 
   .module-container {
     flex: 1;
@@ -356,38 +299,8 @@ function createMainApplication() {
     </div>
     
     <div class="app-layout">
-      <div class="sidebar-navigation">
-        <h3 class="sidebar-title">Główne menu</h3>
-        <button class="nav-btn active" data-module="connect-id" data-type="user">
-          <span class="nav-icon">${IconComponent.render('user-circle', { size: 18 })}</span>
-          <span class="nav-text">Użytkownik</span>
-        </button>
-        <button class="nav-btn" data-module="connect-test">
-          <span class="nav-icon">${IconComponent.render('flask', { size: 18 })}</span>
-          <span class="nav-text">Testowanie</span>
-        </button>
-         <button class="nav-btn" data-module="connect-reports">
-          <span class="nav-icon">${IconComponent.render('file-text', { size: 18 })}</span>
-          <span class="nav-text">Raporty</span>
-        </button>
-        <button class="nav-btn" data-module="connect-manager">
-          <span class="nav-icon">${IconComponent.render('clipboard-list', { size: 18 })}</span>
-          <span class="nav-text">Manager</span>
-        </button>
-        
-         <button class="nav-btn" data-module="connect-workshop">
-          <span class="nav-icon">${IconComponent.render('wrench', { size: 18 })}</span>
-          <span class="nav-text">Connect Workshop</span>
-        </button>
-        <button class="nav-btn" data-module="connect-data">
-          <span class="nav-icon">${IconComponent.render('database', { size: 18 })}</span>
-          <span class="nav-text">ConnectData</span>
-        </button>
-        <button class="nav-btn" data-module="connect-config">
-          <span class="nav-icon">${IconComponent.render('settings', { size: 18 })}</span>
-          <span class="nav-text">ConnectConfig</span>
-        </button>
-        
+      <div id="main-navigation-container">
+        <!-- Main navigation menu will be rendered here by MenuManager -->
       </div>
       
       <div class="module-container" id="module-container">
@@ -399,60 +312,62 @@ function createMainApplication() {
   app.innerHTML = '';
   app.appendChild(mainContainer);
   
-  // Setup navigation with routing
+  // Setup navigation with new MenuManager
   setupNavigation();
 }
 
 function setupNavigation() {
-  const navButtons = document.querySelectorAll('.nav-btn');
+  // Initialize MenuManager and create main navigation
+  const menuManager = MenuManager.getInstance();
+  const navContainer = document.getElementById('main-navigation-container');
   
-  navButtons.forEach(button => {
-    button.addEventListener('click', (e) => {
-      const target = e.currentTarget as HTMLElement;
-      const moduleName = target.getAttribute('data-module');
-      const moduleType = target.getAttribute('data-type');
+  if (!navContainer) {
+    console.error('Main navigation container not found');
+    return;
+  }
+
+  // Create main navigation menu
+  const mainMenu = createMenu('main-navigation', navContainer, {
+    onItemClick: (data) => {
+      const { item } = data;
+      console.log(`🔧 Menu Navigation: ${item.module}/${item.action}`);
       
-      if (moduleName) {
-        // Update active button - only remove active from sidebar nav buttons
-        navButtons.forEach(btn => btn.classList.remove('active'));
-        target.classList.add('active');
+      if (item.module) {
+        // Use clean path routing instead of hash
+        const routePath = item.route || `/${item.module}`;
         
-        // Update URL hash
-        const path = moduleType ? `${moduleName}/${moduleType}` : moduleName;
-        window.location.hash = `#/${path}`;
+        // Update browser history with clean path
+        window.history.pushState({}, '', routePath);
         
-        // Load module with type
-        loadModule(moduleName, moduleType);
+        // Load module directly
+        loadModule(item.module, '');
       }
-    });
+    }
   });
   
-  // Handle hash change events
-  (window as any).handleHashChangeRef = handleHashChange; // Store reference for temporary disabling
-  window.addEventListener('hashchange', handleHashChange);
+  // Handle path change events (popstate for back/forward)
+  (window as any).handlePathChangeRef = handlePathChange; // Store reference for temporary disabling
+  window.addEventListener('popstate', handlePathChange);
   
-  // Load initial route from hash
-  handleHashChange();
+  // Load initial route from current path
+  handlePathChange();
 }
 
-function handleHashChange() {
-  const hash = window.location.hash.slice(2); // Remove '#/'
-  if (hash) {
-    const [moduleName, moduleType, method] = hash.split('/');
+function handlePathChange() {
+  const path = window.location.pathname;
+  if (path && path !== '/') {
+    const pathSegments = path.split('/').filter(segment => segment); // Remove empty segments
+    const [moduleName, moduleType, method] = pathSegments;
+    
     if (moduleName) {
-      console.log(`🔧 HandleHashChange: ${moduleName}/${moduleType}/${method}`);
+      console.log(`🔧 HandlePathChange: ${moduleName}/${moduleType || 'undefined'}/${method || 'undefined'}`);
       
-      // Update active button based on hash - only for sidebar navigation
-      const sidebarNavButtons = document.querySelectorAll('.sidebar-navigation .nav-btn');
-      sidebarNavButtons.forEach(btn => {
-        btn.classList.remove('active');
-        const btnModule = btn.getAttribute('data-module');
-        const btnType = btn.getAttribute('data-type');
-        
-        if (btnModule === moduleName && (!moduleType || btnType === moduleType)) {
-          btn.classList.add('active');
-        }
-      });
+      // Update active button based on path using MenuManager
+      const menuManager = MenuManager.getInstance();
+      const mainMenu = menuManager.getMenu('main-navigation');
+      if (mainMenu) {
+        mainMenu.updateActiveItem(moduleName);
+      }
       
       // Check if we need to reload the module or just update state
       const sameModule = currentModuleState.moduleName === moduleName;
@@ -482,14 +397,15 @@ function handleHashChange() {
       }
     }
   } else {
-    // Default to first module if no hash
+    // Default to first module if no path
     const firstButton = document.querySelector('.nav-btn');
     if (firstButton) {
       const moduleName = firstButton.getAttribute('data-module');
       const moduleType = firstButton.getAttribute('data-type');
       if (moduleName) {
-        const path = moduleType ? `${moduleName}/${moduleType}` : moduleName;
-        window.location.hash = `#/${path}`;
+        const path = moduleType ? `/${moduleName}/${moduleType}` : `/${moduleName}`;
+        window.history.replaceState({}, '', path);
+        loadModule(moduleName, moduleType);
       }
     }
   }

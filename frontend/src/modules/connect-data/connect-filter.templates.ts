@@ -6,54 +6,9 @@ export class ConnectFilterTemplates {
   
   static getMainLayoutTemplate(): string {
     return `
-      <div class="compact-layout">
-        <!-- Column 1: Objects -->
-        <div class="menu-column">
-          <h3 class="column-title">Obiekty</h3>
-          <button class="object-item active" data-object="users">
-            <span class="menu-icon">${IconComponent.render('users', { size: 18 })}</span>
-            <span class="menu-label">Użytkownicy</span>
-          </button>
-          <button class="object-item" data-object="devices">
-            <span class="menu-icon">${IconComponent.render('cpu', { size: 18 })}</span>
-            <span class="menu-label">Urządzenia</span>
-          </button>
-          <button class="object-item" data-object="tests">
-            <span class="menu-icon">${IconComponent.render('activity', { size: 18 })}</span>
-            <span class="menu-label">Testy</span>
-          </button>
-          <button class="object-item" data-object="reports">
-            <span class="menu-icon">${IconComponent.render('file-text', { size: 18 })}</span>
-            <span class="menu-label">Raporty</span>
-          </button>
-        </div>
-
-        <!-- Column 2: Actions -->
-        <div class="menu-column">
-          <h3 class="column-title">Akcje</h3>
-          <button class="action-item active" data-action="search">
-            <span class="menu-icon">${IconComponent.render('search', { size: 18 })}</span>
-            <span class="menu-label">Szukaj</span>
-          </button>
-          <button class="action-item" data-action="filter">
-            <span class="menu-icon">${IconComponent.render('filter', { size: 18 })}</span>
-            <span class="menu-label">Filtruj</span>
-          </button>
-          <button class="action-item" data-action="export">
-            <span class="menu-icon">${IconComponent.render('download', { size: 18 })}</span>
-            <span class="menu-label">Eksport</span>
-          </button>
-          <button class="action-item" data-action="stats">
-            <span class="menu-icon">${IconComponent.render('bar-chart', { size: 18 })}</span>
-            <span class="menu-label">Statystyki</span>
-          </button>
-        </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-          <div class="content-body">
-            ${this.getDataContents()}
-          </div>
+      <div class="main-content">
+        <div class="content-body">
+          ${this.getDataContents()}
         </div>
       </div>
     `;

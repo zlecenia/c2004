@@ -284,6 +284,71 @@ export class ConnectMenuStyles {
       .sidebar-navigation::-webkit-scrollbar-thumb:hover {
         background: #5a5a5a;
       }
+
+      /* Module with menu layout */
+      .module-with-menu {
+        display: flex;
+        height: 100%;
+        width: 100%;
+      }
+
+      .module-main-content {
+        flex: 1;
+        overflow: auto;
+      }
+
+      /* Combinatorial content styles */
+      .combinatorial-content {
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        margin: 10px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      }
+
+      .content-header {
+        border-bottom: 1px solid #eee;
+        padding-bottom: 15px;
+        margin-bottom: 20px;
+      }
+
+      .content-header h3 {
+        margin: 0 0 10px 0;
+        color: #333;
+        font-size: 18px;
+        font-weight: 600;
+      }
+
+      .combination-info {
+        display: flex;
+        gap: 15px;
+        flex-wrap: wrap;
+      }
+
+      .combination-badge {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 600;
+      }
+
+      .current-selection {
+        color: #666;
+        font-size: 13px;
+        padding: 4px 0;
+      }
+
+      .data-grid, .form-container, .export-options, .import-wizard, .sync-status, .default-content {
+        padding: 20px;
+        border: 2px dashed #ddd;
+        border-radius: 8px;
+        text-align: center;
+        color: #666;
+        font-size: 14px;
+        background: #f9f9f9;
+      }
     `;
   }
 }
