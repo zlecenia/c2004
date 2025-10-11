@@ -1,6 +1,7 @@
-// frontend/src/modules/connect-workshop/connect-workshop.view.ts - Compact 1280x400px version
+// frontend/src/modules/connect-workshop/connect-workshop.view.ts - Refactored version
 import { ConnectWorkshopModule } from './connect-workshop.module';
-import { IconComponent } from '../../components/icon.component';
+import { ConnectWorkshopTemplates } from './connect-workshop.templates';
+import { ConnectWorkshopStyles } from './connect-workshop.styles';
 
 export class ConnectWorkshopView {
   private currentAction: string = 'sync';
@@ -22,7 +23,11 @@ export class ConnectWorkshopView {
     const sectionTitle = document.getElementById('top-bar-section-title');
     if (sectionTitle) sectionTitle.textContent = 'ConnectWorkshop - Requests';
     
-    container.innerHTML = `
+    // Use template system
+    container.innerHTML = ConnectWorkshopTemplates.getMainLayoutTemplate();
+    
+    // Old template replaced with:
+    /*
       <div class="compact-layout">
         <!-- Column 1: Objects -->
         <div class="menu-column">
@@ -780,7 +785,7 @@ export class ConnectWorkshopView {
 
       <!-- Notification Container -->
       <div id="notification-container" class="notification-container"></div>
-    `;
+    */
 
     this.addStyles();
     this.setupEventListeners(container);
@@ -789,6 +794,18 @@ export class ConnectWorkshopView {
   }
 
   private addStyles(): void {
+    // Check if styles already added
+    if (document.getElementById('connect-workshop-styles')) {
+      return;
+    }
+
+    const style = document.createElement('style');
+    style.id = 'connect-workshop-styles';
+    style.textContent = ConnectWorkshopStyles.getStyles();
+    document.head.appendChild(style);
+  }
+
+  private addStylesOld(): void {
     const style = document.createElement('style');
     style.textContent = `
       .connect-workshop-compact {
@@ -1156,6 +1173,7 @@ export class ConnectWorkshopView {
       .badge-active { background: #d1ecf1; color: #0c5460; }
       .badge-completed { background: #d1e7dd; color: #0f5132; }
     `;
+    // Old styles method - kept for reference
     document.head.appendChild(style);
   }
 

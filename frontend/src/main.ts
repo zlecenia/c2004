@@ -2,7 +2,7 @@
 import './config/env.config'; // Validate environment on startup
 import './config/service.manifest'; // Validate service manifest
 import { moduleManager } from './modules';
-import { IconComponent, IconStyles } from './components/icon.component';
+import { IconComponent } from './components/icon.component';
 
 // Add basic CSS for 1280×400px touchscreen
 const style = document.createElement('style');
@@ -301,7 +301,14 @@ style.textContent = `
     background: #555;
   }
   
-  ${IconStyles}
+  /* Icon styles - simplified emoji system */
+  .icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+    flex-shrink: 0;
+  }
 `;
 document.head.appendChild(style);
 
@@ -363,6 +370,11 @@ function createMainApplication() {
           <span class="nav-icon">${IconComponent.render('file-text', { size: 18 })}</span>
           <span class="nav-text">Raporty</span>
         </button>
+        <button class="nav-btn" data-module="connect-manager">
+          <span class="nav-icon">${IconComponent.render('clipboard-list', { size: 18 })}</span>
+          <span class="nav-text">Manager</span>
+        </button>
+        
          <button class="nav-btn" data-module="connect-workshop">
           <span class="nav-icon">${IconComponent.render('wrench', { size: 18 })}</span>
           <span class="nav-text">Connect Workshop</span>
@@ -375,10 +387,7 @@ function createMainApplication() {
           <span class="nav-icon">${IconComponent.render('settings', { size: 18 })}</span>
           <span class="nav-text">ConnectConfig</span>
         </button>
-        <button class="nav-btn" data-module="connect-manager">
-          <span class="nav-icon">${IconComponent.render('clipboard-list', { size: 18 })}</span>
-          <span class="nav-text">Manager</span>
-        </button>
+        
       </div>
       
       <div class="module-container" id="module-container">

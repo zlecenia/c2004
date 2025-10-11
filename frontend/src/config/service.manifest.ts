@@ -104,7 +104,14 @@ export class IdentificationServiceManifest {
     }
   };
   
-  readonly modules = ['identification', 'connect-id', 'connect-test', 'connect-data', 'connect-workshop', 'connect-config'];
+  readonly modules = [
+    'identification', 
+    'connect-id', 
+    'connect-test', 
+    'connect-data', 
+    'connect-workshop', 
+    'connect-config'
+  ];
   
   /**
    * Validate manifest structure and component availability
@@ -169,7 +176,7 @@ export const serviceManifest = new IdentificationServiceManifest();
 
 try {
   serviceManifest.validate();
-  console.log(`✅ Service manifest validated: ${serviceManifest.name} v${serviceManifest.version}`);
+  // Service manifest validated successfully
 } catch (error) {
   console.error('❌ Service manifest validation failed:', error);
   throw error;

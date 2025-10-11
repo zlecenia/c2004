@@ -10,14 +10,48 @@ export class ConnectManagerModule implements Module {
       { path: '/connect-manager', component: 'ConnectManagerView' }
     ]
   };
+
+  private element: HTMLElement | null = null;
+  
+  getName(): string {
+    return 'connect-manager';
+  }
+
+  getDisplayName(): string {
+    return '🎯 Manager';
+  }
+
+  getService(): any {
+    return null; // No service needed for this module
+  }
   
   async initialize(): Promise<void> {
     console.log('🔧 Initializing ConnectManager module...');
-    // Minimal initialization - view handles its own setup
+    console.log('✅ Module "connect-manager" initialized');
+  }
+
+  render(container: HTMLElement): void {
+    // Dynamic import to avoid bundling issues
+    import('./connect-manager.view').then(async ({ ConnectManagerView }) => {
+      const view = new ConnectManagerView(this);
+      const element = view.render();
+      
+      container.innerHTML = '';
+      container.appendChild(element);
+      
+      this.element = element;
+    }).catch(error => {
+      console.error('Failed to load ConnectManager view:', error);
+      container.innerHTML = `<div class="error">Failed to load ConnectManager view: ${error}</div>`;
+    });
   }
   
   async destroy(): Promise<void> {
     console.log('🔧 Destroying ConnectManager module...');
+    if (this.element) {
+      this.element.remove();
+      this.element = null;
+    }
   }
   
   async healthCheck(): Promise<boolean> {

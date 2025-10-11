@@ -52,16 +52,5 @@ export const env = validateEnv();
 
 // Log configuration in development
 if (env.NODE_ENV === 'development') {
-  console.log('✅ Environment validated:', {
-    NODE_ENV: env.NODE_ENV,
-    API_URL: env.VITE_API_URL,
-    WS_URL: env.VITE_WS_URL,
-    LOG_LEVEL: env.VITE_LOG_LEVEL,
-    features: {
-      RFID: env.VITE_ENABLE_RFID,
-      QR: env.VITE_ENABLE_QR,
-      Barcode: env.VITE_ENABLE_BARCODE,
-      Manual: env.VITE_ENABLE_MANUAL
-    }
-  });
+  // Environment validated - logging disabled for production readiness
 }
