@@ -33,7 +33,7 @@ export class ConnectManagerModule implements Module {
   render(container: HTMLElement): void {
     // Dynamic import to avoid bundling issues
     import('./connect-manager.view').then(async ({ ConnectManagerView }) => {
-      const view = new ConnectManagerView(this);
+      const view = new ConnectManagerView();
       const element = view.render();
       
       container.innerHTML = '';

@@ -349,6 +349,30 @@ export class ConnectMenuStyles {
         font-size: 14px;
         background: #f9f9f9;
       }
+
+      /* 3-Level Menu Breadcrumb */
+      .menu-breadcrumb {
+        padding: 10px 15px;
+        background: #f5f5f5;
+        border-bottom: 1px solid #ddd;
+        font-size: 13px;
+        color: #666;
+      }
+
+      .breadcrumb-item {
+        display: inline-block;
+        margin-right: 5px;
+      }
+
+      .breadcrumb-separator {
+        margin: 0 5px;
+        color: #999;
+      }
+
+      .breadcrumb-active {
+        color: #333;
+        font-weight: 600;
+      }
     `;
   }
 }

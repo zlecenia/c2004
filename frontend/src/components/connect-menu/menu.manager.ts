@@ -299,12 +299,14 @@ export class MenuManager {
    * Update routing based on menu selection
    */
   private updateRoutingForMenuSelection(item: any, column: any): void {
-    const currentPath = window.location.pathname + window.location.hash;
+    const currentPath = window.location.pathname;
     const menuId = this.findMenuIdByColumn(column.id);
     
     if (menuId && item.section) {
-      // Update URL to reflect current selection
-      const newPath = currentPath.replace(/#.*$/, '') + `#/${item.section}`;
+      // Update URL to reflect current selection using clean path routing
+      const pathSegments = currentPath.split('/').filter(Boolean);
+      const basePath = `/${pathSegments[0] || ''}`; // Keep base module path
+      const newPath = `${basePath}/${item.section}`;
       window.history.replaceState({}, '', newPath);
     }
   }

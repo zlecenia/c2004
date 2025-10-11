@@ -99,33 +99,46 @@ export class ConnectIdEventHandlers {
   }
 
   private setupVirtualKeyboard(container: HTMLElement): void {
-    const keyboardContainer = container.querySelector('#virtual-keyboard-manual');
-    if (keyboardContainer && !this.manualKeyboard) {
-      const manualInput = container.querySelector('#manual-input') as HTMLInputElement;
-      if (manualInput) {
-        this.manualKeyboard = new VirtualKeyboard('virtual-keyboard-manual', {
-          targetInputId: 'manual-input',
-          layout: 'full',
-          showSpecialKeys: true
-        });
+    // Delay keyboard setup to ensure DOM is fully rendered
+    setTimeout(() => {
+      const keyboardContainer = container.querySelector('#virtual-keyboard-manual');
+      if (keyboardContainer && !this.manualKeyboard) {
+        const manualInput = container.querySelector('#manual-input') as HTMLInputElement;
+        if (manualInput) {
+          try {
+            this.manualKeyboard = new VirtualKeyboard('virtual-keyboard-manual', {
+              targetInputId: 'manual-input',
+              layout: 'full',
+              showSpecialKeys: true
+            });
+          } catch (error) {
+            console.warn('VirtualKeyboard setup failed:', error);
+          }
+        }
       }
-    }
+    }, 100);
   }
 
   private setupMainKeyboard(container: HTMLElement): void {
     const passwordInput = container.querySelector('#password-input') as HTMLInputElement;
     const submitBtn = container.querySelector('#password-submit') as HTMLButtonElement;
 
-    // Setup virtual keyboard for password input
-    const keyboardContainer = container.querySelector('#virtual-keyboard');
-    if (keyboardContainer && passwordInput) {
-      new VirtualKeyboard('virtual-keyboard', {
-        targetInputId: 'password-input',
-        layout: 'password',
-        showSpecialKeys: true,
-        onEnter: () => this.handleMainLogin(container)
-      });
-    }
+    // Setup virtual keyboard for password input with delay
+    setTimeout(() => {
+      const keyboardContainer = container.querySelector('#virtual-keyboard');
+      if (keyboardContainer && passwordInput) {
+        try {
+          new VirtualKeyboard('virtual-keyboard', {
+            targetInputId: 'password-input',
+            layout: 'password',
+            showSpecialKeys: true,
+            onEnter: () => this.handleMainLogin(container)
+          });
+        } catch (error) {
+          console.warn('Main VirtualKeyboard setup failed:', error);
+        }
+      }
+    }, 100);
 
     // Submit button
     if (submitBtn) {

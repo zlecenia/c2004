@@ -7,6 +7,9 @@ export interface MenuItem {
   action?: string;
   module?: string;
   section?: string;
+  method?: string;
+  subsection?: string;
+  parentCategory?: string;
   route?: string;
   active?: boolean;
   disabled?: boolean;
