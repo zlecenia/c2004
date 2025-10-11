@@ -10,7 +10,6 @@ export class ConnectIdView {
   private currentScenarioType: string = 'usage';
   private currentProtocol: string = 'service';
   private manualKeyboard: VirtualKeyboard | null = null;
-  private passwordKeyboard: VirtualKeyboard | null = null;
   private eventListenersSetup: boolean = false; // Prevent duplicate listeners
 
   constructor(_module: ConnectIdModule) {
@@ -1235,34 +1234,6 @@ export class ConnectIdView {
     console.log('🔧 ConnectID: Event listeners setup completed');
   }
 
-  // Reserved for future use 
-  private switchType(type: string, container: HTMLElement): void {
-    this.currentType = type;
-    
-    // Update menu
-    container.querySelectorAll('.menu-item').forEach(item => {
-      item.classList.remove('active');
-      if (item.getAttribute('data-type') === type) {
-        item.classList.add('active');
-      }
-    });
-
-    // Update title in top-bar
-    const titles = {
-      'user': 'Użytkownik',
-      'device': 'Urządzenia', 
-      'test': 'Testu'
-    };
-    const topBarTitle = document.getElementById('top-bar-section-title');
-    if (topBarTitle) {
-      topBarTitle.textContent = `ConnectID - Identyfikacja ${titles[type as keyof typeof titles]} - ${this.currentMethod.toUpperCase()}`;
-    }
-
-    const typeValue = container.querySelector('#type-value');
-    if (typeValue) {
-      typeValue.textContent = titles[type as keyof typeof titles];
-    }
-  }
 
   private switchMethod(method: string, container: HTMLElement, updateURL: boolean = true): void {
     console.log(`🔧 ConnectID: switchMethod to ${method}, updateURL: ${updateURL}`);
@@ -1466,11 +1437,6 @@ export class ConnectIdView {
 
   // Virtual keyboard input handled by VirtualKeyboard component
 
-  // Reserved for future use
-  private handleManualIdentification(code: string): void {
-    this.showNotification(`✓ Identyfikacja: ${code}`, 'success');
-    this.updateLastResult(code, true);
-  }
 
   private simulateRFID(): void {
     const code = `RFID-${Date.now().toString().slice(-6)}`;
@@ -1657,28 +1623,6 @@ export class ConnectIdView {
     }, 100);
   }
 
-  private initializePasswordKeyboard(): void {
-    // Initialize password keyboard when user login form is shown
-    setTimeout(() => {
-      try {
-        if (this.passwordKeyboard) {
-          this.passwordKeyboard.destroy();
-        }
-        
-        this.passwordKeyboard = new VirtualKeyboard('password-keyboard-container', {
-          targetInputId: 'user-password-input',
-          layout: 'password',
-          onKeyPress: (key: string, _value: string) => {
-            if (key === 'CANCEL') {
-              this.cancelPasswordEntry();
-            }
-          }
-        });
-      } catch (error) {
-        console.warn('Password keyboard initialization failed:', error);
-      }
-    }, 100);
-  }
 
   private handleManualSubmit(value: string): void {
     if (value.trim()) {
@@ -1694,26 +1638,6 @@ export class ConnectIdView {
     }
   }
 
-  private cancelPasswordEntry(): void {
-    // Hide login form and return to previous content
-    const container = document.querySelector('.connect-id-compact') as HTMLElement;
-    if (container) {
-      container.querySelectorAll('.method-content').forEach(content => {
-        (content as HTMLElement).style.display = 'none';
-      });
-      
-      // Show appropriate content based on current method
-      const activeContent = container.querySelector(`#${this.currentMethod}-content`) as HTMLElement;
-      if (activeContent) {
-        activeContent.style.display = 'block';
-      }
-      
-      // Clear selection
-      container.querySelectorAll('.user-menu-item').forEach(item => {
-        item.classList.remove('selected');
-      });
-    }
-  }
 
   private showUserLoginForm(userId: string, container: HTMLElement): void {
     console.log(`🔧 ConnectID: Showing login form for user: ${userId}`);

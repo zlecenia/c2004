@@ -181,7 +181,20 @@ const emojiMap: Record<string, string> = {
   'power': '⚡',
   'eye': '👁️',
   'eye-off': '🙈',
-  'bell': '🔔'
+  'bell': '🔔',
+  
+  // Additional icons
+  'clipboard-list': '📋',
+  'list': '📝',
+  'clock': '🕒',
+  'keyboard': '⌨️',
+  'cpu': '💾',
+  'printer': '🖨️',
+  'refresh-cw': '🔄',
+  'archive': '📦',
+  'edit-2': '✏️',
+  'trash-2': '🗑️',
+  'map': '🗺️'
 };
 
 export type IconName = 
@@ -206,7 +219,10 @@ export type IconName =
   // Status & Alerts
   | 'alert-triangle' | 'alert-circle' | 'shield' | 'shield-check'
   // Utility
-  | 'refresh' | 'power' | 'eye' | 'eye-off' | 'bell';
+  | 'refresh' | 'power' | 'eye' | 'eye-off' | 'bell'
+  // Additional icons
+  | 'clipboard-list' | 'list' | 'clock' | 'keyboard' | 'cpu' | 'printer' 
+  | 'refresh-cw' | 'archive' | 'edit-2' | 'trash-2' | 'map';
 
 export interface IconConfig {
   size?: number;
@@ -276,7 +292,7 @@ export class IconComponent {
     return null;
   }
   
-  static renderDOMElement(name: IconName, config: IconConfig = {}): HTMLElement {
+  static renderDOMElement(name: IconName, config: IconConfig = {}): HTMLElement | SVGElement {
     const {
       size = 24,
       color = 'currentColor',

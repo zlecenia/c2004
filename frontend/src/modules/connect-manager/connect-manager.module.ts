@@ -1,9 +1,15 @@
 // frontend/src/modules/connect-manager/connect-manager.module.ts
-import { Module } from '../module.interface';
+import { Module, ModuleMetadata } from '../module.interface';
 
 export class ConnectManagerModule implements Module {
-  name = 'connect-manager';
-  version = '1.0.0';
+  readonly metadata: ModuleMetadata = {
+    name: 'connect-manager',
+    version: '1.0.0',
+    dependencies: [],
+    routes: [
+      { path: '/connect-manager', component: 'ConnectManagerView' }
+    ]
+  };
   
   async initialize(): Promise<void> {
     console.log('🔧 Initializing ConnectManager module...');

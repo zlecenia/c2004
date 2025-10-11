@@ -301,11 +301,14 @@ export class ConnectIdHandlers {
       this.passwordKeyboard.destroy();
     }
 
-    this.passwordKeyboard = new VirtualKeyboard(input, {
-      layout: 'qwerty',
-      theme: 'compact',
-      autoShow: true,
-      type: 'password'
+    this.passwordKeyboard = new VirtualKeyboard('password-keyboard-container', {
+      targetInputId: 'user-password',
+      layout: 'password',
+      onKeyPress: (key: string, _value: string) => {
+        if (key === 'CANCEL') {
+          this.handleCancelLogin();
+        }
+      }
     });
   }
 
@@ -317,10 +320,12 @@ export class ConnectIdHandlers {
       this.manualKeyboard.destroy();
     }
 
-    this.manualKeyboard = new VirtualKeyboard(input, {
-      layout: 'qwerty',
-      theme: 'compact',
-      autoShow: true
+    this.manualKeyboard = new VirtualKeyboard('manual-keyboard-container', {
+      targetInputId: 'manual-input',
+      layout: 'full',
+      onEnter: (_value: string) => {
+        this.handleManualVerify();
+      }
     });
   }
 

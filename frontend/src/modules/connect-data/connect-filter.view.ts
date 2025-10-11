@@ -1,4 +1,4 @@
-import { ConnectFilterModule } from './connect-data.module';
+import { ConnectFilterModule } from './connect-filter.module';
 import { IconComponent } from '../../components/icon.component';
 
 export class ConnectDataView {
