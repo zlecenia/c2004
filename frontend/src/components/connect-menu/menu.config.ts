@@ -230,7 +230,7 @@ export const connectReportsMenuConfig: MenuConfiguration = {
   ]
 };
 
-// Connect ID module menu (2-level: Types -> Methods)  
+// Connect ID module menu (simplified: only Methods for User identification)  
 export const connectIdMenuConfig: MenuConfiguration = {
   id: 'connect-id-menu',
   type: 'columns',
@@ -238,45 +238,9 @@ export const connectIdMenuConfig: MenuConfiguration = {
   layout: 'compact',
   columns: [
     {
-      id: 'types-column',
-      title: 'Typ ID',
-      width: '100px',
-      items: [
-        {
-          id: 'user',
-          label: 'Użytkownik',
-          icon: '👤',
-          section: 'user',
-          action: 'section-change',
-          active: true
-        },
-        {
-          id: 'device',
-          label: 'Urządzenie',
-          icon: '📱',
-          section: 'device',
-          action: 'section-change'
-        },
-        {
-          id: 'group',
-          label: 'Grupa',
-          icon: '👥',
-          section: 'group',
-          action: 'section-change'
-        },
-        {
-          id: 'test',
-          label: 'Test',
-          icon: '🧪',
-          section: 'test',
-          action: 'section-change'
-        }
-      ]
-    },
-    {
       id: 'methods-column',
-      title: 'Metoda',
-      width: '100px',
+      title: 'Metoda identyfikacji',
+      width: '180px',
       items: [
         {
           id: 'rfid',
@@ -319,7 +283,7 @@ export const connectIdMenuConfig: MenuConfiguration = {
   ]
 };
 
-// Connect Test module menu
+// Connect Test module menu (simplified: only Interface/Method selection)
 export const connectTestMenuConfig: MenuConfiguration = {
   id: 'connect-test-menu',
   type: 'columns',
@@ -327,54 +291,37 @@ export const connectTestMenuConfig: MenuConfiguration = {
   layout: 'compact',
   columns: [
     {
-      id: 'sections',
-      title: 'Sekcje',
-      width: '100px',
-      items: [
-        {
-          id: 'identification',
-          label: 'Identyfikacja',
-          icon: '🔍',
-          section: 'identification',
-          action: 'section-change',
-          active: true
-        },
-        {
-          id: 'testing',
-          label: 'Testowanie',
-          icon: '🧪',
-          section: 'testing',
-          action: 'section-change'
-        }
-      ]
-    },
-    {
       id: 'interface',
-      title: 'Interfejs',
-      width: '100px',
+      title: 'Metoda testowania',
+      width: '180px',
       items: [
         {
           id: 'rfid',
           label: 'RFID',
           icon: '📡',
-          action: 'method-change'
+          method: 'rfid',
+          action: 'method-change',
+          active: true
         },
         {
           id: 'qr',
           label: 'QR',
           icon: '📷',
+          method: 'qr',
           action: 'method-change'
         },
         {
           id: 'barcode',
           label: 'Barcode',
           icon: '📊',
+          method: 'barcode',
           action: 'method-change'
         },
         {
           id: 'search',
           label: 'Szukaj',
           icon: '🔍',
+          method: 'search',
           action: 'method-change'
         }
       ]

@@ -7,10 +7,7 @@ import { ConnectIdPageManager } from './pages';
 import { createModuleMenu } from '../../components/connect-menu';
 
 export class ConnectIdView {
-  private currentType: string = 'user';
   private currentMethod: string = 'rfid';
-  private currentScenarioType: string = 'usage';
-  private currentProtocol: string = 'service';
   private eventHandlers: ConnectIdEventHandlers;
   private pageManager: ConnectIdPageManager;
 
@@ -59,12 +56,16 @@ export class ConnectIdView {
     if (menuContainer) {
       createModuleMenu('connect-id', menuContainer, {
         onItemClick: (data) => {
-          const { item, column } = data;
-          console.log(`🔧 ConnectId Menu: ${item.action} - ${item.id} in column ${column.id}`);
+          const { item } = data;
+          console.log(`🔧 ConnectId Menu: Click on ${item.id}`);
           
-          if (item.section && item.method) {
-            this.currentType = item.section;
+          // Update current method
+          if (item.method) {
             this.currentMethod = item.method;
+            console.log(`🔧 ConnectId: Method changed to ${this.currentMethod}`);
+            
+            // Load page and update UI
+            this.updateTopBarElements();
             this.loadCurrentPage();
           }
         }
@@ -81,21 +82,35 @@ export class ConnectIdView {
   }
 
   /**
-   * Load current page based on type and method
+   * Load current page based on method
    */
   private loadCurrentPage(): void {
-    console.log(`🔧 ConnectId: Loading page ${this.currentType}-${this.currentMethod}`);
-    this.pageManager.loadPage(this.currentType, this.currentMethod);
+    console.log(`🔧 ConnectId: Loading page for method ${this.currentMethod}`);
+    this.pageManager.loadPage(this.currentMethod);
   }
 
   private updateTopBarElements(): void {
     // Update top-bar submenu
     const submenu = document.getElementById('top-bar-submenu');
-    if (submenu) submenu.textContent = '🔍 Universal Identification';
+    if (submenu) submenu.textContent = '🔍 Identyfikacja użytkownika';
     
     // Update top-bar section title
     const sectionTitle = document.getElementById('top-bar-section-title');
-    if (sectionTitle) sectionTitle.textContent = 'ConnectID - Identyfikacja';
+    if (sectionTitle) {
+      const methodName = this.getMethodDisplayName(this.currentMethod);
+      sectionTitle.textContent = `ConnectID - ${methodName}`;
+    }
+  }
+
+  private getMethodDisplayName(method: string): string {
+    const names: Record<string, string> = {
+      'rfid': 'RFID',
+      'qr': 'QR Code',
+      'barcode': 'Barcode',
+      'manual': 'Ręcznie',
+      'list': 'Z Listy'
+    };
+    return names[method] || 'Metoda';
   }
 
   private setInitialMethodFromURL(container: HTMLElement): void {
@@ -477,22 +492,13 @@ export class ConnectIdView {
     return this.currentMethod;
   }
 
-  // Set initial type (called from main.ts)
-  setInitialType(type: string): void {
-    this.currentType = type;
-    console.log(`🔧 ConnectId initial type set to: ${type}`);
+  // Set initial method (called from main.ts or URL)
+  setInitialMethod(method: string): void {
+    this.currentMethod = method;
+    console.log(`🔧 ConnectId initial method set to: ${method}`);
     
-    // Update UI to reflect the type if needed
-    const sectionTitle = document.getElementById('top-bar-section-title');
-    if (sectionTitle && type) {
-      const typeLabel = type === 'user' ? 'Użytkownik' : 
-                       type === 'device' ? 'Urządzenie' : 
-                       type === 'group' ? 'Grupa' : 
-                       type === 'test' ? 'Test' : 'Identyfikacja';
-      sectionTitle.textContent = `ConnectId - ${typeLabel}`;
-    }
-    
-    // Load current page if page manager is available
+    // Update UI and load page
+    this.updateTopBarElements();
     if (this.pageManager) {
       this.loadCurrentPage();
     }

@@ -1,0 +1,9 @@
+// frontend/src/modules/connect-reports/pages/planned-year.page.ts
+export class PlannedYearPage {
+  static getContent(): string {
+    return `<div class="page-content"><div class="page-header"><h2>📅 Raporty Zaplanowane - Rok</h2><p>Plan raportów na cały rok</p></div><div class="year-summary"><div class="summary-card"><div class="summary-value">1,847</div><div class="summary-label">📋 Zaplanowane raporty</div></div><div class="summary-card"><div class="summary-value">52</div><div class="summary-label">📆 Tygodni</div></div><div class="summary-card"><div class="summary-value">280</div><div class="summary-label">📅 Dni roboczych</div></div></div><div class="months-overview"><div class="month-row"><div class="month-name">Styczeń</div><div class="month-plan">154 zaplanowanych</div><button class="btn-view">Zobacz</button></div><div class="month-row"><div class="month-name">Luty</div><div class="month-plan">142 zaplanowanych</div><button class="btn-view">Zobacz</button></div><div class="month-row"><div class="month-name">Marzec</div><div class="month-plan">158 zaplanowanych</div><button class="btn-view">Zobacz</button></div></div></div>`;
+  }
+  static getStyles(): string {
+    return `.page-content{padding:20px;max-width:900px;margin:0 auto}.page-header h2{color:#333;font-size:24px;margin-bottom:5px}.year-summary{display:grid;grid-template-columns:repeat(3,1fr);gap:15px;margin-bottom:20px}.summary-card{background:white;padding:20px;border-radius:8px;text-align:center}.summary-value{font-size:32px;font-weight:700}.summary-label{font-size:13px;color:#666}.months-overview{background:white;padding:20px;border-radius:8px}.month-row{display:flex;align-items:center;gap:15px;padding:15px;border-bottom:1px solid #e9ecef}.month-name{font-weight:600;min-width:120px}.month-plan{flex:1;color:#666}.btn-view{padding:8px 16px;background:#007bff;color:white;border:none;border-radius:6px;cursor:pointer}`;
+  }
+}

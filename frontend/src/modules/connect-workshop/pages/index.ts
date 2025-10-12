@@ -1,6 +1,9 @@
 // frontend/src/modules/connect-workshop/pages/index.ts
 import { RequestsSearchPage } from './requests-search.page';
 import { RequestsNewRequestPage } from './requests-new-request.page';
+import { RequestsExportPage } from './requests-export.page';
+import { RequestsImportPage } from './requests-import.page';
+import { RequestsSyncPage } from './requests-sync.page';
 import { ServicesSearchPage } from './services-search.page';
 import { TransportSearchPage } from './transport-search.page';
 import { DispositionsSearchPage } from './dispositions-search.page';
@@ -10,9 +13,9 @@ export const ConnectWorkshopPages = {
   // Requests pages
   'requests-search': RequestsSearchPage,
   'requests-new-request': RequestsNewRequestPage,
-  'requests-export': RequestsSearchPage, // Reuse search page for now
-  'requests-import': RequestsSearchPage,
-  'requests-sync': RequestsSearchPage,
+  'requests-export': RequestsExportPage,
+  'requests-import': RequestsImportPage,
+  'requests-sync': RequestsSyncPage,
   
   // Services pages
   'services-search': ServicesSearchPage,
@@ -163,6 +166,9 @@ export class ConnectWorkshopPageManager {
 export {
   RequestsSearchPage,
   RequestsNewRequestPage,
+  RequestsExportPage,
+  RequestsImportPage,
+  RequestsSyncPage,
   ServicesSearchPage,
   TransportSearchPage,
   DispositionsSearchPage

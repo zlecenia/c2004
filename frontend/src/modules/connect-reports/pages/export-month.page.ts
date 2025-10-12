@@ -1,0 +1,9 @@
+// frontend/src/modules/connect-reports/pages/export-month.page.ts
+export class ExportMonthPage {
+  static getContent(): string {
+    return `<div class="page-content"><div class="page-header"><h2>📤 Export - Miesiąc</h2><p>Eksportuj raporty miesięczne</p></div><div class="export-options"><h3>📋 Wybierz format eksportu</h3><div class="format-buttons"><button class="format-btn">📄 PDF</button><button class="format-btn">📊 Excel</button><button class="format-btn">📋 CSV</button><button class="format-btn">📧 Email</button></div></div><div class="export-preview"><h3>🔍 Podgląd danych do eksportu</h3><p>Październik 2025</p><ul><li>✅ 189 raportów wykonanych</li><li>📋 45 raportów zaplanowanych</li><li>⚠️ 8 raportów opóźnionych</li><li>📊 94.2% skuteczność</li></ul><button class="btn-export">📤 Eksportuj</button></div></div>`;
+  }
+  static getStyles(): string {
+    return `.page-content{padding:20px;max-width:800px;margin:0 auto}.page-header h2{color:#333;font-size:24px;margin-bottom:5px}.export-options{background:white;padding:20px;border-radius:8px;margin-bottom:20px}.export-options h3{margin:0 0 15px 0}.format-buttons{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.format-btn{padding:15px;background:#f8f9fa;border:2px solid #dee2e6;border-radius:6px;cursor:pointer;font-size:14px;font-weight:600}.format-btn:hover{background:#007bff;color:white;border-color:#007bff}.export-preview{background:white;padding:20px;border-radius:8px}.export-preview h3{margin:0 0 15px 0}.export-preview ul{list-style:none;padding:0;margin-bottom:20px}.export-preview li{padding:10px;background:#f8f9fa;margin-bottom:8px;border-radius:6px}.btn-export{width:100%;padding:12px;background:#28a745;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:600;font-size:15px}`;
+  }
+}
