@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connect Config - Menu & Routing Demo</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .demo-header {
+            background: #007bff;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .demo-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .demo-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .demo-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .demo-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .demo-btn.primary {
+            background: #28a745;
+            border-color: #28a745;
+        }
+        
+        .demo-btn.primary:hover {
+            background: #218838;
+        }
+        
+        #connect-config-container {
+            height: calc(100vh - 60px);
+            overflow: hidden;
+        }
+        
+        .demo-info {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: #17a2b8;
+            color: white;
+            padding: 10px 15px;
+            border-radius: 6px;
+            font-size: 12px;
+            max-width: 300px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+        
+        /* Console output styling */
+        .console-output {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            width: 350px;
+            height: 200px;
+            background: #1a1a1a;
+            color: #00ff00;
+            font-family: 'Courier New', monospace;
+            font-size: 11px;
+            padding: 10px;
+            border-radius: 6px;
+            overflow-y: auto;
+            border: 2px solid #333;
+        }
+        
+        .console-line {
+            margin-bottom: 2px;
+        }
+        
+        .console-timestamp {
+            color: #888;
+        }
+    </style>
+</head>
+<body>
+    <div class="demo-header">
+        <div class="demo-title">🔧 Connect Config - 3-Level Menu Demo</div>
+        <div class="demo-controls">
+            <button class="demo-btn" onclick="showCurrentUrl()">📍 Current URL</button>
+            <button class="demo-btn" onclick="navigateToRandom()">🎲 Random Navigation</button>
+            <button class="demo-btn primary" onclick="runGUITests()">🧪 Run Tests</button>
+        </div>
+    </div>
+
+    <div id="connect-config-container">
+        <!-- Menu controller will render content here -->
+    </div>
+
+    <div class="demo-info">
+        <strong>🔍 Demo Instructions:</strong><br>
+        • Click menu items to navigate<br>
+        • Watch URL changes in browser<br>
+        • Use browser back/forward<br>
+        • Run GUI tests to verify functionality
+    </div>
+
+    <div class="console-output" id="console-output">
+        <div class="console-line"><span class="console-timestamp">[DEMO]</span> Console output will appear here...</div>
+    </div>
+
+    <script type="module">
+        // Mock module imports for demo purposes
+        // In real implementation, these would be proper ES6 imports
+        
+        // Simulate the menu controller and test system
+        let menuController = null;
+        let guiTests = null;
+        
+        // Console logging system
+        const consoleOutput = document.getElementById('console-output');
+        const originalConsoleLog = console.log;
+        
+        console.log = function(...args) {
+            originalConsoleLog.apply(console, args);
+            
+            const timestamp = new Date().toLocaleTimeString();
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            line.innerHTML = `<span class="console-timestamp">[${timestamp}]</span> ${args.join(' ')}`;
+            
+            consoleOutput.appendChild(line);
+            consoleOutput.scrollTop = consoleOutput.scrollHeight;
+            
+            // Keep only last 50 lines
+            while (consoleOutput.children.length > 50) {
+                consoleOutput.removeChild(consoleOutput.firstChild);
+            }
+        };
+        
+        // Mock menu controller for demo
+        class MockMenuController {
+            constructor(container) {
+                this.container = container;
+                this.currentState = {
+                    level1: 'connect-config',
+                    level2: 'system-category', 
+                    level3: 'system'
+                };
+                this.routes = {
+                    'rfid-config': '/connect-config/devices/rfid-config',
+                    'qr-config': '/connect-config/devices/qr-config',
+                    'barcode-config': '/connect-config/devices/barcode-config',
+                    'sensors': '/connect-config/devices/sensors',
+                    'users': '/connect-config/security/users',
+                    'permissions': '/connect-config/security/permissions'
+                };
+                this.init();
+            }
+            
+            init() {
+                this.render();
+                this.setupEventListeners();
+                console.log('🚀 Mock Menu Controller initialized');
+            }
+            
+            render() {
+                this.container.innerHTML = `
+                    <div style="display: grid; grid-template-columns: 200px 180px 160px 1fr; height: 100%; background: #fff;">
+                        <div style="background: #f8fafc; border-right: 1px solid #e5e7eb; padding: 15px;">
+                            <h4 style="margin: 0 0 15px 0; color: #374151;">Connect Config</h4>
+                            <div class="menu-item" data-level="1" data-id="connect-config" style="padding: 8px; background: #3b82f6; color: white; border-radius: 4px;">
+                                🔧 Configuration
+                            </div>
+                        </div>
+                        
+                        <div style="background: #ffffff; border-right: 1px solid #e5e7eb; padding: 15px;">
+                            <div class="menu-item ${this.currentState.level2 === 'system-category' ? 'active' : ''}" 
+                                 data-level="2" data-id="system-category" 
+                                 style="padding: 8px; margin-bottom: 5px; cursor: pointer; border-radius: 4px; ${this.currentState.level2 === 'system-category' ? 'background: #e6f3ff;' : ''}">
+                                🖥️ System
+                            </div>
+                            <div class="menu-item ${this.currentState.level2 === 'devices-category' ? 'active' : ''}" 
+                                 data-level="2" data-id="devices-category" 
+                                 style="padding: 8px; margin-bottom: 5px; cursor: pointer; border-radius: 4px; ${this.currentState.level2 === 'devices-category' ? 'background: #e6f3ff;' : ''}">
+                                📡 Devices  
+                            </div>
+                            <div class="menu-item ${this.currentState.level2 === 'security-category' ? 'active' : ''}" 
+                                 data-level="2" data-id="security-category" 
+                                 style="padding: 8px; cursor: pointer; border-radius: 4px; ${this.currentState.level2 === 'security-category' ? 'background: #e6f3ff;' : ''}">
+                                🔒 Security
+                            </div>
+                        </div>
+                        
+                        <div style="background: #f9fafb; border-right: 1px solid #e5e7eb; padding: 15px;">
+                            ${this.renderLevel3Menu()}
+                        </div>
+                        
+                        <div style="padding: 20px; overflow-y: auto;">
+                            <div style="background: #f0f9ff; border: 2px dashed #0066cc; border-radius: 8px; padding: 20px; text-align: center;">
+                                <h3>📄 ${this.getCurrentPageName()}</h3>
+                                <p>Current URL: <code>${window.location.pathname}</code></p>
+                                <p>Active Menu: ${this.currentState.level1} > ${this.currentState.level2} > ${this.currentState.level3}</p>
+                                <div style="margin-top: 20px;">
+                                    <button onclick="testPageSpecificFunction()" style="padding: 10px 20px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">
+                                        Test Page Function
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            renderLevel3Menu() {
+                const level3Items = this.getLevel3Items();
+                return level3Items.map(item => `
+                    <div class="menu-item ${this.currentState.level3 === item.id ? 'active' : ''}" 
+                         data-level="3" data-id="${item.id}" 
+                         style="padding: 6px 12px; margin-bottom: 3px; cursor: pointer; border-radius: 4px; font-size: 11px; ${this.currentState.level3 === item.id ? 'background: #f0f9ff; color: #0066cc; font-weight: 600;' : ''}">
+                        ${item.name}
+                    </div>
+                `).join('');
+            }
+            
+            getLevel3Items() {
+                const items = {
+                    'system-category': [
+                        { id: 'system', name: 'System' },
+                        { id: 'network', name: 'Sieć' },
+                        { id: 'performance', name: 'Wydajność' }
+                    ],
+                    'devices-category': [
+                        { id: 'rfid-config', name: 'RFID Reader' },
+                        { id: 'qr-config', name: 'QR Scanner' },
+                        { id: 'barcode-config', name: 'Barcode Scanner' },
+                        { id: 'sensors', name: 'Sensory' }
+                    ],
+                    'security-category': [
+                        { id: 'security', name: 'Bezpieczeństwo' },
+                        { id: 'users', name: 'Użytkownicy' },
+                        { id: 'permissions', name: 'Uprawnienia' }
+                    ]
+                };
+                return items[this.currentState.level2] || [];
+            }
+            
+            getCurrentPageName() {
+                const level3Items = this.getLevel3Items();
+                const current = level3Items.find(item => item.id === this.currentState.level3);
+                return current?.name || 'Unknown Page';
+            }
+            
+            setupEventListeners() {
+                this.container.addEventListener('click', (e) => {
+                    if (e.target.classList.contains('menu-item')) {
+                        const level = e.target.dataset.level;
+                        const id = e.target.dataset.id;
+                        
+                        if (level === '2') {
+                            this.setActiveMenuItem('connect-config', id);
+                        } else if (level === '3') {
+                            this.setActiveMenuItem('connect-config', this.currentState.level2, id);
+                        }
+                    }
+                });
+            }
+            
+            setActiveMenuItem(level1, level2, level3) {
+                console.log(`🖱️ Menu clicked: ${level1} > ${level2} > ${level3 || 'first'}`);
+                
+                this.currentState.level1 = level1;
+                this.currentState.level2 = level2;
+                
+                if (level3) {
+                    this.currentState.level3 = level3;
+                } else {
+                    // Set first child as active
+                    const firstChild = this.getLevel3Items()[0];
+                    if (firstChild) {
+                        this.currentState.level3 = firstChild.id;
+                    }
+                }
+                
+                // Update URL
+                const route = this.routes[this.currentState.level3];
+                if (route) {
+                    this.updateURL(route);
+                }
+                
+                this.render();
+            }
+            
+            updateURL(route) {
+                if (window.location.pathname !== route) {
+                    window.history.pushState({ route }, '', route);
+                    console.log('🌐 URL updated to:', route);
+                    
+                    // Dispatch event for tests
+                    window.dispatchEvent(new CustomEvent('routeUpdated', { 
+                        detail: { route, timestamp: Date.now() } 
+                    }));
+                }
+            }
+            
+            getCurrentActiveItem() {
+                return { ...this.currentState };
+            }
+        }
+        
+        // Mock GUI Tests
+        class MockGUITests {
+            async runAllTests(menuController) {
+                console.log('🧪 Starting GUI Tests...');
+                
+                const tests = [
+                    { name: 'Menu Navigation - Devices', action: () => menuController.setActiveMenuItem('connect-config', 'devices-category') },
+                    { name: 'Menu Navigation - RFID Config', action: () => menuController.setActiveMenuItem('connect-config', 'devices-category', 'rfid-config') },
+                    { name: 'Menu Navigation - Security Users', action: () => menuController.setActiveMenuItem('connect-config', 'security-category', 'users') },
+                    { name: 'URL Update Test', action: () => this.testURLUpdate(menuController) }
+                ];
+                
+                const results = [];
+                
+                for (const test of tests) {
+                    try {
+                        const initialUrl = window.location.pathname;
+                        await test.action();
+                        await new Promise(resolve => setTimeout(resolve, 200));
+                        
+                        const newUrl = window.location.pathname;
+                        const success = newUrl !== initialUrl;
+                        
+                        results.push({
+                            name: test.name,
+                            success,
+                            details: success ? `URL changed from ${initialUrl} to ${newUrl}` : `URL did not change: ${newUrl}`
+                        });
+                        
+                        console.log(`${success ? '✅' : '❌'} ${test.name}: ${results[results.length - 1].details}`);
+                        
+                    } catch (error) {
+                        results.push({
+                            name: test.name,
+                            success: false,
+                            details: `Error: ${error.message}`
+                        });
+                        console.log(`❌ ${test.name}: Error - ${error.message}`);
+                    }
+                }
+                
+                const passed = results.filter(r => r.success).length;
+                const total = results.length;
+                
+                console.log(`📊 Tests completed: ${passed}/${total} passed (${((passed/total)*100).toFixed(1)}%)`);
+                
+                this.showTestResults(results);
+                return { results, passed, total };
+            }
+            
+            async testURLUpdate(menuController) {
+                menuController.setActiveMenuItem('connect-config', 'devices-category', 'qr-config');
+            }
+            
+            showTestResults(results) {
+                // Remove existing results
+                const existing = document.getElementById('test-results-popup');
+                if (existing) existing.remove();
+                
+                const popup = document.createElement('div');
+                popup.id = 'test-results-popup';
+                popup.style.cssText = `
+                    position: fixed;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                    background: white;
+                    border: 2px solid #007bff;
+                    border-radius: 8px;
+                    padding: 20px;
+                    max-width: 500px;
+                    max-height: 400px;
+                    overflow-y: auto;
+                    box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+                    z-index: 10000;
+                `;
+                
+                const passed = results.filter(r => r.success).length;
+                
+                popup.innerHTML = `
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                        <h3 style="margin: 0; color: #007bff;">🧪 GUI Test Results</h3>
+                        <button onclick="this.parentElement.parentElement.remove()" 
+                                style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">✕</button>
+                    </div>
+                    
+                    <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+                        <strong>Summary:</strong> ${passed}/${results.length} tests passed (${((passed/results.length)*100).toFixed(1)}%)
+                    </div>
+                    
+                    ${results.map(result => `
+                        <div style="margin-bottom: 10px; padding: 10px; border-left: 3px solid ${result.success ? '#28a745' : '#dc3545'}; background: ${result.success ? '#d4edda' : '#f8d7da'};">
+                            <div style="font-weight: bold; color: ${result.success ? '#155724' : '#721c24'};">
+                                ${result.success ? '✅' : '❌'} ${result.name}
+                            </div>
+                            <div style="font-size: 12px; color: #666; margin-top: 5px;">
+                                ${result.details}
+                            </div>
+                        </div>
+                    `).join('')}
+                `;
+                
+                document.body.appendChild(popup);
+            }
+        }
+        
+        // Initialize demo
+        document.addEventListener('DOMContentLoaded', () => {
+            const container = document.getElementById('connect-config-container');
+            menuController = new MockMenuController(container);
+            guiTests = new MockGUITests();
+            
+            console.log('🚀 Demo initialized successfully');
+        });
+        
+        // Global functions for demo buttons
+        window.showCurrentUrl = () => {
+            const url = window.location.pathname;
+            const state = menuController.getCurrentActiveItem();
+            alert(`Current URL: ${url}\nActive Menu: ${state.level1} > ${state.level2} > ${state.level3}`);
+            console.log('📍 Current state:', { url, state });
+        };
+        
+        window.navigateToRandom = () => {
+            const categories = ['devices-category', 'security-category', 'system-category'];
+            const items = {
+                'devices-category': ['rfid-config', 'qr-config', 'barcode-config', 'sensors'],
+                'security-category': ['users', 'permissions', 'security'],
+                'system-category': ['system', 'network', 'performance']
+            };
+            
+            const randomCategory = categories[Math.floor(Math.random() * categories.length)];
+            const categoryItems = items[randomCategory];
+            const randomItem = categoryItems[Math.floor(Math.random() * categoryItems.length)];
+            
+            console.log('🎲 Random navigation to:', randomCategory, '>', randomItem);
+            menuController.setActiveMenuItem('connect-config', randomCategory, randomItem);
+        };
+        
+        window.runGUITests = async () => {
+            if (guiTests && menuController) {
+                console.log('🧪 Running GUI tests...');
+                await guiTests.runAllTests(menuController);
+            } else {
+                console.log('❌ Tests not available');
+            }
+        };
+        
+        window.testPageSpecificFunction = () => {
+            const current = menuController.getCurrentActiveItem();
+            console.log('⚡ Page-specific function called for:', current.level3);
+            alert(`Page-specific function executed for: ${current.level3}`);
+        };
+    </script>
+</body>
+</html>

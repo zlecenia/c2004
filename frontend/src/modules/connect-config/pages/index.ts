@@ -3,6 +3,16 @@ import { SystemPage } from './system.page';
 import { DevicesPage } from './devices.page';
 import { SecurityPage } from './security.page';
 
+// New 3-level menu structure
+export { ConnectConfigMenuStructure } from './menu.structure';
+export type { MenuItem } from './menu.structure';
+export { ConnectConfigMenuController } from './menu.controller';
+
+// Category components
+export * from './devices';
+export * from './security';
+export * from './system';
+
 // Page registry for connect-config module
 export const ConnectConfigPages = {
   'system': SystemPage,
@@ -97,3 +107,36 @@ export class ConnectConfigPageManager {
     return section in ConnectConfigPages;
   }
 }
+
+// Enhanced page manager with 3-level menu support
+export class ConnectConfigMenuPageManager extends ConnectConfigPageManager {
+  private menuController: ConnectConfigMenuController | null = null;
+
+  constructor() {
+    super();
+    console.log('⚙️ ConnectConfigMenuPageManager initialized with 3-level menu support');
+  }
+
+  initialize(container: HTMLElement): void {
+    super.initialize(container);
+    this.menuController = new ConnectConfigMenuController(container);
+    console.log('⚙️ ConnectConfigMenuPageManager: 3-level menu controller initialized');
+  }
+
+  getMenuController(): ConnectConfigMenuController | null {
+    return this.menuController;
+  }
+
+  setActiveMenuItem(level1Id: string, level2Id?: string, level3Id?: string): void {
+    if (this.menuController) {
+      this.menuController.setActiveMenuItem(level1Id, level2Id, level3Id);
+    }
+  }
+
+  getCurrentActiveItem() {
+    return this.menuController?.getCurrentActiveItem() || { level1: '', level2: '', level3: '' };
+  }
+}
+
+// Import the menu controller for convenience
+import { ConnectConfigMenuController } from './menu.controller';
