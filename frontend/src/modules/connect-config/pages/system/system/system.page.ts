@@ -16,7 +16,6 @@ export class SystemPage {
   };
 
   constructor() {
-    console.log('🖥️ SystemPage initialized');
   }
 
   public render(): string {
@@ -76,7 +75,6 @@ export class SystemPage {
       testBtn.addEventListener('click', () => this.handleTest());
     }
 
-    console.log('🖥️ SystemPage: Event listeners setup completed');
   }
 
   private handleSave(): void {
@@ -91,12 +89,10 @@ export class SystemPage {
     if (timezone) this.data.timezone = timezone;
     if (autoSave) this.data.autoSaveInterval = parseInt(autoSave);
 
-    console.log('🖥️ System config saved:', this.data);
     this.showNotification('Konfiguracja systemu zapisana pomyślnie', 'success');
   }
 
   private handleTest(): void {
-    console.log('🖥️ Testing system connection...');
     this.showNotification('Test połączenia w toku...', 'info');
     
     setTimeout(() => {

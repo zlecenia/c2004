@@ -28,7 +28,6 @@ export class ConnectTestModule implements Module {
   }
 
   async initialize(): Promise<void> {
-    console.log('Initializing ConnectTest module...');
     await this.service.initialize();
   }
 

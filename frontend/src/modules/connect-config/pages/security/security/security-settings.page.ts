@@ -16,7 +16,6 @@ export class SecuritySettingsPage {
   };
 
   constructor() {
-    console.log('🔒 SecuritySettingsPage initialized');
   }
 
   public render(): string {
@@ -63,8 +62,7 @@ export class SecuritySettingsPage {
     `;
   }
 
-  public setupEventListeners(container: HTMLElement): void {
-    console.log('🔒 SecuritySettingsPage: Event listeners setup completed');
+  public setupEventListeners(_container: HTMLElement): void {
   }
 
   public getStyles(): string {

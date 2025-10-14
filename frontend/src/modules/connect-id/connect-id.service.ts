@@ -71,8 +71,6 @@ export class ConnectIdService {
   }
 
   async initialize(): Promise<void> {
-    console.log('🔧 Initializing ConnectIdService...');
-    console.log('Config:', this.config);
     
     // Load identification history from localStorage
     this.loadIdentificationHistory();
@@ -83,11 +81,9 @@ export class ConnectIdService {
     }
     
     this.initialized = true;
-    console.log('✅ ConnectIdService initialized');
   }
 
   async destroy(): Promise<void> {
-    console.log('🔧 Destroying ConnectIdService...');
     
     // Save history to localStorage
     if (this.config.historyPersistence) {
@@ -98,7 +94,6 @@ export class ConnectIdService {
     this.removeKeyboardShortcuts();
     
     this.initialized = false;
-    console.log('✅ ConnectIdService destroyed');
   }
 
   isHealthy(): boolean {
@@ -120,22 +115,16 @@ export class ConnectIdService {
       this.connectIDInstance = {
         // Mock external ConnectID interface
         setIdentificationType: (type: any) => {
-          console.log(`🔄 ConnectID: Set identification type to ${type}`);
         },
         switchMethod: (method: any) => {
-          console.log(`🔄 ConnectID: Switched to method ${method}`);
         },
         clearCurrentScan: () => {
-          console.log('🧹 ConnectID: Cleared current scan');
         },
         startScanning: () => {
-          console.log('🔍 ConnectID: Started scanning...');
         },
         stopScanning: () => {
-          console.log('⏸️ ConnectID: Stopped scanning');
         },
         onIdentification: (_callback: any) => {
-          console.log('📝 ConnectID: Identification handler registered');
         }
       };
 
@@ -158,7 +147,6 @@ export class ConnectIdService {
         </div>
       `;
 
-      console.log('✅ ConnectID internal component initialized');
       resolve(this.connectIDInstance);
     });
   }
@@ -167,7 +155,6 @@ export class ConnectIdService {
    * Handle identification events
    */
   private async handleIdentification(identificationData: IdentificationData): Promise<void> {
-    console.log('🔍 Identification received:', identificationData);
     
     try {
       // Add to history
@@ -225,7 +212,6 @@ export class ConnectIdService {
    * Handle user identification (login)
    */
   private async handleUserIdentification(identificationData: IdentificationData): Promise<void> {
-    console.log('👤 User identification:', identificationData);
     
     if (identificationData.rfid_uid && (window as any).loginWithRFID) {
       try {
@@ -244,7 +230,6 @@ export class ConnectIdService {
    * Handle device identification
    */
   private async handleDeviceIdentification(identificationData: IdentificationData): Promise<void> {
-    console.log('📱 Device identification:', identificationData);
     
     const deviceInfo = identificationData.data;
     if (deviceInfo) {
@@ -260,7 +245,6 @@ export class ConnectIdService {
    * Handle group identification
    */
   private async handleGroupIdentification(identificationData: IdentificationData): Promise<void> {
-    console.log('📦 Group identification:', identificationData);
     
     const groupInfo = identificationData.data;
     if (groupInfo) {
@@ -336,7 +320,6 @@ export class ConnectIdService {
    */
   setIdentificationType(type: 'user' | 'device' | 'group' | 'test'): void {
     this.currentIdentificationType = type;
-    console.log('🔄 Identification type changed to:', type);
     
     if (this.connectIDInstance && this.connectIDInstance.setIdentificationType) {
       this.connectIDInstance.setIdentificationType(type);
@@ -369,7 +352,6 @@ export class ConnectIdService {
    */
   setTestType(testType: TestType): void {
     this.currentTestType = testType;
-    console.log('🧪 Test type selected:', testType);
     
     const labels = {
       'pressure': 'Szczelność',
@@ -423,7 +405,6 @@ export class ConnectIdService {
    * Handle manual identification
    */
   handleManualIdentification(code: string): void {
-    console.log('⌨ Manual identification:', code);
     
     const identificationData: IdentificationData = {
       method: 'manual',
@@ -443,7 +424,6 @@ export class ConnectIdService {
    * Handle barcode identification
    */
   handleBarcodeIdentification(code: string): void {
-    console.log('📊 Barcode identification:', code);
     
     const identificationData: IdentificationData = {
       method: 'barcode',
@@ -489,7 +469,6 @@ export class ConnectIdService {
    * Switch to specific method
    */
   switchToMethod(method: 'rfid' | 'qr' | 'barcode' | 'manual'): void {
-    console.log('🔄 Switching to method:', method);
     
     if (this.connectIDInstance && this.connectIDInstance.switchMethod) {
       this.connectIDInstance.switchMethod(method);
@@ -521,7 +500,6 @@ export class ConnectIdService {
    */
   toggleContinuousMode(): boolean {
     this.continuousMode = !this.continuousMode;
-    console.log(`Continuous mode: ${this.continuousMode ? 'ON' : 'OFF'}`);
     return this.continuousMode;
   }
 

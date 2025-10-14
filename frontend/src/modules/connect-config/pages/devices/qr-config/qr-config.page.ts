@@ -20,7 +20,6 @@ export class QrConfigPage {
   };
 
   constructor() {
-    console.log('📷 QrConfigPage initialized');
   }
 
   public render(): string {
@@ -111,16 +110,13 @@ export class QrConfigPage {
       });
     }
 
-    console.log('📷 QrConfigPage: Event listeners setup completed');
   }
 
   private handleSave(): void {
-    console.log('📷 QR Config saved:', this.data);
     this.showNotification('Konfiguracja QR Scanner zapisana pomyślnie', 'success');
   }
 
   private handleTest(): void {
-    console.log('📷 Testing QR Scanner...');
     this.showNotification('Test QR Scanner w toku...', 'info');
     
     setTimeout(() => {

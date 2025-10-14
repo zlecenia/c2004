@@ -16,7 +16,6 @@ export class ConnectIdModule implements Module {
   private service: ConnectIdService | null = null;
   
   async initialize(): Promise<void> {
-    console.log(`🔧 Initializing ${this.metadata.name} module...`);
     
     // Validate configuration exists
     const config = serviceManifest.getComponentConfig('connect-id');
@@ -29,7 +28,6 @@ export class ConnectIdModule implements Module {
     this.service = new ConnectIdService(config.configuration);
     await this.service.initialize();
     
-    console.log(`✅ ${this.metadata.name} module initialized`);
   }
   
   async destroy(): Promise<void> {

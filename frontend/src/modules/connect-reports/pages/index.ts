@@ -11,6 +11,7 @@ import { ExportWeekPage } from './export-week.page';
 import { ExportMonthPage } from './export-month.page';
 import { ExportYearPage } from './export-year.page';
 import { ExportCustomPage } from './export-custom.page';
+import { DynamicPagesRegistry } from '../../../shared/dynamic-pages.registry';
 
 // Page registry for connect-reports module
 export const ConnectReportsPages = {
@@ -56,6 +57,16 @@ export class ConnectReportsPageManager {
       return;
     }
 
+    // 1) Check dynamic pages registry first
+    const dynamic = DynamicPagesRegistry.getPage('connect-reports', pageKey);
+    if (dynamic) {
+      this.container.innerHTML = dynamic;
+      this.currentPage = pageKey;
+      console.log(`✅ ConnectReportsPageManager: Dynamic page ${pageKey} loaded successfully`);
+      return;
+    }
+
+    // 2) Fallback to static page classes
     const PageClass = ConnectReportsPages[pageKey as keyof typeof ConnectReportsPages];
     if (!PageClass) {
       console.warn(`📊 ConnectReportsPageManager: Page ${pageKey} not found, using default`);
@@ -112,12 +123,14 @@ export class ConnectReportsPageManager {
   }
 
   getAvailablePages(): string[] {
-    return Object.keys(ConnectReportsPages);
+    const dynamic = Object.keys(DynamicPagesRegistry.listPages('connect-reports'));
+    const staticKeys = Object.keys(ConnectReportsPages);
+    return Array.from(new Set([...staticKeys, ...dynamic]));
   }
 
   pageExists(section: string, view: string): boolean {
     const pageKey = `${section}-${view}`;
-    return pageKey in ConnectReportsPages;
+    return !!DynamicPagesRegistry.getPage('connect-reports', pageKey) || (pageKey in ConnectReportsPages);
   }
 }
 

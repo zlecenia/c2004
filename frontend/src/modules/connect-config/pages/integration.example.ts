@@ -14,7 +14,6 @@ export class ConnectConfigIntegration {
   private container: HTMLElement | null = null;
 
   constructor() {
-    console.log('🔧 ConnectConfigIntegration initialized');
   }
 
   /**
@@ -32,19 +31,16 @@ export class ConnectConfigIntegration {
 
       // Initialize menu controller
       this.menuController = new ConnectConfigMenuController(this.container);
-      console.log('✅ Menu controller initialized');
 
       // Initialize GUI tests if enabled
       if (enableTests) {
         this.guiTests = new ConnectConfigGUITests();
-        console.log('✅ GUI tests enabled');
         this.setupTestInterface();
       }
 
       // Setup global event listeners
       this.setupGlobalEventListeners();
 
-      console.log('🚀 ConnectConfig integration completed successfully');
 
     } catch (error) {
       console.error('❌ Failed to initialize ConnectConfig:', error);
@@ -61,7 +57,6 @@ export class ConnectConfigIntegration {
       return;
     }
 
-    console.log(`🧭 Navigating to: ${category}${page ? ` > ${page}` : ''}`);
     
     // Map of category IDs
     const categoryMap: Record<string, string> = {
@@ -104,7 +99,6 @@ export class ConnectConfigIntegration {
       return null;
     }
 
-    console.log('🧪 Running Connect Config GUI tests...');
     return await this.guiTests.runAllTests(this.menuController);
   }
 
@@ -176,7 +170,6 @@ export class ConnectConfigIntegration {
   private setupGlobalEventListeners(): void {
     // Listen for route updates
     window.addEventListener('routeUpdated', (event: any) => {
-      console.log('🔄 Route updated:', event.detail);
       
       // Emit custom event that other parts of the application can listen to
       window.dispatchEvent(new CustomEvent('connectConfigNavigated', {
@@ -192,7 +185,6 @@ export class ConnectConfigIntegration {
     window.addEventListener('beforeunload', () => {
       const state = this.getCurrentState();
       if (state) {
-        console.log('💾 Saving state before page unload:', state);
         localStorage.setItem('connectConfigLastState', JSON.stringify(state));
       }
     });
@@ -203,7 +195,6 @@ export class ConnectConfigIntegration {
       if (savedState) {
         try {
           const state = JSON.parse(savedState);
-          console.log('🔄 Restoring saved state:', state);
           // Note: The routing system will automatically handle URL-based restoration
         } catch (error) {
           console.warn('⚠️ Failed to restore saved state:', error);
@@ -217,7 +208,7 @@ export class ConnectConfigIntegration {
    */
   public enableDebugMode(): void {
     console.log('🐛 Debug mode enabled for ConnectConfig');
-    
+
     // Override console.log to track all menu-related logs
     const originalLog = console.log;
     console.log = (...args) => {
@@ -274,7 +265,6 @@ export class ConnectConfigIntegration {
     sessionStorage.removeItem('connectConfigDebugLogs');
     localStorage.removeItem('connectConfigLastState');
 
-    console.log('🧹 ConnectConfig integration cleaned up');
   }
 }
 
@@ -312,7 +302,6 @@ if (typeof window !== 'undefined') {
   document.addEventListener('DOMContentLoaded', async () => {
     try {
       window.connectConfig = await initializeConnectConfig();
-      console.log('🚀 ConnectConfig auto-initialized and available as window.connectConfig');
     } catch (error) {
       console.warn('⚠️ ConnectConfig auto-initialization failed:', error);
     }

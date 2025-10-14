@@ -21,7 +21,6 @@ export class NetworkPage {
   };
 
   constructor() {
-    console.log('🌐 NetworkPage initialized');
   }
 
   public render(): string {
@@ -75,8 +74,7 @@ export class NetworkPage {
     `;
   }
 
-  public setupEventListeners(container: HTMLElement): void {
-    console.log('🌐 NetworkPage: Event listeners setup completed');
+  public setupEventListeners(_container: HTMLElement): void {
   }
 
   public getStyles(): string {

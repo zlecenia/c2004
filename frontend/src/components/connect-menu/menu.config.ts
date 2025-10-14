@@ -198,12 +198,13 @@ export const connectReportsMenuConfig: MenuConfiguration = {
       id: 'view-options',
       title: 'Widok',
       width: '120px',
-      visible: false, // Initially hidden
+      // Make the column visible; MenuManager can still toggle a 3rd column dynamically
       items: [
         {
           id: 'week',
           label: 'Tydzień',
           icon: '📅',
+          method: 'week',
           action: 'view-change',
           active: true
         },
@@ -211,20 +212,43 @@ export const connectReportsMenuConfig: MenuConfiguration = {
           id: 'month',
           label: 'Miesiąc',
           icon: '📆',
+          method: 'month',
           action: 'view-change'
         },
         {
           id: 'year',
           label: 'Rok',
           icon: '🗓️',
+          method: 'year',
           action: 'view-change'
         },
         {
           id: 'custom',
           label: 'Niestandardowy',
           icon: '🎛️',
+          method: 'custom',
+          action: 'view-change'
+        },
+        {
+          id: 'planning',
+          label: 'Planowanie',
+          icon: '🗂️',
+          method: 'planning',
           action: 'view-change'
         }
+      ]
+    },
+    {
+      id: 'planning-options',
+      title: 'Planowanie',
+      width: '160px',
+      visible: false,
+      // This column is auxiliary; it should not affect URL segments
+      contributesToRoute: false as any,
+      items: [
+        { id: 'assign', label: 'Przydziel', icon: '📝', action: 'plan-assign' },
+        { id: 'schedule', label: 'Harmonogram', icon: '📅', action: 'plan-schedule' },
+        { id: 'resources', label: 'Zasoby', icon: '⚙️', action: 'plan-resources' }
       ]
     }
   ]

@@ -12,6 +12,10 @@ const tests = [
   'test-modules.js',
   'test-registry.js',
   'test-menu.js',
+  'test-template-module.js',
+  'test-connect-config-styles.js',
+  'test-all-modules-styles.js',
+  'test-style-migration-guide.js',
   'test-project-analysis.js',
   'test-code-quality.js'
 ];

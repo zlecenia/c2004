@@ -2,7 +2,6 @@
 import { VirtualKeyboard } from '../../components/virtual-keyboard.component';
 
 export class ConnectIdEventHandlers {
-  private currentMethod: string = 'rfid';
   private manualKeyboard: VirtualKeyboard | null = null;
   private eventListenersSetup: boolean = false;
 
@@ -15,11 +14,9 @@ export class ConnectIdEventHandlers {
   setupEventListeners(container: HTMLElement): void {
     // Prevent duplicate event listeners
     if (this.eventListenersSetup) {
-      console.log('🔧 ConnectID: Event listeners already setup, skipping');
       return;
     }
 
-    console.log('🔧 ConnectID: Setting up event listeners');
 
     // Method buttons
     this.setupMethodButtons(container);
@@ -69,7 +66,6 @@ export class ConnectIdEventHandlers {
         const roleElement = target.querySelector('.user-role');
         const role = roleElement ? roleElement.textContent : '';
         
-        console.log(`🔧 ConnectID: User selected: ${userId} (${fullName})`);
         
         // Update login form
         this.showUserLoginForm(container, fullName || '', role || '');
@@ -158,7 +154,6 @@ export class ConnectIdEventHandlers {
   }
 
   private switchMethod(method: string, container: HTMLElement, updateURL: boolean = true): void {
-    console.log(`🔧 ConnectID: switchMethod to ${method}, updateURL: ${updateURL}`);
     this.setCurrentMethod(method);
 
     // Update active method button
@@ -240,7 +235,6 @@ export class ConnectIdEventHandlers {
     
     const inputValue = manualInput.value.trim();
     if (inputValue) {
-      console.log(`🔧 ConnectID: Manual input submitted: ${inputValue}`);
       this.showNotification(`✅ Zidentyfikowano: ${inputValue}`, 'success');
       manualInput.value = '';
     } else {
@@ -259,7 +253,6 @@ export class ConnectIdEventHandlers {
     const fullName = selectedUser.getAttribute('data-fullname');
     
     if (password) {
-      console.log(`🔧 ConnectID: Attempting login for ${userId} with password: ${password}`);
       
       // Simulate login success
       this.showNotification(`✅ Zalogowano jako: ${fullName}`, 'success');

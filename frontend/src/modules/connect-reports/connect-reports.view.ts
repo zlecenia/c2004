@@ -1,14 +1,16 @@
 // frontend/src/modules/connect-reports/connect-reports.view.ts - Refactored with PageManager
 import { ConnectReportsModule } from './connect-reports.module';
 import { ConnectReportsPageManager } from './pages';
-import { createModuleMenu } from '../../components/connect-menu';
+import { createModuleMenu, getMenuManager } from '../../components/connect-menu';
 
 export class ConnectReportsView {
   private currentSection: string = 'executed';
   private currentView: string = 'week';
   private pageManager: ConnectReportsPageManager;
+  private routerListenerAttached: boolean = false;
+  private boundUpdateState?: (ev: CustomEvent) => void;
 
-  constructor(private module: ConnectReportsModule) {
+  constructor(_module: ConnectReportsModule) {
     this.pageManager = new ConnectReportsPageManager();
   }
 
@@ -42,29 +44,42 @@ export class ConnectReportsView {
     if (menuContainer) {
       createModuleMenu('connect-reports', menuContainer, {
         onItemClick: (data) => {
-          const { item } = data;
-          console.log(`📊 ConnectReports Menu: Click on ${item.id}`);
-          
-          if (item.section) {
+          const { item, column } = data;
+
+          // Column 1: report-types -> update report section
+          if (column.id === 'report-types' && item.section) {
             this.currentSection = item.section;
-            console.log(`📊 ConnectReports: Section changed to ${this.currentSection}`);
           }
-          
-          if (item.action) {
-            this.currentView = item.action;
-            console.log(`📊 ConnectReports: View changed to ${this.currentView}`);
+
+          // Column 2: view-options -> update view
+          if (column.id === 'view-options') {
+            // Prefer semantic method if present, fallback to id
+            this.currentView = (item as any).method || item.id;
           }
-          
+
           this.updateTopBarElements();
+          this.updateThirdColumnVisibility();
           this.loadCurrentPage();
         }
       });
+
+      // Sync menu active items with current URL on initial load
+      try {
+        const manager = getMenuManager();
+        manager.updateMenuForRoute(window.location.pathname);
+      } catch (e) {
+        console.warn('ConnectReports: unable to sync menu with route', e);
+      }
     }
     
     // Add custom styles
     this.addCustomStyles();
     
+    // Setup router sync to react on URL-driven state updates
+    this.setupRouterSync();
+
     // Load initial page
+    this.updateThirdColumnVisibility();
     this.loadCurrentPage();
     
     return container;
@@ -74,8 +89,64 @@ export class ConnectReportsView {
    * Load current page based on section and view
    */
   private loadCurrentPage(): void {
-    console.log(`📊 ConnectReports: Loading page ${this.currentSection}-${this.currentView}`);
+    // When 'planning' is selected in the 2nd column, we only reveal the 3rd column
+    if (this.currentView === 'planning') {
+      return;
+    }
     this.pageManager.loadPage(this.currentSection, this.currentView);
+  }
+
+  // Public API — used by main.ts
+  public setInitialReportType(section: string): void {
+    if (section && section !== this.currentSection) {
+      this.currentSection = section;
+      this.updateTopBarElements();
+      this.loadCurrentPage();
+    }
+  }
+
+  public setInitialView(view: string): void {
+    if (view && view !== this.currentView) {
+      this.currentView = view;
+      this.updateTopBarElements();
+      this.loadCurrentPage();
+    }
+  }
+
+  private setupRouterSync(): void {
+    if (this.routerListenerAttached) return;
+    this.boundUpdateState = ((ev: CustomEvent) => {
+      const { reportType, view } = (ev.detail || {}) as { reportType?: string, view?: string };
+      let changed = false;
+      if (reportType && reportType !== this.currentSection) {
+        this.currentSection = reportType;
+        changed = true;
+      }
+      if (view && view !== this.currentView) {
+        this.currentView = view;
+        changed = true;
+      }
+      if (changed) {
+        this.updateTopBarElements();
+        this.updateThirdColumnVisibility();
+        this.loadCurrentPage();
+      }
+    }) as unknown as (ev: CustomEvent) => void;
+    window.addEventListener('connectreports:update-state', this.boundUpdateState as unknown as EventListener);
+    this.routerListenerAttached = true;
+  }
+
+  private updateThirdColumnVisibility(): void {
+    // Show a third column when user selects "Planowanie" in the 2nd column
+    try {
+      const manager = getMenuManager();
+      const menu = manager.getMenu('connect-reports-menu');
+      if (menu && (menu as any).toggleColumn) {
+        (menu as any).toggleColumn('planning-options', this.currentView === 'planning');
+      }
+    } catch (e) {
+      // noop
+    }
   }
 
   private updateTopBarElements(): void {
@@ -138,7 +209,6 @@ export class ConnectReportsView {
       }
       
       #connect-reports-menu-container {
-        width: 280px;
         background: #f8f9fa;
         border-right: 1px solid #e9ecef;
         overflow-y: auto;

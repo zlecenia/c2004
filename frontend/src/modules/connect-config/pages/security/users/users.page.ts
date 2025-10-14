@@ -22,7 +22,6 @@ export class UsersPage {
   };
 
   constructor() {
-    console.log('👥 UsersPage initialized');
   }
 
   public render(): string {
@@ -97,18 +96,15 @@ export class UsersPage {
       });
     });
 
-    console.log('👥 UsersPage: Event listeners setup completed');
   }
 
   private handleAddUser(): void {
-    console.log('👥 Adding new user...');
     this.showUserDialog();
   }
 
   private handleEditUser(userId: string): void {
     const user = this.data.users.find(u => u.id === userId);
     if (user) {
-      console.log('👥 Editing user:', user);
       this.showUserDialog(user);
     }
   }
@@ -123,7 +119,6 @@ export class UsersPage {
   }
 
   private handleExportUsers(): void {
-    console.log('👥 Exporting users...');
     const csvContent = this.generateUsersCsv();
     this.downloadCsv(csvContent, 'users.csv');
     this.showNotification('Lista użytkowników została wyeksportowana', 'success');

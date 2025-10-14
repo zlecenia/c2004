@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Scenariuszy - Connect Manager</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f5f5;
+        }
+        
+        .test-header {
+            background: #007bff;
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .test-title {
+            font-size: 20px;
+            font-weight: 600;
+        }
+        
+        .test-controls {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .test-btn {
+            padding: 8px 16px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.2s ease;
+        }
+        
+        .test-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Include all styles from ScenariosPage */
+        .page-content { padding: 20px; }
+        .page-header h2 { color: #333; font-size: 24px; margin-bottom: 5px; }
+        .scenarios-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 20px; }
+        .scenario-card { background: white; border-radius: 8px; padding: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); position: relative; }
+        .scenario-card.new { display: flex; align-items: center; justify-content: center; min-height: 200px; cursor: pointer; border: 2px dashed #ddd; background: #f8f9fa; }
+        .scenario-card.new:hover { border-color: #007bff; background: #e7f3ff; }
+        .new-scenario-placeholder { display: flex; flex-direction: column; align-items: center; gap: 10px; color: #666; }
+        .plus-icon { font-size: 48px; }
+        .scenario-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
+        .scenario-header h3 { margin: 0; font-size: 18px; }
+        .scenario-actions { display: flex; gap: 8px; }
+        .btn-icon { padding: 6px 10px; border: none; background: #f8f9fa; border-radius: 4px; cursor: pointer; transition: all 0.2s; }
+        .btn-icon:hover { background: #e9ecef; }
+        .edit-scenario:hover { background: #e7f3ff; color: #007bff; }
+        .delete-scenario:hover { background: #ffe6e6; color: #dc3545; }
+        .activity-blocks { display: flex; flex-direction: column; gap: 10px; margin-bottom: 15px; min-height: 60px; }
+        .activity-blocks.drag-over { background: #e7f3ff; border: 2px dashed #007bff; border-radius: 6px; }
+        .activity-block { display: flex; align-items: center; gap: 10px; padding: 12px; background: #f8f9fa; border-radius: 6px; cursor: move; transition: all 0.2s; position: relative; }
+        .activity-block:hover { background: #e9ecef; }
+        .activity-block.dragging { opacity: 0.5; transform: rotate(5deg); }
+        .activity-block.drag-over { border-top: 3px solid #007bff; }
+        .drag-handle { color: #999; cursor: grab; user-select: none; }
+        .drag-handle:active { cursor: grabbing; }
+        .activity-name { flex: 1; font-weight: 500; }
+        .activity-duration { font-size: 12px; color: #666; }
+        .activity-delete { background: none; border: none; color: #dc3545; cursor: pointer; opacity: 0; transition: opacity 0.2s; padding: 2px; }
+        .activity-block:hover .activity-delete { opacity: 1; }
+        .activity-delete:hover { background: #ffe6e6; border-radius: 50%; }
+        .btn-add-activity { width: 100%; padding: 10px; border: 1px dashed #ddd; background: white; border-radius: 6px; cursor: pointer; color: #666; transition: all 0.2s; }
+        .btn-add-activity:hover { background: #f8f9fa; border-color: #007bff; color: #007bff; }
+        
+        /* Modal styles */
+        .modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.5); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+        .modal-content { background: white; border-radius: 8px; padding: 20px; max-width: 500px; width: 90%; }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .modal-title { margin: 0; font-size: 20px; }
+        .modal-close { background: none; border: none; font-size: 24px; cursor: pointer; color: #666; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: 500; }
+        .form-group input { width: 100%; padding: 8px 12px; border: 1px solid #ddd; border-radius: 4px; font-size: 14px; }
+        .form-actions { display: flex; gap: 10px; justify-content: flex-end; }
+        .btn-primary { background: #007bff; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        .btn-secondary { background: #6c757d; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; }
+        
+        /* Test specific styles */
+        .test-info {
+            background: #e7f3ff;
+            border: 1px solid #007bff;
+            border-radius: 6px;
+            padding: 15px;
+            margin: 20px;
+            color: #0066cc;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-header">
+        <div class="test-title">🧪 Test Funkcjonalności Scenariuszy - Connect Manager</div>
+        <div class="test-controls">
+            <button class="test-btn" onclick="testDragDrop()">🎯 Test Drag & Drop</button>
+            <button class="test-btn" onclick="testAddScenario()">➕ Test Dodaj Scenariusz</button>
+            <button class="test-btn" onclick="testAddActivity()">📝 Test Dodaj Czynność</button>
+            <button class="test-btn" onclick="resetData()">🔄 Reset Danych</button>
+        </div>
+    </div>
+
+    <div class="test-info">
+        <strong>🔍 Instrukcje testowania:</strong><br>
+        • <strong>Drag & Drop:</strong> Przeciągnij czynności między scenariuszami lub zmień ich kolejność<br>
+        • <strong>Edycja:</strong> Kliknij ✏️ aby edytować scenariusz lub ➕ aby dodać czynność<br>
+        • <strong>Usuwanie:</strong> Użyj 🗑️ dla scenariuszy lub ✕ dla pojedynczych czynności<br>
+        • <strong>Dodawanie:</strong> Kliknij "Dodaj nowy scenariusz" lub testuj przyciskami powyżej
+    </div>
+
+    <div class="page-content">
+        <div class="page-header">
+            <h2>🧪 Scenariusze Testów</h2>
+            <p>Zarządzaj scenariuszami testów z drag&drop</p>
+        </div>
+        
+        <div class="scenarios-grid" id="scenarios-grid">
+            <!-- Content będzie wygenerowany przez JavaScript -->
+        </div>
+    </div>
+
+    <script>
+        // Test implementation of ScenariosPage functionality
+        class TestScenariosPage {
+            static scenarios = [
+                {
+                    id: 'scenario-1',
+                    name: 'C20 - Ciśnienie',
+                    activities: [
+                        { id: 'act-1', name: '🔋 Test ciśnienia', duration: '15 min' },
+                        { id: 'act-2', name: '📊 Analiza wyników', duration: '10 min' },
+                        { id: 'act-3', name: '📝 Dokumentacja', duration: '5 min' }
+                    ]
+                },
+                {
+                    id: 'scenario-2', 
+                    name: 'Flow Test',
+                    activities: [
+                        { id: 'act-4', name: '💨 Test przepływu', duration: '20 min' },
+                        { id: 'act-5', name: '🔍 Kontrola szczelności', duration: '15 min' }
+                    ]
+                }
+            ];
+
+            static renderScenarios() {
+                return this.scenarios.map(scenario => `
+                    <div class="scenario-card" data-scenario-id="${scenario.id}">
+                        <div class="scenario-header">
+                            <h3>${scenario.name}</h3>
+                            <div class="scenario-actions">
+                                <button class="btn-icon edit-scenario" data-scenario-id="${scenario.id}">✏️</button>
+                                <button class="btn-icon delete-scenario" data-scenario-id="${scenario.id}">🗑️</button>
+                            </div>
+                        </div>
+                        <div class="activity-blocks" data-scenario-id="${scenario.id}">
+                            ${scenario.activities.map(activity => `
+                                <div class="activity-block" draggable="true" data-activity-id="${activity.id}">
+                                    <span class="drag-handle">⋮⋮</span>
+                                    <span class="activity-name">${activity.name}</span>
+                                    <span class="activity-duration">${activity.duration}</span>
+                                    <button class="activity-delete" data-activity-id="${activity.id}">✕</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                        <button class="btn-add-activity" data-scenario-id="${scenario.id}">➕ Dodaj czynność</button>
+                    </div>
+                `).join('') + `
+                    <div class="scenario-card new" id="add-scenario-card">
+                        <div class="new-scenario-placeholder">
+                            <span class="plus-icon">➕</span>
+                            <span>Dodaj nowy scenariusz</span>
+                        </div>
+                    </div>
+                `;
+            }
+
+            static refresh() {
+                const grid = document.getElementById('scenarios-grid');
+                if (grid) {
+                    grid.innerHTML = this.renderScenarios();
+                    this.setupEventListeners();
+                }
+            }
+
+            static setupEventListeners() {
+                // Add scenario
+                const addCard = document.getElementById('add-scenario-card');
+                if (addCard) {
+                    addCard.onclick = () => this.showAddScenarioModal();
+                }
+
+                // Add activity buttons
+                document.querySelectorAll('.btn-add-activity').forEach(btn => {
+                    btn.onclick = (e) => {
+                        const scenarioId = e.target.dataset.scenarioId;
+                        if (scenarioId) this.showAddActivityModal(scenarioId);
+                    };
+                });
+
+                // Edit scenario
+                document.querySelectorAll('.edit-scenario').forEach(btn => {
+                    btn.onclick = (e) => {
+                        const scenarioId = e.target.dataset.scenarioId;
+                        if (scenarioId) this.showEditScenarioModal(scenarioId);
+                    };
+                });
+
+                // Delete scenario
+                document.querySelectorAll('.delete-scenario').forEach(btn => {
+                    btn.onclick = (e) => {
+                        const scenarioId = e.target.dataset.scenarioId;
+                        if (scenarioId && confirm('Usunąć scenariusz?')) {
+                            this.deleteScenario(scenarioId);
+                        }
+                    };
+                });
+
+                // Delete activity
+                document.querySelectorAll('.activity-delete').forEach(btn => {
+                    btn.onclick = (e) => {
+                        const activityId = e.target.dataset.activityId;
+                        if (activityId && confirm('Usunąć czynność?')) {
+                            this.deleteActivity(activityId);
+                        }
+                    };
+                });
+
+                // Setup drag and drop
+                this.setupDragAndDrop();
+            }
+
+            static setupDragAndDrop() {
+                const blocks = document.querySelectorAll('.activity-block');
+                const containers = document.querySelectorAll('.activity-blocks');
+
+                blocks.forEach(block => {
+                    block.addEventListener('dragstart', (e) => {
+                        e.target.classList.add('dragging');
+                        e.dataTransfer.setData('text/plain', e.target.dataset.activityId);
+                    });
+
+                    block.addEventListener('dragend', (e) => {
+                        e.target.classList.remove('dragging');
+                    });
+                });
+
+                containers.forEach(container => {
+                    container.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        const dragging = document.querySelector('.dragging');
+                        const afterElement = this.getDragAfterElement(container, e.clientY);
+                        
+                        if (afterElement == null && dragging) {
+                            container.appendChild(dragging);
+                        } else if (afterElement && dragging) {
+                            container.insertBefore(dragging, afterElement);
+                        }
+                    });
+
+                    container.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        const activityId = e.dataTransfer.getData('text/plain');
+                        const newScenarioId = e.currentTarget.dataset.scenarioId;
+                        
+                        if (activityId && newScenarioId) {
+                            this.moveActivity(activityId, newScenarioId);
+                        }
+                    });
+                });
+            }
+
+            static getDragAfterElement(container, y) {
+                const draggableElements = [...container.querySelectorAll('.activity-block:not(.dragging)')];
+                
+                return draggableElements.reduce((closest, child) => {
+                    const box = child.getBoundingClientRect();
+                    const offset = y - box.top - box.height / 2;
+                    
+                    if (offset < 0 && offset > closest.offset) {
+                        return { offset: offset, element: child };
+                    } else {
+                        return closest;
+                    }
+                }, { offset: Number.NEGATIVE_INFINITY, element: null }).element;
+            }
+
+            static showModal(title, content, onSave) {
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">${title}</h3>
+                            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            ${content}
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-secondary" onclick="this.closest('.modal-overlay').remove()">Anuluj</button>
+                            <button class="btn-primary" onclick="${onSave}">Zapisz</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            static showAddScenarioModal() {
+                const modalId = 'modal_' + Date.now();
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Dodaj nowy scenariusz</h3>
+                            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="scenario-name-${modalId}">Nazwa scenariusza:</label>
+                                <input type="text" id="scenario-name-${modalId}" placeholder="Wprowadź nazwę scenariusza" />
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-secondary" onclick="this.closest('.modal-overlay').remove()">Anuluj</button>
+                            <button class="btn-primary" onclick="TestScenariosPage.addScenario(document.getElementById('scenario-name-${modalId}').value); this.closest('.modal-overlay').remove();">Zapisz</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            static showEditScenarioModal(scenarioId) {
+                const scenario = this.scenarios.find(s => s.id === scenarioId);
+                if (!scenario) return;
+                
+                const modalId = 'modal_' + Date.now();
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Edytuj scenariusz</h3>
+                            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="scenario-name-${modalId}">Nazwa scenariusza:</label>
+                                <input type="text" id="scenario-name-${modalId}" value="${scenario.name}" />
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-secondary" onclick="this.closest('.modal-overlay').remove()">Anuluj</button>
+                            <button class="btn-primary" onclick="TestScenariosPage.editScenario('${scenarioId}', document.getElementById('scenario-name-${modalId}').value); this.closest('.modal-overlay').remove();">Zapisz</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            static showAddActivityModal(scenarioId) {
+                const modalId = 'modal_' + Date.now();
+                const modal = document.createElement('div');
+                modal.className = 'modal-overlay';
+                modal.innerHTML = `
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h3 class="modal-title">Dodaj nową czynność</h3>
+                            <button class="modal-close" onclick="this.closest('.modal-overlay').remove()">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label for="activity-name-${modalId}">Nazwa czynności:</label>
+                                <input type="text" id="activity-name-${modalId}" placeholder="Wprowadź nazwę czynności" />
+                            </div>
+                            <div class="form-group">
+                                <label for="activity-duration-${modalId}">Czas trwania:</label>
+                                <input type="text" id="activity-duration-${modalId}" placeholder="np. 15 min" />
+                            </div>
+                        </div>
+                        <div class="form-actions">
+                            <button class="btn-secondary" onclick="this.closest('.modal-overlay').remove()">Anuluj</button>
+                            <button class="btn-primary" onclick="TestScenariosPage.addActivity('${scenarioId}', document.getElementById('activity-name-${modalId}').value, document.getElementById('activity-duration-${modalId}').value); this.closest('.modal-overlay').remove();">Zapisz</button>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+
+            // Data manipulation methods
+            static addScenario(name) {
+                if (!name.trim()) return;
+                const newScenario = {
+                    id: 'scenario-' + Date.now(),
+                    name: name.trim(),
+                    activities: []
+                };
+                this.scenarios.push(newScenario);
+                this.refresh();
+                console.log('✅ Added scenario:', name);
+            }
+
+            static editScenario(scenarioId, newName) {
+                if (!newName.trim()) return;
+                const scenario = this.scenarios.find(s => s.id === scenarioId);
+                if (scenario) {
+                    scenario.name = newName.trim();
+                    this.refresh();
+                    console.log('✅ Edited scenario:', scenarioId, 'to:', newName);
+                }
+            }
+
+            static deleteScenario(scenarioId) {
+                const index = this.scenarios.findIndex(s => s.id === scenarioId);
+                if (index !== -1) {
+                    this.scenarios.splice(index, 1);
+                    this.refresh();
+                    console.log('✅ Deleted scenario:', scenarioId);
+                }
+            }
+
+            static addActivity(scenarioId, name, duration) {
+                if (!name.trim() || !duration.trim()) return;
+                const scenario = this.scenarios.find(s => s.id === scenarioId);
+                if (scenario) {
+                    const newActivity = {
+                        id: 'act-' + Date.now(),
+                        name: name.trim(),
+                        duration: duration.trim()
+                    };
+                    scenario.activities.push(newActivity);
+                    this.refresh();
+                    console.log('✅ Added activity:', name, 'to scenario:', scenarioId);
+                }
+            }
+
+            static deleteActivity(activityId) {
+                for (const scenario of this.scenarios) {
+                    const index = scenario.activities.findIndex(a => a.id === activityId);
+                    if (index !== -1) {
+                        scenario.activities.splice(index, 1);
+                        this.refresh();
+                        console.log('✅ Deleted activity:', activityId);
+                        break;
+                    }
+                }
+            }
+
+            static moveActivity(activityId, newScenarioId) {
+                // Find and remove activity
+                let activity = null;
+                for (const scenario of this.scenarios) {
+                    const index = scenario.activities.findIndex(a => a.id === activityId);
+                    if (index !== -1) {
+                        activity = scenario.activities.splice(index, 1)[0];
+                        break;
+                    }
+                }
+
+                // Add to new scenario
+                if (activity) {
+                    const newScenario = this.scenarios.find(s => s.id === newScenarioId);
+                    if (newScenario) {
+                        newScenario.activities.push(activity);
+                        this.refresh();
+                        console.log('✅ Moved activity:', activityId, 'to scenario:', newScenarioId);
+                    }
+                }
+            }
+        }
+
+        // Test functions
+        function testDragDrop() {
+            alert('🎯 Test Drag & Drop:\n\n1. Spróbuj przeciągnąć czynność "Test ciśnienia" z pierwszego scenariusza do drugiego\n2. Spróbuj zmienić kolejność czynności w scenariuszu\n3. Sprawdź czy console.log pokazuje poprawne komunikaty');
+        }
+
+        function testAddScenario() {
+            TestScenariosPage.addScenario('Test Scenario ' + Date.now());
+        }
+
+        function testAddActivity() {
+            TestScenariosPage.addActivity('scenario-1', '🧪 Test Activity ' + Date.now(), '5 min');
+        }
+
+        function resetData() {
+            TestScenariosPage.scenarios = [
+                {
+                    id: 'scenario-1',
+                    name: 'C20 - Ciśnienie',
+                    activities: [
+                        { id: 'act-1', name: '🔋 Test ciśnienia', duration: '15 min' },
+                        { id: 'act-2', name: '📊 Analiza wyników', duration: '10 min' },
+                        { id: 'act-3', name: '📝 Dokumentacja', duration: '5 min' }
+                    ]
+                },
+                {
+                    id: 'scenario-2', 
+                    name: 'Flow Test',
+                    activities: [
+                        { id: 'act-4', name: '💨 Test przepływu', duration: '20 min' },
+                        { id: 'act-5', name: '🔍 Kontrola szczelności', duration: '15 min' }
+                    ]
+                }
+            ];
+            TestScenariosPage.refresh();
+        }
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            TestScenariosPage.refresh();
+            console.log('🧪 Test page loaded. Scenariusze functionality is ready to test!');
+        });
+    </script>
+</body>
+</html>

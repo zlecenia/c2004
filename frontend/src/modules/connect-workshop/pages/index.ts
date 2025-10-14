@@ -45,7 +45,6 @@ export class ConnectWorkshopPageManager {
   private container: HTMLElement | null = null;
 
   constructor() {
-    console.log('🔧 ConnectWorkshopPageManager initialized');
   }
 
   /**
@@ -53,7 +52,6 @@ export class ConnectWorkshopPageManager {
    */
   initialize(container: HTMLElement): void {
     this.container = container;
-    console.log('🔧 ConnectWorkshopPageManager container set');
   }
 
   /**
@@ -61,7 +59,6 @@ export class ConnectWorkshopPageManager {
    */
   loadPage(section: string, method: string): void {
     const pageKey = `${section}-${method}`;
-    console.log(`🔧 ConnectWorkshopPageManager: Loading page ${pageKey}`);
     
     if (!this.container) {
       console.error('🔧 ConnectWorkshopPageManager: No container set');
@@ -89,7 +86,6 @@ export class ConnectWorkshopPageManager {
       // Update current page
       this.currentPage = pageKey;
 
-      console.log(`✅ ConnectWorkshopPageManager: Page ${pageKey} loaded successfully`);
     } catch (error) {
       console.error(`❌ ConnectWorkshopPageManager: Error loading page ${pageKey}:`, error);
       this.loadErrorPage(pageKey);

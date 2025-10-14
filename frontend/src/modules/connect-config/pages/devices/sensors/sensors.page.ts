@@ -22,7 +22,6 @@ export class SensorsPage {
   };
 
   constructor() {
-    console.log('🌡️ SensorsPage initialized');
   }
 
   public render(): string {
@@ -77,15 +76,12 @@ export class SensorsPage {
     if (saveBtn) saveBtn.addEventListener('click', () => this.handleSave());
     if (testBtn) testBtn.addEventListener('click', () => this.handleTest());
 
-    console.log('🌡️ SensorsPage: Event listeners setup completed');
   }
 
   private handleSave(): void {
-    console.log('🌡️ Sensors Config saved:', this.data);
   }
 
   private handleTest(): void {
-    console.log('🌡️ Reading sensors...');
   }
 
   public getStyles(): string {

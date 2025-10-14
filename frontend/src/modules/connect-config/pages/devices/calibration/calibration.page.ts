@@ -14,7 +14,6 @@ export class CalibrationPage {
   };
 
   constructor() {
-    console.log('📏 CalibrationPage initialized');
   }
 
   public render(): string {
@@ -43,8 +42,7 @@ export class CalibrationPage {
     `;
   }
 
-  public setupEventListeners(container: HTMLElement): void {
-    console.log('📏 CalibrationPage: Event listeners setup completed');
+  public setupEventListeners(_container: HTMLElement): void {
   }
 
   public getStyles(): string {

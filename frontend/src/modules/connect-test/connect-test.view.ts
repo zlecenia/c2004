@@ -43,11 +43,9 @@ export class ConnectTestView {
       createModuleMenu('connect-test', menuContainer, {
         onItemClick: (data) => {
           const { item } = data;
-          console.log(`🧪 ConnectTest Menu: Click on ${item.id}`);
           
           if (item.method) {
             this.currentMethod = item.method;
-            console.log(`🧪 ConnectTest: Method changed to ${this.currentMethod}`);
             
             this.updateTopBarElements();
             this.loadCurrentPage();
@@ -69,7 +67,6 @@ export class ConnectTestView {
    * Load current page based on method
    */
   private loadCurrentPage(): void {
-    console.log(`🧪 ConnectTest: Loading page for method ${this.currentMethod}`);
     this.pageManager.loadPage(this.currentMethod);
   }
 

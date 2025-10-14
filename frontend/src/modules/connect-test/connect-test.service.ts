@@ -65,7 +65,6 @@ export class ConnectTestService {
   }
 
   async initialize(): Promise<void> {
-    console.log('🧪 Initializing ConnectTest service...');
     
     // Initialize test system
     await this.initializeTestSystem();
@@ -82,7 +81,6 @@ export class ConnectTestService {
   private async initializeTestSystem(): Promise<void> {
     // Simulate test system initialization
     await new Promise(resolve => setTimeout(resolve, 100));
-    console.log('✅ Test system initialized');
   }
 
   private startPeriodicUpdates(): void {
@@ -160,7 +158,6 @@ export class ConnectTestService {
     
     this.currentTest = device;
     
-    console.log(`🧪 Starting ${testType} test for device ${deviceId}`);
     
     // Dispatch test started event
     window.dispatchEvent(new CustomEvent('connecttest:test-started', {
@@ -198,7 +195,6 @@ export class ConnectTestService {
       await this.startNextDeviceInGroup();
     }
     
-    console.log(`🧪 Starting group test for ${group.name} with ${group.devices.length} devices`);
     
     // Dispatch group test started event
     window.dispatchEvent(new CustomEvent('connecttest:group-test-started', {
@@ -212,16 +208,13 @@ export class ConnectTestService {
   pauseResumeTest(): void {
     if (this.currentTest) {
       // Handle single device test pause/resume
-      console.log('⏸️ Pausing/Resuming device test');
     }
     
     if (this.currentGroup) {
       if (this.currentGroup.status === 'running') {
         this.currentGroup.status = 'paused';
-        console.log('⏸️ Group test paused');
       } else if (this.currentGroup.status === 'paused') {
         this.currentGroup.status = 'running';
-        console.log('▶️ Group test resumed');
       }
       
       window.dispatchEvent(new CustomEvent('connecttest:group-status-changed', {
@@ -240,7 +233,6 @@ export class ConnectTestService {
       this.testHistory.push({ ...this.currentTest });
       this.currentTest = null;
       
-      console.log('⏹️ Device test stopped');
       
       window.dispatchEvent(new CustomEvent('connecttest:test-stopped', {
         detail: { reason: 'user_stopped' }
@@ -249,7 +241,6 @@ export class ConnectTestService {
     
     if (this.currentGroup) {
       this.currentGroup.status = 'stopped';
-      console.log('⏹️ Group test stopped');
       
       window.dispatchEvent(new CustomEvent('connecttest:group-test-stopped', {
         detail: { group: this.currentGroup }
@@ -269,7 +260,6 @@ export class ConnectTestService {
       this.currentGroup.completedDevices++;
       this.currentGroup.failedDevices++;
       
-      console.log(`⏭️ Skipping device ${this.currentTest.serialNumber}`);
       
       // Start next device
       this.startNextDeviceInGroup();
@@ -301,7 +291,6 @@ export class ConnectTestService {
    * Generate test report
    */
   async generateReport(type: 'device' | 'summary' | 'history', params: any): Promise<any> {
-    console.log(`📊 Generating ${type} report`, params);
     
     // Simulate report generation
     await new Promise(resolve => setTimeout(resolve, 1000));
@@ -494,6 +483,5 @@ export class ConnectTestService {
 
   destroy(): void {
     this.stopTest();
-    console.log('ConnectTest service destroyed');
   }
 }

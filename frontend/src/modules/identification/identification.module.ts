@@ -16,7 +16,6 @@ export class IdentificationModule implements Module {
   private service: IdentificationService | null = null;
   
   async initialize(): Promise<void> {
-    console.log(`🔧 Initializing ${this.metadata.name} module...`);
     
     // Validate configuration
     const config = serviceManifest.getComponentConfig('universal-connectid');
@@ -28,7 +27,6 @@ export class IdentificationModule implements Module {
     this.service = new IdentificationService(config.configuration);
     await this.service.initialize();
     
-    console.log(`✅ ${this.metadata.name} module initialized`);
   }
   
   async destroy(): Promise<void> {

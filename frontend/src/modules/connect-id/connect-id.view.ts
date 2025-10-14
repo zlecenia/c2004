@@ -1,6 +1,5 @@
 // frontend/src/modules/connect-id/connect-id.view.ts - Refactored clean version
 import { ConnectIdModule } from './connect-id.module';
-import { ConnectIdTemplates } from './connect-id.templates';
 import { ConnectIdEventHandlers } from './connect-id.event-handlers';
 import { ConnectIdNotifications } from './connect-id.notifications';
 import { ConnectIdPageManager } from './pages';
@@ -57,12 +56,10 @@ export class ConnectIdView {
       createModuleMenu('connect-id', menuContainer, {
         onItemClick: (data) => {
           const { item } = data;
-          console.log(`🔧 ConnectId Menu: Click on ${item.id}`);
           
           // Update current method
           if (item.method) {
             this.currentMethod = item.method;
-            console.log(`🔧 ConnectId: Method changed to ${this.currentMethod}`);
             
             // Load page and update UI
             this.updateTopBarElements();
@@ -78,6 +75,11 @@ export class ConnectIdView {
     // Load initial page based on current state
     this.loadCurrentPage();
     
+    // Setup event handlers for interactive elements within content
+    if (contentContainer) {
+      this.eventHandlers.setupEventListeners(contentContainer);
+    }
+    
     return container;
   }
 
@@ -85,7 +87,6 @@ export class ConnectIdView {
    * Load current page based on method
    */
   private loadCurrentPage(): void {
-    console.log(`🔧 ConnectId: Loading page for method ${this.currentMethod}`);
     this.pageManager.loadPage(this.currentMethod);
   }
 
@@ -111,18 +112,6 @@ export class ConnectIdView {
       'list': 'Z Listy'
     };
     return names[method] || 'Metoda';
-  }
-
-  private setInitialMethodFromURL(container: HTMLElement): void {
-    // Parse method from URL
-    const path = window.location.pathname;
-    const methodMatch = path.match(/\/connect-id\/([^\/]+)$/);
-    
-    if (methodMatch) {
-      const method = methodMatch[1];
-      console.log(`🔧 ConnectID: Setting initial method from URL: ${method}`);
-      this.eventHandlers.switchToMethod(method, container);
-    }
   }
 
   private addCustomStyles(): void {
@@ -152,7 +141,6 @@ export class ConnectIdView {
       }
       
       #connect-id-menu-container {
-        width: 280px;
         background: #f8f9fa;
         border-right: 1px solid #e9ecef;
         overflow-y: auto;
@@ -479,7 +467,6 @@ export class ConnectIdView {
   // Public method to switch method (called from external sources)
   switchMethod(method: string): void {
     this.currentMethod = method;
-    console.log(`🔧 ConnectId: Method switched to ${method}`);
     
     // Load current page with new method
     if (this.pageManager) {
@@ -495,7 +482,6 @@ export class ConnectIdView {
   // Set initial method (called from main.ts or URL)
   setInitialMethod(method: string): void {
     this.currentMethod = method;
-    console.log(`🔧 ConnectId initial method set to: ${method}`);
     
     // Update UI and load page
     this.updateTopBarElements();

@@ -22,16 +22,13 @@ export class ConnectTestPageManager {
   private container: HTMLElement | null = null;
 
   constructor() {
-    console.log('🧪 ConnectTestPageManager initialized');
   }
 
   initialize(container: HTMLElement): void {
     this.container = container;
-    console.log('🧪 ConnectTestPageManager container set');
   }
 
   loadPage(method: string): void {
-    console.log(`🧪 ConnectTest: Loading page for method ${method}`);
     
     if (!this.container) {
       console.error('🧪 ConnectTestPageManager: No container set');
@@ -53,7 +50,6 @@ export class ConnectTestPageManager {
       this.injectPageStyles(pageStyles, method);
       this.currentPage = method;
 
-      console.log(`✅ ConnectTestPageManager: Page ${method} loaded successfully`);
     } catch (error) {
       console.error(`❌ ConnectTestPageManager: Error loading page ${method}:`, error);
       this.loadErrorPage(method);

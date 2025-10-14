@@ -1,4 +1,14 @@
-// frontend/src/modules/index.ts
+/**
+ * Main modules export file
+ * This file exports all available modules for easy importing
+ */
+
+// Export template module for base styles
+export * from './template';
+
+// Export module interfaces and types
+export * from './module.interface';
+
 import { Module } from './module.interface';
 import { IdentificationModule } from './identification/identification.module';
 import { ConnectIdModule } from './connect-id/connect-id.module';
@@ -32,14 +42,12 @@ export class ModuleManager {
       throw new Error('Modules already initialized');
     }
     
-    console.log('🚀 Initializing modules...');
     
     for (const [name, ModuleClass] of Object.entries(MODULE_REGISTRY)) {
       try {
         const module = new ModuleClass();
         await module.initialize();
         this.modules.set(name, module);
-        console.log(`✅ Module "${name}" initialized`);
       } catch (error) {
         console.error(`❌ Failed to initialize module "${name}":`, error);
         throw error;
@@ -47,7 +55,6 @@ export class ModuleManager {
     }
     
     this.initialized = true;
-    console.log('✅ All modules initialized');
   }
   
   /**

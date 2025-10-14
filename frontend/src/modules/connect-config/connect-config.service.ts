@@ -6,18 +6,15 @@ export class ConnectConfigService {
       return;
     }
 
-    console.log('🔧 ConnectConfig service initializing...');
     
     // Initialize configuration management
     this.loadConfiguration();
     
     this.initialized = true;
-    console.log('✅ ConnectConfig service initialized');
   }
 
   private loadConfiguration(): void {
     // Load system configuration
-    console.log('📋 Loading system configuration...');
   }
 
   getSystemSettings(): any {
@@ -40,7 +37,6 @@ export class ConnectConfigService {
   }
 
   updateSystemSettings(settings: any): void {
-    console.log('💾 Updating system settings:', settings);
   }
 
   getNetworkSettings(): any {
@@ -56,7 +52,6 @@ export class ConnectConfigService {
   }
 
   updateNetworkSettings(settings: any): void {
-    console.log('🌐 Updating network settings:', settings);
   }
 
   exportConfiguration(): string {
@@ -70,14 +65,12 @@ export class ConnectConfigService {
   importConfiguration(configJson: string): void {
     try {
       const config = JSON.parse(configJson);
-      console.log('📥 Importing configuration:', config);
     } catch (error) {
       console.error('❌ Invalid configuration format:', error);
     }
   }
 
   destroy(): void {
-    console.log('🔧 ConnectConfig service destroyed');
     this.initialized = false;
   }
 }

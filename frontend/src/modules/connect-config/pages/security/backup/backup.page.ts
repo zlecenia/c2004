@@ -22,7 +22,6 @@ export class BackupPage {
   };
 
   constructor() {
-    console.log('💾 BackupPage initialized');
   }
 
   public render(): string {
@@ -72,8 +71,7 @@ export class BackupPage {
     `;
   }
 
-  public setupEventListeners(container: HTMLElement): void {
-    console.log('💾 BackupPage: Event listeners setup completed');
+  public setupEventListeners(_container: HTMLElement): void {
   }
 
   public getStyles(): string {

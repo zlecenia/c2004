@@ -18,7 +18,6 @@ export class StoragePage {
   };
 
   constructor() {
-    console.log('💾 StoragePage initialized');
   }
 
   public render(): string {
@@ -65,8 +64,7 @@ export class StoragePage {
     `;
   }
 
-  public setupEventListeners(container: HTMLElement): void {
-    console.log('💾 StoragePage: Event listeners setup completed');
+  public setupEventListeners(_container: HTMLElement): void {
   }
 
   public getStyles(): string {

@@ -42,11 +42,9 @@ export class ConnectConfigView {
       createModuleMenu('connect-config', menuContainer, {
         onItemClick: (data) => {
           const { item } = data;
-          console.log(`⚙️ ConnectConfig Menu: Click on ${item.id}`);
           
           // ConnectConfig has only one column, so item.id is the section
           this.currentSection = item.id;
-          console.log(`⚙️ ConnectConfig: Section changed to ${this.currentSection}`);
           this.updateTopBarElements();
           this.loadCurrentPage();
         }
@@ -66,7 +64,6 @@ export class ConnectConfigView {
    * Load current page based on section
    */
   private loadCurrentPage(): void {
-    console.log(`⚙️ ConnectConfig: Loading page ${this.currentSection}`);
     this.pageManager.loadPage(this.currentSection);
   }
 

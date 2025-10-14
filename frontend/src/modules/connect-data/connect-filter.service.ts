@@ -48,25 +48,20 @@ export class ConnectFilterService {
   }
 
   async initialize(): Promise<void> {
-    console.log('🔧 Initializing ConnectFilterService...');
-    console.log('Config:', this.config);
     
     // Load demo data
     this.loadDemoData();
     
     this.initialized = true;
-    console.log('✅ ConnectFilterService initialized');
   }
 
   async destroy(): Promise<void> {
-    console.log('🔧 Destroying ConnectFilterService...');
     
     // Clean up any resources
     this.searchResults = [];
     this.currentFilters = {};
     
     this.initialized = false;
-    console.log('✅ ConnectFilterService destroyed');
   }
 
   isHealthy(): boolean {
@@ -78,7 +73,6 @@ export class ConnectFilterService {
    */
   async performSearch(additionalFilters?: Partial<FilterCriteria>): Promise<SearchResult[]> {
     const filters = { ...this.currentFilters, ...additionalFilters };
-    console.log('🔍 Performing search with filters:', filters);
 
     try {
       // Simulate API call delay

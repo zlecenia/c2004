@@ -119,7 +119,6 @@ export class MonthViewComponent {
     const monthName = this.getMonthName(month);
     
     const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
     
     // Get first Monday of the calendar (might be from previous month)
     const startDate = new Date(firstDay);
@@ -244,7 +243,6 @@ export class MonthViewComponent {
   }
 
   private onDayClick(day: number): void {
-    console.log(`🔧 MonthView: Day ${day} clicked in ${this.getMonthDisplayName()}`);
     // Here you could emit events or call callbacks for day selection
   }
 

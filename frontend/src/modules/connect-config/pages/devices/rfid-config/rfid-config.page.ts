@@ -20,7 +20,6 @@ export class RfidConfigPage {
   };
 
   constructor() {
-    console.log('📡 RfidConfigPage initialized');
   }
 
   public render(): string {
@@ -114,7 +113,6 @@ export class RfidConfigPage {
       });
     }
 
-    console.log('📡 RfidConfigPage: Event listeners setup completed');
   }
 
   private updateRangeValue(value: number): void {
@@ -125,13 +123,11 @@ export class RfidConfigPage {
   }
 
   private handleSave(): void {
-    console.log('📡 RFID Config saved:', this.data);
     // Here you would typically send data to backend
     this.showNotification('Konfiguracja RFID zapisana pomyślnie', 'success');
   }
 
   private handleTest(): void {
-    console.log('📡 Testing RFID Reader...');
     this.showNotification('Test RFID w toku...', 'info');
     
     // Simulate test

@@ -14,7 +14,6 @@ export class IoPortsPage {
   };
 
   constructor() {
-    console.log('🔌 IoPortsPage initialized');
   }
 
   public render(): string {
@@ -46,8 +45,7 @@ export class IoPortsPage {
     `;
   }
 
-  public setupEventListeners(container: HTMLElement): void {
-    console.log('🔌 IoPortsPage: Event listeners setup completed');
+  public setupEventListeners(_container: HTMLElement): void {
   }
 
   public getStyles(): string {

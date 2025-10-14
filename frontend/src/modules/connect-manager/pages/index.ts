@@ -16,16 +16,13 @@ export class ConnectManagerPageManager {
   private container: HTMLElement | null = null;
 
   constructor() {
-    console.log('⚙️ ConnectManagerPageManager initialized');
   }
 
   initialize(container: HTMLElement): void {
     this.container = container;
-    console.log('⚙️ ConnectManagerPageManager container set');
   }
 
   loadPage(section: string): void {
-    console.log(`⚙️ ConnectManager: Loading page ${section}`);
     
     if (!this.container) {
       console.error('⚙️ ConnectManagerPageManager: No container set');
@@ -47,7 +44,11 @@ export class ConnectManagerPageManager {
       this.injectPageStyles(pageStyles, section);
       this.currentPage = section;
 
-      console.log(`✅ ConnectManagerPageManager: Page ${section} loaded successfully`);
+      // Setup event listeners for pages that support it
+      if ('setupEventListeners' in PageClass && typeof PageClass.setupEventListeners === 'function') {
+        PageClass.setupEventListeners();
+      }
+
     } catch (error) {
       console.error(`❌ ConnectManagerPageManager: Error loading page ${section}:`, error);
       this.loadErrorPage(section);

@@ -20,7 +20,6 @@ export class BarcodeConfigPage {
   };
 
   constructor() {
-    console.log('📊 BarcodeConfigPage initialized');
   }
 
   public render(): string {
@@ -128,7 +127,6 @@ export class BarcodeConfigPage {
       });
     });
 
-    console.log('📊 BarcodeConfigPage: Event listeners setup completed');
   }
 
   private updateRangeValue(value: number): void {
@@ -139,12 +137,10 @@ export class BarcodeConfigPage {
   }
 
   private handleSave(): void {
-    console.log('📊 Barcode Config saved:', this.data);
     this.showNotification('Konfiguracja Barcode Scanner zapisana pomyślnie', 'success');
   }
 
   private handleTest(): void {
-    console.log('📊 Testing Barcode Scanner...');
     this.showNotification('Test Barcode Scanner w toku...', 'info');
     
     setTimeout(() => {

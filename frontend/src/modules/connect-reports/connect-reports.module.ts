@@ -23,8 +23,6 @@ export class ConnectReportsModule implements Module {
   }
 
   async initialize(): Promise<void> {
-    console.log('🔧 Initializing ConnectReports module...');
-    console.log('✅ ConnectReports module initialized');
   }
 
   render(container: HTMLElement): void {

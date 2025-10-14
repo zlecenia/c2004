@@ -1,5 +1,6 @@
 // frontend/src/components/connect-menu/index.ts
 
+import type { ConnectMenuComponent } from './connect-menu.component';
 // Main components
 export { ConnectMenuComponent } from './connect-menu.component';
 export { MenuManager } from './menu.manager';
@@ -25,7 +26,7 @@ export function createMenu(
   menuId: string,
   container: HTMLElement,
   callbacks?: MenuCallbacks
-) {
+): ConnectMenuComponent | null {
   const manager = MenuManager.getInstance();
   return manager.createMenu(menuId, container, callbacks);
 }
@@ -37,7 +38,7 @@ export function createModuleMenu(
   moduleName: string,
   container: HTMLElement,
   callbacks?: MenuCallbacks
-) {
+): ConnectMenuComponent | null {
   const manager = MenuManager.getInstance();
   return manager.createModuleMenu(moduleName, container, callbacks);
 }
@@ -45,6 +46,6 @@ export function createModuleMenu(
 /**
  * Get the global menu manager instance
  */
-export function getMenuManager() {
+export function getMenuManager(): MenuManager {
   return MenuManager.getInstance();
 }

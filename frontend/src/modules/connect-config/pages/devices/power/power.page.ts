@@ -18,7 +18,6 @@ export class PowerPage {
   };
 
   constructor() {
-    console.log('🔋 PowerPage initialized');
   }
 
   public render(): string {
@@ -66,8 +65,7 @@ export class PowerPage {
     `;
   }
 
-  public setupEventListeners(container: HTMLElement): void {
-    console.log('🔋 PowerPage: Event listeners setup completed');
+  public setupEventListeners(_container: HTMLElement): void {
   }
 
   public getStyles(): string {

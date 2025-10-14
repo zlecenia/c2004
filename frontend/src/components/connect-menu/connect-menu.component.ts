@@ -165,6 +165,19 @@ export class ConnectMenuComponent {
         const buttonItemId = button.getAttribute('data-menu-item');
         button.classList.toggle('active', buttonItemId === itemId);
       });
+    } else if (this.config.type === 'sidebar') {
+      // Sidebar template does not wrap items in `${columnId}-column`,
+      // so update buttons within the sidebar container identified by menu ID
+      const menuRoot = this.container.querySelector(`.connect-menu[data-menu-id="${this.config.id}"]`);
+      const sidebar = menuRoot ? menuRoot.querySelector(`#${this.config.id}`) : null;
+      const scope = (sidebar || menuRoot || this.container) as HTMLElement;
+      if (scope) {
+        const buttons = scope.querySelectorAll('[data-menu-item]');
+        buttons.forEach(button => {
+          const buttonItemId = button.getAttribute('data-menu-item');
+          button.classList.toggle('active', buttonItemId === itemId);
+        });
+      }
     }
   }
 

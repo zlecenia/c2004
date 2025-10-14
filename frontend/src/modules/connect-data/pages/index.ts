@@ -1,6 +1,7 @@
 // frontend/src/modules/connect-data/pages/index.ts
 import { DispositionsSearchPage } from './dispositions-search.page';
 import { DispositionsAddNewPage } from './dispositions-add-new.page';
+import { DynamicPagesRegistry } from '../../../shared/dynamic-pages.registry';
 
 // Page registry for connect-data module
 export const ConnectDataPages = {
@@ -56,6 +57,16 @@ export class ConnectDataPageManager {
       return;
     }
 
+    // 1) Check dynamic pages registry first
+    const dynamic = DynamicPagesRegistry.getPage('connect-data', pageKey);
+    if (dynamic) {
+      this.container.innerHTML = dynamic;
+      this.currentPage = pageKey;
+      console.log(`✅ ConnectDataPageManager: Dynamic page ${pageKey} loaded successfully`);
+      return;
+    }
+
+    // 2) Fallback to static page classes
     const PageClass = ConnectDataPages[pageKey as keyof typeof ConnectDataPages];
     if (!PageClass) {
       console.warn(`📊 ConnectDataPageManager: Page ${pageKey} not found, using default`);
@@ -112,12 +123,14 @@ export class ConnectDataPageManager {
   }
 
   getAvailablePages(): string[] {
-    return Object.keys(ConnectDataPages);
+    const dynamic = Object.keys(DynamicPagesRegistry.listPages('connect-data'));
+    const staticKeys = Object.keys(ConnectDataPages);
+    return Array.from(new Set([...staticKeys, ...dynamic]));
   }
 
   pageExists(section: string, method: string): boolean {
     const pageKey = `${section}-${method}`;
-    return pageKey in ConnectDataPages;
+    return !!DynamicPagesRegistry.getPage('connect-data', pageKey) || (pageKey in ConnectDataPages);
   }
 }
 

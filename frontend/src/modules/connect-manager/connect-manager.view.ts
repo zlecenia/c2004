@@ -41,11 +41,9 @@ export class ConnectManagerView {
       createModuleMenu('connect-manager', menuContainer, {
         onItemClick: (data) => {
           const { item } = data;
-          console.log(`⚙️ ConnectManager Menu: Click on ${item.id}`);
           
           // ConnectManager has only one column, so item.id is the section
           this.currentSection = item.id;
-          console.log(`⚙️ ConnectManager: Section changed to ${this.currentSection}`);
           this.updateTopBarElements();
           this.loadCurrentPage();
         }
@@ -65,7 +63,6 @@ export class ConnectManagerView {
    * Load current page based on section
    */
   private loadCurrentPage(): void {
-    console.log(`⚙️ ConnectManager: Loading page ${this.currentSection}`);
     this.pageManager.loadPage(this.currentSection);
   }
 
@@ -118,7 +115,6 @@ export class ConnectManagerView {
       }
       
       #connect-manager-menu-container {
-        width: 280px;
         background: #f8f9fa;
         border-right: 1px solid #e9ecef;
         overflow-y: auto;

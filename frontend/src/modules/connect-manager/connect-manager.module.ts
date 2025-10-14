@@ -26,8 +26,6 @@ export class ConnectManagerModule implements Module {
   }
   
   async initialize(): Promise<void> {
-    console.log('🔧 Initializing ConnectManager module...');
-    console.log('✅ Module "connect-manager" initialized');
   }
 
   render(container: HTMLElement): void {
@@ -47,7 +45,6 @@ export class ConnectManagerModule implements Module {
   }
   
   async destroy(): Promise<void> {
-    console.log('🔧 Destroying ConnectManager module...');
     if (this.element) {
       this.element.remove();
       this.element = null;

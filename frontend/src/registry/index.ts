@@ -13,7 +13,6 @@ export function validateAllRegistries(): boolean {
     require('./module.registry'); 
     require('./route.registry');
     
-    console.log('✅ All registries validated successfully');
     return true;
   } catch (error) {
     console.error('❌ Registry validation failed:', error);

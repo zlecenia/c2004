@@ -1,16 +1,18 @@
 // frontend/src/components/connect-menu/menu.manager.ts
 
 import { ConnectMenuComponent } from './connect-menu.component';
-import { MenuConfiguration, MenuCallbacks, RouteMenuMapping } from './menu.interfaces';
+import { MenuConfiguration, MenuCallbacks, RouteMenuMapping, MenuItem, MenuColumn, MenuEventData } from './menu.interfaces';
 import { menuRegistry, routeMenuMappings } from './menu.config';
 
 export class MenuManager {
   private static instance: MenuManager | null = null;
   private activeMenus: Map<string, ConnectMenuComponent> = new Map();
   private routeMappings: RouteMenuMapping[] = routeMenuMappings;
+  private overridesLoaded = false;
 
   private constructor() {
     this.setupGlobalEventListeners();
+    this.loadOverridesFromStorage();
   }
 
   /**
@@ -109,29 +111,48 @@ export class MenuManager {
    * Update menu based on current route
    */
   public updateMenuForRoute(currentRoute: string): void {
-    const mapping = this.routeMappings.find(map => 
-      currentRoute.startsWith(map.route)
-    );
-
+    const mapping = this.routeMappings.find(map => currentRoute.startsWith(map.route));
     if (!mapping) return;
 
     const menu = this.activeMenus.get(mapping.menuId);
-    if (!menu || !mapping.activeItems) return;
+    if (!menu) return;
 
-    // Update active items
-    mapping.activeItems.forEach(itemId => {
-      menu.updateActiveItem(itemId);
+    // Derive selection from URL path segments beyond the base route
+    const base = mapping.route.endsWith('/') ? mapping.route.slice(0, -1) : mapping.route;
+    let extra = currentRoute.startsWith(base) ? currentRoute.slice(base.length) : '';
+    if (extra.startsWith('/')) extra = extra.slice(1);
+    const segments = extra.split('/').filter(Boolean);
+
+    const config = menu.getConfig();
+    let matched = 0;
+    config.columns.forEach((column: MenuColumn, index: number) => {
+      const seg = segments[index];
+      if (!seg) return;
+      const found = column.items.find((it: MenuItem) =>
+        it.id === seg || it.section === seg || it.method === seg || it.subsection === seg || it.action === seg
+      );
+      if (found) {
+        menu.updateActiveItem(found.id, column.id);
+        matched++;
+      }
     });
+
+    // Fallback to default mapping activeItems if URL doesn't specify enough segments
+    if (matched === 0 && mapping.activeItems && mapping.activeItems.length) {
+      mapping.activeItems.forEach(itemId => {
+        menu.updateActiveItem(itemId);
+      });
+    }
   }
 
   /**
    * Handle global menu actions with 3-level navigation
    */
-  private handleGlobalMenuAction(data: any): void {
+  private handleGlobalMenuAction(data: MenuEventData): void {
     const { action, item, column } = data;
 
-    // Update routing based on menu selection
-    this.updateRoutingForMenuSelection(item, column);
+    // Update routing based on current selection (section/method), reflected in URL
+    const menuId = this.findMenuIdByColumn(column.id);
 
     switch (action) {
       case 'navigate':
@@ -143,6 +164,7 @@ export class MenuManager {
       case 'section-change':
         // Handle 3-level navigation: update dependent columns and content
         this.handle3LevelNavigation(item, column, 'section');
+        if (menuId) this.updateUrlForSelection(menuId);
         
         // Emit global section change event
         window.dispatchEvent(new CustomEvent('sectionChange', {
@@ -158,6 +180,7 @@ export class MenuManager {
       case 'method-change':
         // Handle method changes in 3-level navigation
         this.handle3LevelNavigation(item, column, 'method');
+        if (menuId) this.updateUrlForSelection(menuId);
         
         // Emit global method change event  
         window.dispatchEvent(new CustomEvent('methodChange', {
@@ -173,6 +196,7 @@ export class MenuManager {
       default:
         // Handle generic actions with combinatorial content
         this.handle3LevelNavigation(item, column, 'action');
+        if (menuId) this.updateUrlForSelection(menuId);
         
         // Emit generic menu action event
         window.dispatchEvent(new CustomEvent('menuAction', {
@@ -191,7 +215,7 @@ export class MenuManager {
   /**
    * Handle 3-level navigation logic
    */
-  private handle3LevelNavigation(item: any, column: any, actionType: string): void {
+  private handle3LevelNavigation(item: MenuItem, column: MenuColumn, actionType: string): void {
     const menuId = this.findMenuIdByColumn(column.id);
     if (!menuId) return;
 
@@ -213,7 +237,6 @@ export class MenuManager {
     // Update dependent columns visibility/state
     this.updateDependentColumns(config, currentSelection);
     
-    console.log(`🔧 3-Level Navigation: ${actionType} in ${column.id} -> ${item.id}`, currentSelection);
   }
 
   /**
@@ -242,11 +265,11 @@ export class MenuManager {
   /**
    * Get current selection state across all columns
    */
-  private getCurrentSelection(config: any): Record<string, string> {
+  private getCurrentSelection(config: MenuConfiguration): Record<string, string> {
     const selection: Record<string, string> = {};
     
-    config.columns.forEach((column: any) => {
-      const activeItem = column.items.find((item: any) => item.active);
+    config.columns.forEach((column: MenuColumn) => {
+      const activeItem = column.items.find((item: MenuItem) => item.active);
       if (activeItem) {
         selection[column.id] = activeItem.id;
       }
@@ -273,13 +296,13 @@ export class MenuManager {
   /**
    * Update dependent columns based on selection
    */
-  private updateDependentColumns(config: any, selection: Record<string, string>): void {
+  private updateDependentColumns(config: MenuConfiguration, selection: Record<string, string>): void {
     // Logic for showing/hiding columns based on selection
     // For example, show column 3 only when column 1 and 2 are selected
     
     if (config.columns.length >= 3) {
-      const hasColumn1Selection = config.columns[0] && selection[config.columns[0].id];
-      const hasColumn2Selection = config.columns[1] && selection[config.columns[1].id];
+      const hasColumn1Selection = !!(config.columns[0] && selection[config.columns[0].id]);
+      const hasColumn2Selection = !!(config.columns[1] && selection[config.columns[1].id]);
       
       // Show/hide third column based on first two selections
       if (config.columns[2]) {
@@ -296,19 +319,36 @@ export class MenuManager {
   }
 
   /**
-   * Update routing based on menu selection
+   * Update URL using current selection across columns for a given menu.
+   * E.g., /connect-workshop/requests/search
    */
-  private updateRoutingForMenuSelection(item: any, column: any): void {
-    const currentPath = window.location.pathname;
-    const menuId = this.findMenuIdByColumn(column.id);
-    
-    if (menuId && item.section) {
-      // Update URL to reflect current selection using clean path routing
-      const pathSegments = currentPath.split('/').filter(Boolean);
-      const basePath = `/${pathSegments[0] || ''}`; // Keep base module path
-      const newPath = `${basePath}/${item.section}`;
-      window.history.replaceState({}, '', newPath);
-    }
+  private updateUrlForSelection(menuId: string): void {
+    const mapping = this.routeMappings.find(m => m.menuId === menuId);
+    if (!mapping) return;
+    const menu = this.activeMenus.get(menuId);
+    if (!menu) return;
+    const config = menu.getConfig();
+    const selection = this.getCurrentSelection(config);
+    const segments: string[] = [];
+    // Build semantic URL segments: prefer section/method/subsection/action over raw IDs
+    config.columns.forEach((col: any) => {
+      // Skip columns that should not contribute to the route
+      if (col.contributesToRoute === false) return;
+      const activeId = selection[col.id];
+      if (!activeId) return;
+      const item = (col.items || []).find((it: any) => it.id === activeId);
+      if (!item) {
+        segments.push(activeId);
+        return;
+      }
+      const seg = item.section || item.method || item.subsection || item.action || item.id;
+      segments.push(seg);
+    });
+    const base = mapping.route.endsWith('/') ? mapping.route.slice(0, -1) : mapping.route;
+    const newPath = segments.length ? `${base}/${segments.join('/')}` : base;
+    window.history.replaceState({}, '', newPath);
+    // Notify listeners about route change
+    window.dispatchEvent(new CustomEvent('routeChanged', { detail: { route: newPath } }));
   }
 
   /**
@@ -388,6 +428,77 @@ export class MenuManager {
     window.addEventListener('routeChanged', (event: any) => {
       this.updateMenuForRoute(event.detail.route);
     });
+  }
+
+  /**
+   * DESIGNER API: get deep-cloned snapshot of registries and route mappings
+   */
+  public getRegistrySnapshot(): { menuRegistry: any; routeMappings: RouteMenuMapping[] } {
+    return {
+      menuRegistry: JSON.parse(JSON.stringify(menuRegistry)),
+      routeMappings: JSON.parse(JSON.stringify(this.routeMappings))
+    };
+  }
+
+  /**
+   * DESIGNER API: update a module menu configuration at runtime
+   */
+  public updateModuleMenu(moduleName: string, config: MenuConfiguration): void {
+    menuRegistry.moduleColumns[moduleName] = config;
+    this.persistOverridesToStorage();
+    window.dispatchEvent(new CustomEvent('menuRegistryUpdated', { detail: { moduleName } }));
+  }
+
+  /**
+   * DESIGNER API: update main navigation configuration
+   */
+  public updateMainNavigation(config: MenuConfiguration): void {
+    menuRegistry.mainNavigation = config;
+    this.persistOverridesToStorage();
+    window.dispatchEvent(new CustomEvent('menuRegistryUpdated', { detail: { menuId: 'main-navigation' } }));
+  }
+
+  /**
+   * DESIGNER API: replace route mappings
+   */
+  public setRouteMappings(mappings: RouteMenuMapping[]): void {
+    this.routeMappings = mappings.slice();
+    this.persistOverridesToStorage();
+    window.dispatchEvent(new CustomEvent('routeMappingsUpdated'));
+  }
+
+  /**
+   * Persist overrides to localStorage (mainNavigation, moduleColumns, routeMappings)
+   */
+  private persistOverridesToStorage(): void {
+    try {
+      const data = {
+        mainNavigation: menuRegistry.mainNavigation,
+        moduleColumns: menuRegistry.moduleColumns,
+        routeMappings: this.routeMappings
+      };
+      localStorage.setItem('menuDesigner:overrides', JSON.stringify(data));
+    } catch (_) {
+      // ignore
+    }
+  }
+
+  /**
+   * Load overrides from localStorage once per session
+   */
+  private loadOverridesFromStorage(): void {
+    if (this.overridesLoaded) return;
+    this.overridesLoaded = true;
+    try {
+      const raw = localStorage.getItem('menuDesigner:overrides');
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      if (data.mainNavigation) menuRegistry.mainNavigation = data.mainNavigation;
+      if (data.moduleColumns) menuRegistry.moduleColumns = data.moduleColumns;
+      if (data.routeMappings) this.routeMappings = data.routeMappings;
+    } catch (_) {
+      // ignore
+    }
   }
 
   /**

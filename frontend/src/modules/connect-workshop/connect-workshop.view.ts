@@ -1,7 +1,7 @@
 // frontend/src/modules/connect-workshop/connect-workshop.view.ts - Refactored with PageManager
 import { ConnectWorkshopModule } from './connect-workshop.module';
 import { ConnectWorkshopPageManager } from './pages';
-import { createModuleMenu } from '../../components/connect-menu';
+import { createModuleMenu, getMenuManager } from '../../components/connect-menu';
 
 export class ConnectWorkshopView {
   private currentSection: string = 'requests';
@@ -44,22 +44,23 @@ export class ConnectWorkshopView {
       createModuleMenu('connect-workshop', menuContainer, {
         onItemClick: (data) => {
           const { item, column } = data;
-          console.log(`🔧 ConnectWorkshop Menu: Click on ${item.id} in column ${column.id}`);
           
           // Update current section and method based on menu click
           if (item.section) {
             this.currentSection = item.section;
-            console.log(`🔧 ConnectWorkshop: Section changed to ${this.currentSection}`);
           }
           if (item.method) {
             this.currentMethod = item.method;
-            console.log(`🔧 ConnectWorkshop: Method changed to ${this.currentMethod}`);
           }
           
           // Load the page for current selection
           this.loadCurrentPage();
         }
       });
+
+      // Sync active states in menu with current URL (e.g., /connect-workshop/requests/search)
+      const manager = getMenuManager();
+      manager.updateMenuForRoute(window.location.pathname);
     }
     
     // Add custom styles
@@ -75,7 +76,6 @@ export class ConnectWorkshopView {
    * Load current page based on section and method
    */
   private loadCurrentPage(): void {
-    console.log(`🔧 ConnectWorkshop: Loading page ${this.currentSection}-${this.currentMethod}`);
     this.pageManager.loadPage(this.currentSection, this.currentMethod);
   }
 
@@ -122,7 +122,6 @@ export class ConnectWorkshopView {
       }
       
       #connect-workshop-menu-container {
-        width: 280px;
         background: #f8f9fa;
         border-right: 1px solid #e9ecef;
         overflow-y: auto;

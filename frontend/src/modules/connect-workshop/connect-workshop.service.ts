@@ -65,8 +65,6 @@ export class ConnectWorkshopService {
   }
 
   async initialize(): Promise<void> {
-    console.log('🔧 Initializing ConnectWorkshopService...');
-    console.log('Config:', this.config);
     
     // Load initial data
     await this.loadInitialData();
@@ -77,11 +75,9 @@ export class ConnectWorkshopService {
     }
     
     this.initialized = true;
-    console.log('✅ ConnectWorkshopService initialized');
   }
 
   async destroy(): Promise<void> {
-    console.log('🔧 Destroying ConnectWorkshopService...');
     
     // Stop sync timer
     this.stopSyncTimer();
@@ -91,7 +87,6 @@ export class ConnectWorkshopService {
     this.transportLists = [];
     
     this.initialized = false;
-    console.log('✅ ConnectWorkshopService destroyed');
   }
 
   isHealthy(): boolean {
@@ -109,7 +104,6 @@ export class ConnectWorkshopService {
    * Force sync with server
    */
   async forceSync(): Promise<void> {
-    console.log('🔄 Force syncing...');
     
     try {
       this.syncStatus.connected = false;
@@ -130,7 +124,6 @@ export class ConnectWorkshopService {
         detail: { status: this.syncStatus }
       }));
       
-      console.log('✅ Sync completed');
     } catch (error) {
       this.syncStatus.connected = false;
       this.syncStatus.error = error instanceof Error ? error.message : 'Sync failed';
@@ -323,7 +316,6 @@ export class ConnectWorkshopService {
     this.requests = this.generateDemoRequests();
     this.transportLists = this.generateDemoTransportLists();
     
-    console.log(`Loaded ${this.requests.length} requests and ${this.transportLists.length} transport lists`);
   }
 
   /**
@@ -340,7 +332,6 @@ export class ConnectWorkshopService {
       });
     }, this.config.syncInterval);
     
-    console.log(`Auto-sync started (interval: ${this.config.syncInterval}ms)`);
   }
 
   /**
@@ -350,7 +341,6 @@ export class ConnectWorkshopService {
     if (this.syncTimer) {
       clearInterval(this.syncTimer);
       this.syncTimer = null;
-      console.log('Auto-sync stopped');
     }
   }
 

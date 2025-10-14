@@ -23,6 +23,8 @@ export interface MenuColumn {
   width?: string;
   className?: string;
   visible?: boolean;
+  // If false, this column will not contribute segments to the URL
+  contributesToRoute?: boolean;
 }
 
 export interface MenuConfiguration {

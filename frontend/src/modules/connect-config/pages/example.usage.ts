@@ -124,7 +124,7 @@ export function setupCustomEventHandlers(pageManager: ConnectConfigMenuPageManag
   if (menuController) {
     // You can add custom event listeners or override behavior here
     console.log('Menu controller available for custom event handling');
-    
+
     // Example: Listen for section changes
     document.addEventListener('click', (event) => {
       const target = event.target as HTMLElement;

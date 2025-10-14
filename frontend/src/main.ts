@@ -1,8 +1,16 @@
 // frontend/src/main.ts
+
+import { 
+  createElement, 
+  replaceContent, 
+  createErrorContainer, 
+  createLoadingContainer,
+  createMainAppStructure,
+  createButton
+} from './utils/dom.helpers';
 import './config/env.config'; // Validate environment on startup
 import './config/service.manifest'; // Validate service manifest
 import { moduleManager } from './modules';
-import { IconComponent } from './components/icon.component';
 import { MenuManager, createMenu } from './components/connect-menu';
 
 // Add basic CSS for 1280×400px touchscreen
@@ -264,7 +272,6 @@ let currentModuleState = {
 
 async function initializeApp() {
   try {
-    console.log('🚀 Starting Fleet Management System with migrated components...');
     
     // Initialize all modules
     await moduleManager.initializeAll();
@@ -272,19 +279,17 @@ async function initializeApp() {
     // Create main application with navigation
     createMainApplication();
     
-    console.log('✅ Application initialized successfully');
     
   } catch (error) {
     console.error('❌ Failed to initialize application:', error);
-    showErrorUI(error);
+    showErrorUI(error instanceof Error ? error : String(error));
   }
 }
 
-function createMainApplication() {
+function createMainApplication(): void {
   const app = document.getElementById('app') || document.body;
   
-  const mainContainer = document.createElement('div');
-  mainContainer.className = 'main-app-container';
+  const mainContainer = createMainAppStructure();
   
   mainContainer.innerHTML = `
     <div class="top-bar">
@@ -309,7 +314,7 @@ function createMainApplication() {
     </div>
   `;
   
-  app.innerHTML = '';
+  app.textContent = '';
   app.appendChild(mainContainer);
   
   // Setup navigation with new MenuManager
@@ -318,7 +323,6 @@ function createMainApplication() {
 
 function setupNavigation() {
   // Initialize MenuManager and create main navigation
-  const menuManager = MenuManager.getInstance();
   const navContainer = document.getElementById('main-navigation-container');
   
   if (!navContainer) {
@@ -327,10 +331,9 @@ function setupNavigation() {
   }
 
   // Create main navigation menu
-  const mainMenu = createMenu('main-navigation', navContainer, {
+  createMenu('main-navigation', navContainer, {
     onItemClick: (data) => {
       const { item } = data;
-      console.log(`🔧 Menu Navigation: ${item.module}/${item.action}`);
       
       if (item.module) {
         // Use clean path routing instead of hash
@@ -348,6 +351,8 @@ function setupNavigation() {
   // Handle path change events (popstate for back/forward)
   (window as any).handlePathChangeRef = handlePathChange; // Store reference for temporary disabling
   window.addEventListener('popstate', handlePathChange);
+  // Handle MenuManager-driven route updates (custom event)
+  window.addEventListener('routeChanged', () => handlePathChange());
   
   // Load initial route from current path
   handlePathChange();
@@ -357,12 +362,42 @@ function handlePathChange() {
   const path = window.location.pathname;
   if (path && path !== '/') {
     const pathSegments = path.split('/').filter(segment => segment); // Remove empty segments
-    const [moduleName, moduleType, method] = pathSegments;
-    
+    let moduleName = pathSegments[0] || '';
+    let moduleType = pathSegments[1] || '';
+    let method = pathSegments[2] || '';
+
+    // Normalize defaults for connect-workshop: ensure /section/method present
+    if (moduleName === 'connect-workshop') {
+      // If only module provided -> default to /requests/search
+      if (!moduleType) {
+        moduleType = 'requests';
+        method = 'search';
+        window.history.replaceState({}, '', `/${moduleName}/${moduleType}/${method}`);
+      }
+      // If section provided without method -> append /search
+      else if (moduleType && !method) {
+        method = 'search';
+        window.history.replaceState({}, '', `/${moduleName}/${moduleType}/${method}`);
+      }
+    }
+    // Normalize defaults for connect-data: ensure /section/action present
+    else if (moduleName === 'connect-data') {
+      // If only module provided -> default to /dispositions/import
+      if (!moduleType) {
+        moduleType = 'dispositions';
+        method = 'import';
+        window.history.replaceState({}, '', `/${moduleName}/${moduleType}/${method}`);
+      }
+      // If section provided without method -> append /import
+      else if (moduleType && !method) {
+        method = 'import';
+        window.history.replaceState({}, '', `/${moduleName}/${moduleType}/${method}`);
+      }
+    }
+
     if (moduleName) {
-      console.log(`🔧 HandlePathChange: ${moduleName}/${moduleType || 'undefined'}/${method || 'undefined'}`);
       
-      // Update active button based on path using MenuManager
+      // Update active button based on path using MenuManager (sidebar)
       const menuManager = MenuManager.getInstance();
       const mainMenu = menuManager.getMenu('main-navigation');
       if (mainMenu) {
@@ -375,7 +410,6 @@ function handlePathChange() {
       const sameMethod = currentModuleState.method === (method || '');
       
       if (sameModule && sameType && sameMethod) {
-        console.log(`🔧 Same module state, skipping reload: ${moduleName}`);
         return; // No change needed
       }
       
@@ -388,11 +422,9 @@ function handlePathChange() {
       
       // Only reload if it's a different module
       if (!sameModule) {
-        console.log(`🔧 Loading different module: ${moduleName}`);
         loadModule(moduleName, moduleType, method);
       } else {
         // Same module, just update internal state
-        console.log(`🔧 Same module, updating state: ${moduleType}/${method}`);
         updateModuleState(moduleName, moduleType, method);
       }
     }
@@ -413,7 +445,6 @@ function handlePathChange() {
 
 // Update module state without re-rendering
 function updateModuleState(moduleName: string, moduleType?: string | null, method?: string | null) {
-  console.log(`🔧 UpdateModuleState: ${moduleName}/${moduleType}/${method}`);
   
   switch (moduleName) {
     case 'connect-id':
@@ -423,6 +454,16 @@ function updateModuleState(moduleName: string, moduleType?: string | null, metho
         // Send message to ConnectID to update method
         const event = new CustomEvent('connectid:update-method', {
           detail: { method: method || 'rfid' }
+        });
+        window.dispatchEvent(event);
+      }
+      break;
+    case 'connect-data':
+      // Update ConnectData state directly when staying in the same module
+      const dataElement = document.querySelector('.connect-data-compact');
+      if (dataElement) {
+        const event = new CustomEvent('connectdata:update-state', {
+          detail: { section: moduleType, method: method }
         });
         window.dispatchEvent(event);
       }
@@ -463,7 +504,7 @@ function updateModuleState(moduleName: string, moduleType?: string | null, metho
       
     case 'connect-reports':
       // Update ConnectReports state directly
-      const reportsElement = document.querySelector('.connect-reports-layout');
+      const reportsElement = document.querySelector('.connect-reports-compact');
       if (reportsElement) {
         const event = new CustomEvent('connectreports:update-state', {
           detail: { reportType: moduleType, view: method }
@@ -473,7 +514,6 @@ function updateModuleState(moduleName: string, moduleType?: string | null, metho
       break;
       
     default:
-      console.log(`🔧 No state update handler for module: ${moduleName}`);
       // Fall back to full reload for unsupported modules
       loadModule(moduleName, moduleType, method);
   }
@@ -499,7 +539,7 @@ function loadModule(moduleName: string, moduleType?: string | null, method?: str
         loadConnectTestModule(container, moduleType, method);
         break;
       case 'connect-data':  // Renamed from connect-data
-        loadConnectDataModule(container, method);
+        loadConnectDataModule(container, moduleType, method);
         break;
       case 'connect-workshop':
         // For workshop: moduleType is section, method is action
@@ -523,10 +563,9 @@ function loadModule(moduleName: string, moduleType?: string | null, method?: str
     
     // Track loading performance
     const loadTime = performance.now() - startTime;
-    console.log(`📊 Module ${moduleName} load time: ${loadTime.toFixed(2)}ms`);
     
   } catch (error) {
-    showErrorState(container, moduleName, error);
+    showErrorState(container, moduleName, error instanceof Error ? error : String(error));
     console.error(`❌ Failed to load module ${moduleName}:`, error);
   }
 }
@@ -572,13 +611,14 @@ function showLoadingState(container: HTMLElement, moduleName: string) {
 }
 
 // Professional error state
-function showErrorState(container: HTMLElement, moduleName: string, error: any) {
+function showErrorState(container: HTMLElement, moduleName: string, error: unknown) {
+  const message = error instanceof Error ? error.message : String(error);
   container.innerHTML = `
     <div class="error-container">
       <div class="error-icon">⚠️</div>
       <div class="error-content">
         <h3>Failed to load ${moduleName}</h3>
-        <p class="error-message">${error.message || error}</p>
+        <p class="error-message">${message}</p>
         <div class="error-actions">
           <button class="btn-retry" onclick="window.location.reload()">🔄 Retry</button>
           <button class="btn-home" onclick="window.location.hash = '#/'">🏠 Home</button>
@@ -589,7 +629,7 @@ function showErrorState(container: HTMLElement, moduleName: string, error: any) 
 }
 
 
-function loadConnectIdModule(container: HTMLElement, type: string = 'user', method?: string | null) {
+function loadConnectIdModule(container: HTMLElement, _type: string = 'user', method?: string | null) {
   import('./modules/connect-id/connect-id.module').then(async () => {
     const module = moduleManager.getModule('connect-id');
     const { ConnectIdView } = await import('./modules/connect-id/connect-id.view');
@@ -599,13 +639,9 @@ function loadConnectIdModule(container: HTMLElement, type: string = 'user', meth
     const viewElement = view.render();
     container.appendChild(viewElement);
     
-    // Set the type and method directly after render
+    // Set the initial method directly after render
     setTimeout(() => {
-      view.setInitialType(type);
-      if (method) {
-        // Trigger method change via custom event
-        window.dispatchEvent(new CustomEvent('connectid:set-method', { detail: { method } }));
-      }
+      view.setInitialMethod(method || 'rfid');
       window.dispatchEvent(new CustomEvent('connectid:dom-ready'));
     }, 50);
   }).catch(error => {
@@ -633,13 +669,12 @@ function loadConnectTestModule(container: HTMLElement, section?: string | null, 
       }
     }, 50);
     
-    console.log(`✅ ConnectTest view loaded - section: ${section}, params: ${params}`);
   }).catch(error => {
     container.innerHTML = `<div class="error">Failed to load ConnectTest module: ${error}</div>`;
   });
 }
 
-function loadConnectDataModule(container: HTMLElement, _method?: string | null) {
+function loadConnectDataModule(container: HTMLElement, section?: string | null, method?: string | null) {
   import('./modules/connect-data/connect-filter.module').then(async () => {
     const module = moduleManager.getModule('connect-data');
     const { ConnectDataView } = await import('./modules/connect-data/connect-filter.view');
@@ -649,7 +684,16 @@ function loadConnectDataModule(container: HTMLElement, _method?: string | null) 
     const viewElement = view.render();
     container.appendChild(viewElement);
     
-    console.log('✅ ConnectData view loaded with full functionality');
+    // Set initial section and method from URL
+    setTimeout(() => {
+      if (section && (view as any).setInitialSection) {
+        (view as any).setInitialSection(section);
+      }
+      if (method && (view as any).setInitialMethod) {
+        (view as any).setInitialMethod(method);
+      }
+    }, 50);
+
   }).catch(error => {
     container.innerHTML = `<div class="error">Failed to load ConnectData module: ${error}</div>`;
   });
@@ -675,7 +719,6 @@ function loadConnectWorkshopModule(container: HTMLElement, section?: string | nu
       }
     }, 50);
     
-    console.log(`✅ ConnectWorkshop view loaded - section: ${section}, action: ${action}`);
   }).catch(error => {
     container.innerHTML = `<div class="error">Failed to load ConnectWorkshop module: ${error}</div>`;
   });
@@ -698,7 +741,6 @@ function loadConnectConfigModule(container: HTMLElement, section?: string | null
       }
     }, 50);
     
-    console.log(`✅ ConnectConfig view loaded - section: ${section}`);
   }).catch(error => {
     container.innerHTML = `<div class="error">Failed to load ConnectConfig module: ${error}</div>`;
   });
@@ -724,7 +766,6 @@ function loadConnectReportsModule(container: HTMLElement, reportType?: string | 
       }
     }, 50);
     
-    console.log(`✅ ConnectReports view loaded - type: ${reportType}, view: ${view}`);
   }).catch(error => {
     container.innerHTML = `<div class="error">Failed to load ConnectReports module: ${error}</div>`;
   });
@@ -745,13 +786,12 @@ function loadConnectManagerModule(container: HTMLElement, action?: string | null
       }
     }, 50);
     
-    console.log(`✅ ConnectManager view loaded - action: ${action}`);
   }).catch(error => {
     container.innerHTML = `<div class="error">Failed to load ConnectManager module: ${error}</div>`;
   });
 }
 
-function oldLoadConnectReportsModule(container: HTMLElement) {
+export function oldLoadConnectReportsModule(container: HTMLElement) {
   container.innerHTML = `
     <div class="reports-compact" style="height: 100%; overflow: hidden;">
       <div class="compact-layout" style="display: flex; height: 365px; background: #f5f5f5;">
@@ -1412,15 +1452,15 @@ function oldLoadConnectReportsModule(container: HTMLElement) {
     });
   });
   
-  console.log('✅ Reports view loaded with calendar functionality');
 }
 
-function showErrorUI(error: any) {
+function showErrorUI(error: unknown): void {
+  const message = error instanceof Error ? error.message : String(error);
   const errorDiv = document.createElement('div');
   errorDiv.className = 'error';
   errorDiv.innerHTML = `
     <h3>Application Failed to Start</h3>
-    <p>${error}</p>
+    <p>${message}</p>
     <p>Check the console for more details.</p>
   `;
   

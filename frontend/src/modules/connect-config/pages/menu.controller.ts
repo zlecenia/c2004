@@ -1,6 +1,7 @@
 // frontend/src/modules/connect-config/pages/menu.controller.ts
 
 import { ConnectConfigMenuStructure } from './menu.structure';
+import { ModuleStyleHelper } from '../../template/styles/module-style-helper';
 
 // Import individual page components
 // Devices pages
@@ -59,7 +60,6 @@ export class ConnectConfigMenuController {
     this.pageInstances.set('SystemPage', new SystemPage());
     this.pageInstances.set('NetworkPage', new NetworkPage());
     
-    console.log('📄 Page instances initialized:', this.pageInstances.size);
   }
 
   private initialize(): void {
@@ -83,17 +83,14 @@ export class ConnectConfigMenuController {
     const item = this.menuStructure.findItemByRoute(currentPath);
     
     if (item) {
-      console.log('🔄 Route changed to:', currentPath, 'Item:', item.name);
       this.navigateToItem(item.id);
     } else {
-      console.log('🔄 Route not found, using default:', currentPath);
     }
   }
 
   private updateURL(route: string): void {
     if (window.location.pathname !== route) {
       window.history.pushState({ route }, '', route);
-      console.log('🌐 URL updated to:', route);
       
       // Dispatch custom event for testing purposes
       window.dispatchEvent(new CustomEvent('routeUpdated', { 
@@ -209,7 +206,6 @@ export class ConnectConfigMenuController {
     if (currentItem?.pageClass) {
       const pageInstance = this.pageInstances.get(currentItem.pageClass);
       if (pageInstance) {
-        console.log('📄 Rendering page:', currentItem.pageClass, 'for item:', currentItem.name);
         return `
           <div class="page-wrapper">
             <div class="page-header">
@@ -287,17 +283,14 @@ export class ConnectConfigMenuController {
   }
 
   private handleLevel1Click(menuId: string): void {
-    console.log('🖱️ Level 1 clicked:', menuId);
     this.navigateToItem(menuId);
   }
 
   private handleLevel2Click(menuId: string): void {
-    console.log('🖱️ Level 2 clicked:', menuId);
     this.navigateToItem(menuId);
   }
 
   private handleLevel3Click(menuId: string): void {
-    console.log('🖱️ Level 3 clicked:', menuId);
     this.navigateToItem(menuId);
     
     // Setup event listeners for the current page
@@ -311,13 +304,12 @@ export class ConnectConfigMenuController {
       if (pageInstance && pageInstance.setupEventListeners) {
         setTimeout(() => {
           pageInstance.setupEventListeners(this.container);
-          console.log('🔧 Event listeners setup for page:', currentItem.pageClass);
         }, 100); // Small delay to ensure DOM is ready
       }
     }
   }
 
-  private showContentSection(sectionId: string): void {
+  private _showContentSection(sectionId: string): void {
     // Hide all content sections
     const contentSections = this.container.querySelectorAll('.section-content');
     contentSections.forEach(section => {
@@ -331,7 +323,7 @@ export class ConnectConfigMenuController {
     }
   }
 
-  private updateActiveStates(): void {
+  private _updateActiveStates(): void {
     // Update level 3 menu items
     const level3Items = this.container.querySelectorAll('.menu-item.level-3');
     level3Items.forEach(item => {
@@ -356,100 +348,88 @@ export class ConnectConfigMenuController {
   }
 
   public getStyles(): string {
-    const baseStyles = `
-      /* Connect Config Menu Controller Styles */
+    // Create style helper with base module styles
+    const styleHelper = ModuleStyleHelper.forStandardModule();
+
+    // Add connect-config specific styles
+    const connectConfigStyles = `
+      /* Connect Config Menu Specific Styles */
       .connect-config-menu-wrapper {
         display: grid;
         grid-template-columns: 200px 180px 160px 1fr;
         grid-template-rows: auto 1fr;
         height: 100vh;
-        gap: 1px;
-        background: #e2e8f0;
-      }
-
-      .menu-container {
-        background: white;
-        border-right: 1px solid #e2e8f0;
-        overflow-y: auto;
-      }
-
-      .level-1-container {
-        grid-row: 1 / -1;
         background: #f8fafc;
       }
 
-      .level-2-container {
-        grid-row: 1 / -1;
-        background: #ffffff;
-      }
-
+      .level-1-container,
+      .level-2-container, 
       .level-3-container {
-        grid-row: 1 / -1;
-        background: #f9fafb;
-      }
-
-      .content-area {
-        grid-row: 1 / -1;
         background: white;
-        display: flex;
-        flex-direction: column;
-      }
-
-      .menu-title {
+        border-right: 1px solid #e5e7eb;
         padding: 15px;
-        margin: 0;
-        font-size: 14px;
-        font-weight: 600;
-        color: #374151;
-        border-bottom: 1px solid #e5e7eb;
-        background: #f3f4f6;
-      }
-
-      .content-header {
-        padding: 15px 20px;
-        border-bottom: 1px solid #e5e7eb;
-        background: #f9fafb;
-      }
-
-      .content-body {
-        flex: 1;
-        padding: 20px;
         overflow-y: auto;
+      }
+
+      .level-1-container .menu-item.active {
+        background: #3b82f6;
+        color: white;
+      }
+
+      .level-2-container .menu-item.active {
+        background: #e6f3ff;
+        color: #0066cc;
+        border-left-color: #0066cc;
+      }
+
+      .level-3-container .menu-item.active {
+        background: #f0f9ff;
+        color: #0066cc;
+        font-weight: 600;
+      }
+
+      .content-wrapper {
+        grid-column: 1 / -1;
+        background: white;
+        overflow-y: auto;
+        padding: 20px;
+      }
+
+      .page-wrapper {
+        max-width: none;
+        padding: 0;
+        background: transparent;
+        box-shadow: none;
+      }
+
+      .page-header h3 {
+        font-size: 24px;
+        color: #2c3e50;
+        margin: 0 0 8px 0;
+      }
+
+      .page-path {
+        color: #6c757d;
+        font-size: 14px;
+        margin: 0 0 20px 0;
       }
 
       .breadcrumb {
         display: flex;
         align-items: center;
         gap: 8px;
-        font-size: 12px;
-      }
-
-      .breadcrumb-item {
+        margin-bottom: 20px;
+        font-size: 14px;
         color: #6b7280;
       }
 
-      .breadcrumb-item.active {
-        color: #1f2937;
-        font-weight: 600;
+      .breadcrumb-item {
+        color: #3b82f6;
+        text-decoration: none;
       }
 
       .breadcrumb-separator {
         color: #9ca3af;
-      }
-
-      .category-menu {
-        margin-bottom: 20px;
-      }
-
-      .category-content {
-        flex: 1;
-      }
-
-      /* Responsive design */
-      @media (max-width: 1024px) {
-        .connect-config-menu-wrapper {
-          grid-template-columns: 150px 140px 120px 1fr;
-        }
       }
 
       @media (max-width: 768px) {
@@ -458,20 +438,18 @@ export class ConnectConfigMenuController {
           grid-template-rows: auto auto auto 1fr;
         }
 
-        .menu-container {
-          border-right: none;
-          border-bottom: 1px solid #e2e8f0;
-        }
-
         .level-1-container,
         .level-2-container,
         .level-3-container {
+          border-right: none;
+          border-bottom: 1px solid #e5e7eb;
+          padding: 10px;
           grid-row: auto;
         }
       }
     `;
 
-    // Combine with menu structure styles and page-specific styles
+    // Collect page-specific styles
     let allPageStyles = '';
     this.pageInstances.forEach((pageInstance) => {
       if (pageInstance.getStyles) {
@@ -479,9 +457,12 @@ export class ConnectConfigMenuController {
       }
     });
 
-    return baseStyles + '\n' + 
-           this.menuStructure.getMenuStyles() + '\n' + 
-           allPageStyles;
+    // Combine all styles using the helper
+    return styleHelper
+      .addModuleStyles(connectConfigStyles)
+      .addModuleStyles(this.menuStructure.getMenuStyles())
+      .addModuleStyles(allPageStyles)
+      .generateStyles();
   }
 
   // Public methods for external control

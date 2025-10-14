@@ -19,11 +19,10 @@ interface TestSuite {
 
 export class ConnectConfigGUITests {
   private testResults: TestResult[] = [];
-  private testContainer: HTMLElement | null = null;
+  private _testContainer: HTMLElement | null = null;
   private routeUpdateEvents: Array<{ route: string; timestamp: number }> = [];
 
   constructor() {
-    console.log('🧪 ConnectConfigGUITests initialized');
     this.setupRouteListener();
   }
 
@@ -31,12 +30,10 @@ export class ConnectConfigGUITests {
     window.addEventListener('routeUpdated', (event: any) => {
       const { route, timestamp } = event.detail;
       this.routeUpdateEvents.push({ route, timestamp });
-      console.log('🔄 Route update captured:', route);
     });
   }
 
   public async runAllTests(menuController: any): Promise<TestSuite> {
-    console.log('🚀 Starting GUI Tests for Connect Config Menu...');
     
     this.testResults = [];
     this.routeUpdateEvents = [];
@@ -66,7 +63,6 @@ export class ConnectConfigGUITests {
   }
 
   private async testMenuNavigation(menuController: any): Promise<void> {
-    console.log('📋 Testing menu navigation...');
     
     // Test clicking on different menu levels
     const testCases = [
@@ -118,7 +114,6 @@ export class ConnectConfigGUITests {
   }
 
   private async testURLUpdates(menuController: any): Promise<void> {
-    console.log('🌐 Testing URL updates...');
     
     const urlTestCases = [
       { menuPath: ['connect-config', 'devices-category', 'rfid-config'], expectedUrl: '/connect-config/devices/rfid-config' },
@@ -129,7 +124,7 @@ export class ConnectConfigGUITests {
 
     for (const testCase of urlTestCases) {
       try {
-        const initialUrl = window.location.pathname;
+        const _initialUrl = window.location.pathname;
         
         // Navigate to menu item
         menuController.setActiveMenuItem(testCase.menuPath[0], testCase.menuPath[1], testCase.menuPath[2]);
@@ -163,7 +158,6 @@ export class ConnectConfigGUITests {
   }
 
   private async testBrowserNavigation(menuController: any): Promise<void> {
-    console.log('⬅️ Testing browser back/forward navigation...');
     
     try {
       // Navigate through several pages to create history
@@ -207,7 +201,6 @@ export class ConnectConfigGUITests {
   }
 
   private async testDirectURLNavigation(menuController: any): Promise<void> {
-    console.log('🎯 Testing direct URL navigation...');
     
     const directUrlTests = [
       { url: '/connect-config/devices/barcode-config', expectedPage: 'barcode-config' },
@@ -263,7 +256,6 @@ export class ConnectConfigGUITests {
 
   private addTestResult(result: TestResult): void {
     this.testResults.push(result);
-    console.log(`${result.success ? '✅' : '❌'} ${result.testName}: ${result.details}`);
   }
 
   private async wait(ms: number): Promise<void> {
@@ -271,11 +263,6 @@ export class ConnectConfigGUITests {
   }
 
   private displayTestResults(testSuite: TestSuite): void {
-    console.log('📊 Test Results Summary:');
-    console.log(`Total Tests: ${testSuite.totalTests}`);
-    console.log(`Passed: ${testSuite.passedTests}`);
-    console.log(`Failed: ${testSuite.failedTests}`);
-    console.log(`Success Rate: ${((testSuite.passedTests / testSuite.totalTests) * 100).toFixed(1)}%`);
     
     // Create visual test results display
     this.createTestResultsUI(testSuite);

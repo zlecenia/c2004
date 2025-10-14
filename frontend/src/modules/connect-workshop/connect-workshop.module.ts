@@ -16,7 +16,6 @@ export class ConnectWorkshopModule implements Module {
   private service: ConnectWorkshopService | null = null;
   
   async initialize(): Promise<void> {
-    console.log(`🔧 Initializing ${this.metadata.name} module...`);
     
     // Validate configuration exists
     const config = serviceManifest.getComponentConfig('connect-workshop');
@@ -29,7 +28,6 @@ export class ConnectWorkshopModule implements Module {
     this.service = new ConnectWorkshopService(config.configuration);
     await this.service.initialize();
     
-    console.log(`✅ ${this.metadata.name} module initialized`);
   }
   
   async destroy(): Promise<void> {

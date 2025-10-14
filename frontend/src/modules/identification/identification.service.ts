@@ -8,20 +8,15 @@ export class IdentificationService {
   }
 
   async initialize(): Promise<void> {
-    console.log('🔧 Initializing IdentificationService...');
-    console.log('Config:', this.config);
     
     // Initialize service logic here
     // For example: connect to APIs, set up event listeners, etc.
     
     this.initialized = true;
-    console.log('✅ IdentificationService initialized');
   }
 
   async destroy(): Promise<void> {
-    console.log('🔧 Destroying IdentificationService...');
     this.initialized = false;
-    console.log('✅ IdentificationService destroyed');
   }
 
   isHealthy(): boolean {
@@ -34,7 +29,6 @@ export class IdentificationService {
     }
 
     // Mock identification logic
-    console.log(`Identifying: type=${type}, value=${value}, method=${method}`);
     
     // This would normally make API calls to backend
     return {

@@ -2,6 +2,9 @@
 import { SystemPage } from './system.page';
 import { DevicesPage } from './devices.page';
 import { SecurityPage } from './security.page';
+import { NetworkWrapperPage } from './system/network-wrapper.page';
+import { PerformancePage } from './system/performance.page';
+import { UpdatesPage } from './system/updates.page';
 
 // New 3-level menu structure
 export { ConnectConfigMenuStructure } from './menu.structure';
@@ -17,7 +20,10 @@ export * from './system';
 export const ConnectConfigPages = {
   'system': SystemPage,
   'devices': DevicesPage,
-  'security': SecurityPage
+  'security': SecurityPage,
+  'network': NetworkWrapperPage,
+  'performance': PerformancePage,
+  'updates': UpdatesPage
 };
 
 // Page manager for connect-config

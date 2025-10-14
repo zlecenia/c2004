@@ -3,9 +3,6 @@ import { UserRfidPage } from './user-rfid.page';
 import { UserManualPage } from './user-manual.page';
 import { UserQrPage } from './user-qr.page';
 import { UserListPage } from './user-list.page';
-import { DeviceRfidPage } from './device-rfid.page';
-import { DeviceQrPage } from './device-qr.page';
-import { GroupRfidPage } from './group-rfid.page';
 import { TestBarcodePage } from './test-barcode.page';
 
 // Page registry for connect-id module (user identification only)
@@ -23,7 +20,6 @@ export class ConnectIdPageManager {
   private container: HTMLElement | null = null;
 
   constructor() {
-    console.log('🔧 ConnectIdPageManager initialized');
   }
 
   /**
@@ -31,14 +27,12 @@ export class ConnectIdPageManager {
    */
   initialize(container: HTMLElement): void {
     this.container = container;
-    console.log('🔧 ConnectIdPageManager container set');
   }
 
   /**
    * Load page based on method
    */
   loadPage(method: string): void {
-    console.log(`🔧 ConnectIdPageManager: Loading page for method ${method}`);
     
     if (!this.container) {
       console.error('🔧 ConnectIdPageManager: No container set');
@@ -66,7 +60,6 @@ export class ConnectIdPageManager {
       // Update current page
       this.currentPage = method;
 
-      console.log(`✅ ConnectIdPageManager: Page ${method} loaded successfully`);
     } catch (error) {
       console.error(`❌ ConnectIdPageManager: Error loading page ${method}:`, error);
       this.loadErrorPage(method);
@@ -74,11 +67,8 @@ export class ConnectIdPageManager {
   }
 
   /**
-   * Load default page (rfid)
+   * Load placeholder page for non-existent pages
    */
-  private loadDefaultPage(): void {
-    this.loadPage('rfid');
-  }
 
   /**
    * Load placeholder page for non-existent pages
@@ -243,8 +233,5 @@ export {
   UserManualPage,
   UserQrPage,
   UserListPage,
-  DeviceRfidPage,
-  DeviceQrPage,
-  GroupRfidPage,
   TestBarcodePage
 };

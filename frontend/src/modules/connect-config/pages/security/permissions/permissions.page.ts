@@ -34,7 +34,6 @@ export class PermissionsPage {
   };
 
   constructor() {
-    console.log('🔐 PermissionsPage initialized');
   }
 
   public render(): string {
@@ -69,8 +68,7 @@ export class PermissionsPage {
     `;
   }
 
-  public setupEventListeners(container: HTMLElement): void {
-    console.log('🔐 PermissionsPage: Event listeners setup completed');
+  public setupEventListeners(_container: HTMLElement): void {
   }
 
   public getStyles(): string {
