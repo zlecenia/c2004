@@ -1,7 +1,7 @@
 // frontend/src/modules/menu-editor/menu-editor.view.ts
 
 import { MenuEditorModule } from './menu-editor.module';
-import { getMenuManager } from '../../components/connect-menu';
+import { getMenuManager, ConnectMenuTemplates } from '../../components/connect-menu';
 import { MenuConfiguration, MenuItem, MenuColumn, RouteMenuMapping } from '../../components/connect-menu/menu.interfaces';
 
 export class MenuEditorView {
@@ -245,6 +245,16 @@ export class MenuEditorView {
       });
     });
 
+    // Select item card (activate) when clicking on card area (not action buttons)
+    container.querySelectorAll('.menu-item-card').forEach(card => {
+      card.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).closest('.btn-icon')) return;
+        const colIdx = parseInt((card as HTMLElement).getAttribute('data-col-index') || '0');
+        const itemIdx = parseInt((card as HTMLElement).getAttribute('data-item-index') || '0');
+        this.setActiveItem(colIdx, itemIdx);
+      });
+    });
+
     // Tab switching
     container.querySelectorAll('.tab-btn').forEach(btn => {
       btn.addEventListener('click', (e) => {
@@ -310,6 +320,8 @@ export class MenuEditorView {
     
     // Update preview
     this.updatePreview(container);
+    // Switch to Preview tab by default for interactive clicks
+    this.switchTab('preview', container);
   }
 
   private attachStructureListeners(container: HTMLElement): void {
@@ -506,11 +518,91 @@ export class MenuEditorView {
   }
 
   private updatePreview(container: HTMLElement): void {
-    // Render live preview of menu
+    // Render live preview of menu using current in-memory config
     const previewEl = container.querySelector('#preview-render');
-    if (previewEl && this.currentConfig) {
-      previewEl.innerHTML = '<p>Podgląd w czasie rzeczywistym (w budowie)</p>';
+    if (!previewEl || !this.currentConfig) return;
+
+    // Build preview markup: menu + content area + url hint
+    const menuHtml = ConnectMenuTemplates.generateMenuContainer(this.currentConfig);
+    const { routePreview, contentHtml, routePath } = this.buildPreviewContent();
+    (previewEl as HTMLElement).innerHTML = `
+      <div class="preview-row">
+        <div class="preview-menu">
+          ${menuHtml}
+        </div>
+        <div class="preview-content" id="preview-content">
+          ${contentHtml}
+        </div>
+      </div>
+      <div class="preview-url" id="preview-url">
+        ${routePreview}
+        <button id="preview-navigate-btn" class="btn-primary btn-small" title="Przejdź do podglądanego widoku">Nawiguj</button>
+      </div>
+    `;
+
+    // Event delegation for preview menu clicks
+    const menuContainer = previewEl.querySelector('.connect-menu');
+    if (menuContainer) {
+      menuContainer.addEventListener('click', (e) => {
+        const target = (e.target as HTMLElement).closest('button');
+        if (!target) return;
+        const itemId = target.getAttribute('data-menu-item');
+        if (!itemId) return;
+        // Determine column by traversing to column wrapper
+        const colEl = (target as HTMLElement).closest('.menu-column') as HTMLElement | null;
+        const colDomId = colEl?.id || '';
+        const colId = colDomId.endsWith('-column') ? colDomId.replace(/-column$/, '') : colDomId;
+        // Update active state in currentConfig
+        const colIdx = this.currentConfig!.columns.findIndex(c => c.id === colId);
+        if (colIdx >= 0) {
+          const column = this.currentConfig!.columns[colIdx];
+          column.items.forEach(it => it.active = (it.id === itemId));
+        }
+        // Re-render preview with updated selection
+        this.updatePreview(container);
+      });
     }
+  }
+
+  private buildPreviewContent(): { routePreview: string; contentHtml: string; routePath: string } {
+    if (!this.currentConfig || !this.currentEditingModule) {
+      return { routePreview: '', contentHtml: '<p class="empty-state">Brak danych do podglądu</p>', routePath: '' };
+    }
+
+    // Extract active selections by column
+    const selection: Record<string, string> = {};
+    this.currentConfig.columns.forEach(col => {
+      const active = col.items.find(it => it.active);
+      if (active) selection[col.id] = active.id;
+    });
+
+    // Compute a route preview (does not navigate away from Menu Editor)
+    let route = '/menu-editor';
+    const mod = this.currentEditingModule;
+    if (mod && mod !== 'main-navigation') {
+      const p1 = selection[Object.keys(selection)[0] || ''] || '';
+      const p2 = selection[Object.keys(selection)[1] || ''] || '';
+      if (p1 && p2) route = `/${mod}/${p1}/${p2}`;
+      else if (p1) route = `/${mod}/${p1}`;
+      else route = `/${mod}`;
+    }
+
+    // Simple combinatorial preview content
+    const section = Object.values(this.currentConfig.columns)[0]?.items.find(i => i.active)?.id || '—';
+    const action = Object.values(this.currentConfig.columns)[1]?.items.find(i => i.active)?.id || '—';
+    const content = `
+      <div class="page-content">
+        <div class="page-header">
+          <h2>Podgląd: ${this.currentEditingModule}</h2>
+          <p>Wybrano: <strong>${section}</strong> / <strong>${action}</strong></p>
+        </div>
+        <div class="content-body">
+          <div class="data-grid-placeholder">🔍 Przykładowa treść dla kombinacji</div>
+        </div>
+      </div>
+    `;
+
+    return { routePreview: `URL podglądu: ${route}`, contentHtml: content, routePath: route };
   }
 
   private refreshStructure(): void {
@@ -647,7 +739,6 @@ export class MenuEditorView {
       }
 
       .module-item {
-        padding: 10px;
         margin-bottom: 5px;
         background: #333;
         border-radius: 4px;

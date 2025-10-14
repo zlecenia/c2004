@@ -22,6 +22,7 @@ export class AppShell {
         <div class="top-bar-status">
           <span id="top-bar-time">--:--</span>
           <span id="top-bar-user">User</span>
+          <button id="toggle-size-btn" class="btn-toggle-size" title="Przełącz widok">1200×400</button>
         </div>
       </div>
       
@@ -34,6 +35,7 @@ export class AppShell {
     `;
 
     this.container = app;
+    this.setupSizeToggle();
     return app;
   }
 
@@ -171,5 +173,49 @@ export class AppShell {
    */
   getContainer(): HTMLElement | null {
     return this.container;
+  }
+
+  /**
+   * Setup size toggle functionality (1200×400 vs 100%)
+   */
+  private setupSizeToggle(): void {
+    const sizeBtn = document.getElementById('toggle-size-btn') as HTMLButtonElement | null;
+    if (!sizeBtn) return;
+
+    // Apply size mode
+    const applySizeMode = (mode: 'fixed-1200' | 'responsive-100') => {
+      document.body.classList.remove('fixed-1200', 'responsive-100');
+      document.body.classList.add(mode);
+      if (sizeBtn) {
+        sizeBtn.textContent = mode === 'fixed-1200' ? '100%' : '1200×400';
+      }
+      try {
+        localStorage.setItem('ui:sizeMode', mode);
+      } catch (e) {
+        console.warn('Failed to save size mode to localStorage:', e);
+      }
+    };
+
+    // Get saved mode
+    const getSavedMode = (): 'fixed-1200' | 'responsive-100' => {
+      try {
+        const saved = localStorage.getItem('ui:sizeMode');
+        return saved === 'responsive-100' ? 'responsive-100' : 'fixed-1200';
+      } catch {
+        return 'fixed-1200';
+      }
+    };
+
+    // Apply saved mode on load
+    applySizeMode(getSavedMode());
+
+    // Toggle on button click
+    sizeBtn.addEventListener('click', () => {
+      const currentMode = document.body.classList.contains('fixed-1200') 
+        ? 'fixed-1200' 
+        : 'responsive-100';
+      const nextMode = currentMode === 'fixed-1200' ? 'responsive-100' : 'fixed-1200';
+      applySizeMode(nextMode);
+    });
   }
 }

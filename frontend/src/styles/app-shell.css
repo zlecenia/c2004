@@ -59,6 +59,48 @@ body {
   display: flex;
   gap: 12px;
   font-size: 11px;
+  align-items: center;
+}
+
+.btn-toggle-size {
+  padding: 4px 10px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 4px;
+  font-size: 10px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-toggle-size:hover {
+  background: rgba(255, 255, 255, 0.3);
+  border-color: rgba(255, 255, 255, 0.5);
+}
+
+.btn-toggle-size:active {
+  transform: scale(0.95);
+}
+
+/* Size modes */
+body.fixed-1200 {
+  width: 1200px;
+  height: 400px;
+}
+
+body.responsive-100 {
+  width: 100%;
+  height: 100vh;
+}
+
+body.responsive-100 .main-app-container {
+  width: 100%;
+  height: 100vh;
+}
+
+body.responsive-100 .app-layout {
+  height: calc(100vh - 35px);
 }
 
 /* App Layout */

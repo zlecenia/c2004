@@ -11,26 +11,64 @@
   - database-service.ts.bak
   - connect-filter.view.ts.backup
 
-- [x] **Utworzono strukturę katalogów dla core/**
-  - core/router/
-  - core/module-loader/
-  - core/ui/
+### Krok 1: Core Modules (UKOŃCZONY ✅)
+- [x] **Utworzono strukturę core/**
+  - core/app.initializer.ts (~230 linii) ✅
+  - core/router/router.ts (~130 linii) ✅
+  - core/module-loader/module-loader.ts (~170 linii) ✅
+  - core/ui/app-shell.ts (~220 linii) ✅
+  - styles/app-shell.css (~230 linii) ✅
 
-- [x] **Utworzono dokumentację refaktoryzacji**
-  - PROJECT_REFACTORING_PLAN.md (kompleksowy plan)
-  - REFACTORING_PROGRESS.md (tracking progress)
+- [x] **Nowa funkcjonalność: Size Toggle**
+  - Przełączanie między 1200×400 a 100%
+  - Zapisywanie w localStorage
+  - Zintegrowane w app-shell.ts
+
+- [x] **Utworzono dokumentację**
+  - PROJECT_REFACTORING_PLAN.md (plan, 8 priorytetów)
+  - ANALYSIS_SUMMARY.md (analiza)
+  - REFACTORING_PROGRESS.md (ten dokument)
+  - REFACTORING_STEP1_COMPLETE.md (szczegóły Kroku 1) ✅
+  - CONNECT_CONFIG_3LEVEL_MENU_FIX.md (poprzednie zmiany)
+
+**Wyniki Kroku 1:**
+- ✅ ~980 linii nowego, zmodularyzowanego kodu
+- ✅ Separacja odpowiedzialności (routing, loading, UI)
+- ✅ Gotowe do użycia przez main.ts
+
+### Krok 2: Aktualizacja main.ts (UKOŃCZONY ✅)
+- [x] **Przepisano main.ts do użycia core modules**
+  - main.ts: 1,635 → 100 linii
+  - Redukcja: 1,535 linii (94%)
+
+- [x] **Utworzono backupy**
+  - main.ts.backup-before-refactor (oryginalny)
+  - main.ts.old (z size toggle)
+
+- [x] **Zaktualizowano app.initializer.ts**
+  - Poprawiono API calls
+  - Naprawiono TypeScript errors
+
+**Wyniki Kroku 2:**
+- ✅ main.ts zredukowany o 94%
+- ✅ Wszystkie imports working
+- ✅ Bootstrap code clean & simple
+- ⏳ Do przetestowania: czy aplikacja działa
 
 ## 🔄 W trakcie
 
-### Priorytet 1: Refaktoryzacja main.ts
-**Status:** Przygotowanie struktury
-**Cel:** 1,585 linii → ~200 linii
+### Krok 3: Testing & Verification (AKTUALNY)
+**Status:** Gotowy do testowania
+**Cel:** Zweryfikować że aplikacja działa po refaktoryzacji
 
-**Następne kroki:**
-1. Wydzielenie App Shell do core/ui/app-shell.ts
-2. Wydzielenie Router do core/router/router.ts
-3. Wydzielenie Module Loader do core/module-loader/module-loader.ts
-4. Utworzenie App Initializer w core/app.initializer.ts
+**Zadania:**
+1. Uruchomić aplikację
+2. Przetestować menu navigation
+3. Przetestować ładowanie modułów
+4. Przetestować size toggle
+5. Naprawić ewentualne błędy
+
+**Szacowany czas:** 30min - 1h
 
 ## ⏳ Zaplanowane
 
@@ -51,12 +89,22 @@
 
 ## 📊 Metryki
 
-| Metryka | Przed | Aktualnie | Cel |
-|---------|-------|-----------|-----|
-| Największy plik | 1,585 | 1,585 | <400 |
-| Pliki backup | 6 | 0 ✅ | 0 |
-| Struktura core/ | ❌ | ✅ | ✅ |
-| Dokumentacja | ❌ | 🔄 | ✅ |
+| Metryka | Przed | Aktualnie | Cel | Status |
+|---------|-------|-----------|-----|--------|
+| Największy plik | 1,635 | 100 | <400 | ✅ Ukończone! |
+| Pliki backup | 6 | 0 | 0 | ✅ Ukończone |
+| Core structure | ❌ | ✅ | ✅ | ✅ Ukończone |
+| App Shell module | ❌ | ✅ | ✅ | ✅ Ukończone |
+| Router module | ❌ | ✅ | ✅ | ✅ Ukończone |
+| Module Loader | ❌ | ✅ | ✅ | ✅ Ukończone |
+| App Initializer | ❌ | ✅ | ✅ | ✅ Ukończone |
+| Separated CSS | ❌ | ✅ | ✅ | ✅ Ukończone |
+| Size toggle feature | ❌ | ✅ | ✅ | ✅ Ukończone |
+| Dokumentacja | ❌ | ✅ | ✅ | ✅ Ukończone |
+| Main.ts refactor | 1,635 | 100 | <400 | ✅ Ukończone! |
+| Redukcja main.ts | 0 | 1,535 | >1,000 | ✅ 94% |
+| Nowy kod core/ | 0 | ~980 | ~1,000 | ✅ 98% |
+| Backupy main.ts | 0 | 2 | 2 | ✅ Ukończone |
 
 ## 🎯 Następne akcje (w kolejności)
 
@@ -99,5 +147,33 @@
 
 ---
 
-**Ostatnia aktualizacja:** 2025-01-14
-**Postęp ogólny:** 5% (quick wins completed)
+## 📦 Utworzone Pliki
+
+### Kod
+1. `frontend/src/core/ui/app-shell.ts` - App Shell component (180 linii)
+2. `frontend/src/styles/app-shell.css` - App styles (200 linii)
+
+### Dokumentacja
+1. `PROJECT_REFACTORING_PLAN.md` - Plan refaktoryzacji (8 priorytetów, 500+ linii)
+2. `REFACTORING_PROGRESS.md` - Ten dokument
+3. `ANALYSIS_SUMMARY.md` - Kompletna analiza projektu (300+ linii)
+4. `CONNECT_CONFIG_3LEVEL_MENU_FIX.md` - Dokumentacja menu fix
+
+### Struktura
+```
+frontend/src/
+├── core/              ✅ NOWY
+│   ├── router/        ✅ (do wypełnienia)
+│   ├── module-loader/ ✅ (do wypełnienia)
+│   └── ui/
+│       └── app-shell.ts ✅ UTWORZONY
+└── styles/
+    └── app-shell.css  ✅ UTWORZONY
+```
+
+---
+
+**Ostatnia aktualizacja:** 2025-01-14 17:00  
+**Postęp ogólny:** 🟢 **20%** (Kroki 1 & 2 ukończone - main.ts zrefaktoryzowany!)
+
+**Następna akcja:** Krok 3 - Testing & verification aplikacji

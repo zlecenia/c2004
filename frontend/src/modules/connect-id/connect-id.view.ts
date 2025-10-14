@@ -173,10 +173,8 @@ export class ConnectIdView {
       }
 
       .menu-column {
-        width: 120px;
         background: #2a2a2a;
         border-right: 1px solid #333;
-        padding: 16px 8px;
         display: flex;
         flex-direction: column;
         gap: 8px;
