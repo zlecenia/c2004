@@ -514,11 +514,17 @@ export class MenuEditorView {
   }
 
   private refreshStructure(): void {
-    // Reload current module view
-    const mainContainer = document.querySelector('.menu-editor-container');
-    if (mainContainer && this.currentEditingModule) {
-      this.loadModule(this.currentEditingModule, mainContainer as HTMLElement);
+    // Re-render from current in-memory config, do not reload snapshot
+    if (!this.currentConfig) return;
+    const mainContainer = document.querySelector('.menu-editor-container') as HTMLElement | null;
+    if (!mainContainer) return;
+    const structureEl = mainContainer.querySelector('#menu-structure') as HTMLElement | null;
+    if (structureEl) {
+      structureEl.innerHTML = this.renderMenuStructure(this.currentConfig);
+      this.attachStructureListeners(structureEl);
     }
+    // Update preview to reflect in-memory changes
+    this.updatePreview(mainContainer);
   }
 
   private markAsModified(): void {

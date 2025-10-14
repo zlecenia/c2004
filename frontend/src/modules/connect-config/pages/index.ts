@@ -3,8 +3,8 @@ import { SystemPage } from './system.page';
 import { DevicesPage } from './devices.page';
 import { SecurityPage } from './security.page';
 import { NetworkWrapperPage } from './system/network-wrapper.page';
-import { PerformancePage } from './system/performance.page';
-import { UpdatesPage } from './system/updates.page';
+import { PerformancePage } from './system/performance';
+import { UpdatesPage } from './system/updates';
 
 // New 3-level menu structure
 export { ConnectConfigMenuStructure } from './menu.structure';
