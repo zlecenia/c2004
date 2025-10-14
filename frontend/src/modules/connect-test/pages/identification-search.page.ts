@@ -85,7 +85,7 @@ export class IdentificationSearchPage {
       .test-layout { display: flex; flex-direction: column; gap: 20px; }
       .search-section { background: white; padding: 20px; border-radius: 8px; }
       .search-bar { display: flex; gap: 10px; margin-bottom: 15px; }
-      .search-input { flex: 1; padding: 12px 16px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
+      .search-input { flex: 1; padding: 6px 6px; border: 1px solid #ddd; border-radius: 6px; font-size: 14px; }
       .btn-search { padding: 12px 24px; background: #007bff; color: white; border: none; border-radius: 6px; cursor: pointer; }
       .search-filters { display: flex; gap: 10px; }
       .filter-btn { padding: 8px 16px; background: #f8f9fa; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; }

@@ -32,7 +32,7 @@ export class ConnectIdTemplates {
         </div>
 
         <!-- Column 3: Users (shown only for user type with list method) -->
-        <div class="menu-column users-column" id="users-column" style="display: none;">
+        <div class="menu-column users-column" id="users-column">
           <h3 class="column-title">Użytkownicy</h3>
           <div class="users-list-menu">
             ${this.getUsersListTemplate()}
@@ -71,7 +71,7 @@ export class ConnectIdTemplates {
   private static getContentTemplates(): string {
     return `
       <!-- User Login Form -->
-      <div id="user-login-content" class="content-section" style="display: none;">
+      <div id="user-login-content" class="content-section">
         <div class="login-container">
           <div class="login-header">
             <h2>Logowanie użytkownika</h2>
@@ -119,7 +119,7 @@ export class ConnectIdTemplates {
       </div>
 
       <!-- QR Content -->
-      <div id="qr-content" class="content-section" style="display: none;">
+      <div id="qr-content" class="content-section">
         <div class="identification-display">
           <div class="qr-scanner">
             <div class="scanner-frame">
@@ -143,7 +143,7 @@ export class ConnectIdTemplates {
       </div>
 
       <!-- Barcode Content -->
-      <div id="barcode-content" class="content-section" style="display: none;">
+      <div id="barcode-content" class="content-section">
         <div class="identification-display">
           <div class="barcode-scanner">
             <div class="scanner-beam"></div>
@@ -161,7 +161,7 @@ export class ConnectIdTemplates {
       </div>
 
       <!-- Manual Input Content -->
-      <div id="manual-content" class="content-section" style="display: none;">
+      <div id="manual-content" class="content-section">
         <div class="identification-display">
           <div class="manual-input-container">
             <div class="input-icon">
@@ -183,7 +183,7 @@ export class ConnectIdTemplates {
       </div>
 
       <!-- List Content -->
-      <div id="list-content" class="content-section" style="display: none;">
+      <div id="list-content" class="content-section">
         <div class="identification-display">
           <div class="list-container">
             <div class="list-icon">

@@ -295,28 +295,28 @@ export class ConnectConfigGUITests {
     `;
 
     testResultsContainer.innerHTML = `
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h3 style="margin: 0; color: #007bff;">🧪 GUI Test Results</h3>
-        <button onclick="this.parentElement.parentElement.remove()" style="background: #dc3545; color: white; border: none; padding: 4px 8px; border-radius: 4px; cursor: pointer;">✕</button>
+      <div>
+        <h3>🧪 GUI Test Results</h3>
+        <button onclick="this.parentElement.parentElement.remove()">✕</button>
       </div>
       
-      <div style="margin-bottom: 15px; padding: 10px; background: #f8f9fa; border-radius: 4px;">
+      <div>
         <div><strong>Total:</strong> ${testSuite.totalTests}</div>
-        <div style="color: #28a745;"><strong>Passed:</strong> ${testSuite.passedTests}</div>
-        <div style="color: #dc3545;"><strong>Failed:</strong> ${testSuite.failedTests}</div>
+        <div><strong>Passed:</strong> ${testSuite.passedTests}</div>
+        <div><strong>Failed:</strong> ${testSuite.failedTests}</div>
         <div><strong>Success Rate:</strong> ${((testSuite.passedTests / testSuite.totalTests) * 100).toFixed(1)}%</div>
       </div>
       
-      <div style="max-height: 300px; overflow-y: auto;">
+      <div>
         ${testSuite.results.map(result => `
-          <div style="margin-bottom: 8px; padding: 8px; border-left: 3px solid ${result.success ? '#28a745' : '#dc3545'}; background: ${result.success ? '#d4edda' : '#f8d7da'};">
-            <div style="font-weight: bold; color: ${result.success ? '#155724' : '#721c24'};">
+          <div>
+            <div>
               ${result.success ? '✅' : '❌'} ${result.testName}
             </div>
-            <div style="font-size: 10px; color: #666; margin-top: 4px;">
+            <div>
               ${result.details}
             </div>
-            ${result.url ? `<div style="font-size: 9px; color: #888; margin-top: 2px;">URL: ${result.url}</div>` : ''}
+            ${result.url ? `<div>URL: ${result.url}</div>` : ''}
           </div>
         `).join('')}
       </div>

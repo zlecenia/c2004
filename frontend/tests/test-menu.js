@@ -191,7 +191,7 @@ test('3-level menu supports combinatorial content', () => {
   
   // Check that we have connect-data items for objects column
   const objectItems = ['requests', 'services', 'transport', 'dispositions'];
-  const actionItems = ['search', 'add-new', 'export', 'import', 'sync'];
+  const actionItems = ['search', 'new-request'];
   
   objectItems.forEach(item => {
     assert(configContent.includes(`'${item}'`), `Should include object item: ${item}`);

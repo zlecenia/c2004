@@ -22,7 +22,7 @@ export class PerformancePage {
                 <div class="metric-label">CPU Usage</div>
                 <div class="metric-value">45%</div>
                 <div class="metric-bar">
-                  <div class="metric-progress" style="width: 45%"></div>
+                  <div class="metric-progress"></div>
                 </div>
               </div>
               
@@ -30,7 +30,7 @@ export class PerformancePage {
                 <div class="metric-label">Memory Usage</div>
                 <div class="metric-value">62%</div>
                 <div class="metric-bar">
-                  <div class="metric-progress" style="width: 62%"></div>
+                  <div class="metric-progress"></div>
                 </div>
               </div>
               
@@ -38,7 +38,7 @@ export class PerformancePage {
                 <div class="metric-label">Disk Usage</div>
                 <div class="metric-value">28%</div>
                 <div class="metric-bar">
-                  <div class="metric-progress" style="width: 28%"></div>
+                  <div class="metric-progress"></div>
                 </div>
               </div>
               
@@ -46,7 +46,7 @@ export class PerformancePage {
                 <div class="metric-label">Network I/O</div>
                 <div class="metric-value">15 MB/s</div>
                 <div class="metric-bar">
-                  <div class="metric-progress" style="width: 35%"></div>
+                  <div class="metric-progress"></div>
                 </div>
               </div>
             </div>

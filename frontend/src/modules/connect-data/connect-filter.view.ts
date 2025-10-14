@@ -4,7 +4,7 @@ import { ConnectDataPageManager } from './pages';
 import { createModuleMenu, getMenuManager } from '../../components/connect-menu';
 
 export class ConnectDataView {
-  private currentSection: string = 'dispositions';
+  private currentSection: string = 'requests';
   private currentMethod: string = 'search';
   private pageManager: ConnectDataPageManager;
   private routerListenerAttached: boolean = false;
@@ -22,14 +22,13 @@ export class ConnectDataView {
     const submenu = document.getElementById('top-bar-submenu');
     if (submenu) submenu.textContent = '📊 Data Management & Analytics';
     
-    // Update top-bar section title
-    const sectionTitle = document.getElementById('top-bar-section-title');
-    if (sectionTitle) sectionTitle.textContent = 'ConnectData - Użytkownicy - Szukaj';
+    // Update top-bar section title dynamically
+    this.updateSectionTitle();
     
     // Create menu container and main content container
     container.innerHTML = `
       <div class="module-with-menu">
-        <div id="connect-data-menu-container"></div>
+        <div class="connect-data-menu-container"></div>
         <div class="module-main-content" id="connect-data-content">
           <!-- Content will be loaded by PageManager -->
         </div>
@@ -45,7 +44,7 @@ export class ConnectDataView {
     this.setupRouterSync();
 
     // Create module menu using MenuManager
-    const menuContainer = container.querySelector('#connect-data-menu-container') as HTMLElement;
+    const menuContainer = container.querySelector('.connect-data-menu-container') as HTMLElement;
     if (menuContainer) {
       createModuleMenu('connect-data', menuContainer, {
         onItemClick: (data) => {
@@ -163,8 +162,8 @@ export class ConnectDataView {
         width: 100%;
       }
       
-      #connect-data-menu-container {
-        background: #f8f9fa;
+      .connect-data-menu-container {
+        background-color: #2a2a2a;
         border-right: 1px solid #e9ecef;
         overflow-y: auto;
       }

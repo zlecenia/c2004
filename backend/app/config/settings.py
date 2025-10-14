@@ -4,7 +4,7 @@ try:
 except ImportError:
     from pydantic import BaseSettings  # Fallback for Pydantic v1
 
-from pydantic import Field, validator
+from pydantic import Field, field_validator, ConfigDict
 from typing import List, Optional
 import secrets
 
@@ -41,22 +41,25 @@ class Settings(BaseSettings):
     ENABLE_BARCODE: bool = True
     ENABLE_MANUAL: bool = True
 
-    @validator('SECRET_KEY')
+    @field_validator('SECRET_KEY')
+    @classmethod
     def validate_secret_key(cls, v):
         if len(v) < 32:
             raise ValueError('SECRET_KEY must be at least 32 characters')
         return v
 
-    @validator('CORS_ORIGINS', pre=True)
+    @field_validator('CORS_ORIGINS', mode='before')
+    @classmethod
     def parse_cors_origins(cls, v):
         if isinstance(v, str):
             import json
             return json.loads(v)
         return v
 
-    class Config:
-        env_file = ".env"
-        case_sensitive = True
+    model_config = ConfigDict(
+        env_file=".env",
+        case_sensitive=True
+    )
 
 # Create settings instance (validates on import)
 try:

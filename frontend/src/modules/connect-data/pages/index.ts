@@ -1,7 +1,59 @@
 // frontend/src/modules/connect-data/pages/index.ts
-import { DispositionsSearchPage } from './dispositions-search.page';
-import { DispositionsAddNewPage } from './dispositions-add-new.page';
 import { DynamicPagesRegistry } from '../../../shared/dynamic-pages.registry';
+
+// Local fallback page classes (placeholder implementations)
+// These replace missing external files (dispositions-*.page.ts) to keep the module functional.
+class DispositionsSearchPage {
+  static getContent(): string {
+    return `
+      <div class="page-content">
+        <div class="page-header">
+          <h2>📋 Przegląd danych</h2>
+          <p>Widok wyszukiwania (requests/services/transport/dispositions)</p>
+        </div>
+        <div class="content-body">
+          <div class="data-grid-placeholder">🔍 Wyszukiwanie i tabela wyników</div>
+        </div>
+      </div>
+    `;
+  }
+  static getStyles(): string {
+    return `
+      .data-grid-placeholder {
+        padding: 16px;
+        margin: 10px;
+        border: 1px dashed #ccc;
+        background: #fff;
+      }
+    `;
+  }
+}
+
+class DispositionsAddNewPage {
+  static getContent(): string {
+    return `
+      <div class="page-content">
+        <div class="page-header">
+          <h2>➕ Dodaj pozycję</h2>
+          <p>Formularz dodawania nowego rekordu</p>
+        </div>
+        <div class="content-body">
+          <div class="form-placeholder">📝 Formularz (mock)</div>
+        </div>
+      </div>
+    `;
+  }
+  static getStyles(): string {
+    return `
+      .form-placeholder {
+        padding: 16px;
+        margin: 10px;
+        border: 1px dashed #ccc;
+        background: #fff;
+      }
+    `;
+  }
+}
 
 // Page registry for connect-data module
 export const ConnectDataPages = {
@@ -36,7 +88,7 @@ export const ConnectDataPages = {
 
 // Page manager for connect-data
 export class ConnectDataPageManager {
-  private currentPage: string = 'dispositions-search';
+  private currentPage: string = 'requests-search';
   private container: HTMLElement | null = null;
 
   constructor() {
@@ -90,7 +142,7 @@ export class ConnectDataPageManager {
   }
 
   private loadDefaultPage(): void {
-    this.loadPage('dispositions', 'search');
+    this.loadPage('requests', 'search');
   }
 
   private loadErrorPage(pageKey: string): void {

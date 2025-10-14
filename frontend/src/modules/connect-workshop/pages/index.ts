@@ -1,9 +1,6 @@
 // frontend/src/modules/connect-workshop/pages/index.ts
 import { RequestsSearchPage } from './requests-search.page';
 import { RequestsNewRequestPage } from './requests-new-request.page';
-import { RequestsExportPage } from './requests-export.page';
-import { RequestsImportPage } from './requests-import.page';
-import { RequestsSyncPage } from './requests-sync.page';
 import { ServicesSearchPage } from './services-search.page';
 import { TransportSearchPage } from './transport-search.page';
 import { DispositionsSearchPage } from './dispositions-search.page';
@@ -13,30 +10,19 @@ export const ConnectWorkshopPages = {
   // Requests pages
   'requests-search': RequestsSearchPage,
   'requests-new-request': RequestsNewRequestPage,
-  'requests-export': RequestsExportPage,
-  'requests-import': RequestsImportPage,
-  'requests-sync': RequestsSyncPage,
+  // 'requests-export' | 'requests-import' | 'requests-sync' removed
   
   // Services pages
   'services-search': ServicesSearchPage,
-  'services-new-request': ServicesSearchPage,
-  'services-export': ServicesSearchPage,
-  'services-import': ServicesSearchPage,
-  'services-sync': ServicesSearchPage,
+  'services-new-request': RequestsNewRequestPage,
   
   // Transport pages
   'transport-search': TransportSearchPage,
-  'transport-new-request': TransportSearchPage,
-  'transport-export': TransportSearchPage,
-  'transport-import': TransportSearchPage,
-  'transport-sync': TransportSearchPage,
+  'transport-new-request': RequestsNewRequestPage,
   
   // Dispositions pages
   'dispositions-search': DispositionsSearchPage,
-  'dispositions-new-request': DispositionsSearchPage,
-  'dispositions-export': DispositionsSearchPage,
-  'dispositions-import': DispositionsSearchPage,
-  'dispositions-sync': DispositionsSearchPage
+  'dispositions-new-request': RequestsNewRequestPage
 };
 
 // Page manager for connect-workshop
@@ -162,9 +148,6 @@ export class ConnectWorkshopPageManager {
 export {
   RequestsSearchPage,
   RequestsNewRequestPage,
-  RequestsExportPage,
-  RequestsImportPage,
-  RequestsSyncPage,
   ServicesSearchPage,
   TransportSearchPage,
   DispositionsSearchPage

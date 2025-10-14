@@ -23,7 +23,7 @@ export class RequestsImportPage {
           <div class="form-group">
             <label>Wybierz plik:</label>
             <div class="file-upload-area">
-              <input type="file" id="import-file" accept=".csv,.xlsx,.json" style="display: none;">
+              <input type="file" id="import-file" accept=".csv,.xlsx,.json">
               <button class="btn-file-select" onclick="document.getElementById('import-file').click()">
                 📎 Wybierz plik
               </button>
@@ -41,7 +41,7 @@ export class RequestsImportPage {
             </div>
           </div>
           
-          <div class="import-preview" style="display: none;">
+          <div class="import-preview">
             <h4>🔍 Podgląd importu:</h4>
             <div class="preview-stats">
               <span>📊 Rekordy do zaimportowania: <strong>0</strong></span>

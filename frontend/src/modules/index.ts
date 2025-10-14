@@ -18,6 +18,7 @@ import { ConnectTestModule } from './connect-test/connect-test.module';
 import { ConnectConfigModule } from './connect-config/connect-config.module';
 import { ConnectReportsModule } from './connect-reports/connect-reports.module';
 import { ConnectManagerModule } from './connect-manager/connect-manager.module';
+import { MenuEditorModule } from './menu-editor/menu-editor.module';
 
 export const MODULE_REGISTRY = {
   identification: IdentificationModule,
@@ -27,7 +28,8 @@ export const MODULE_REGISTRY = {
   'connect-test': ConnectTestModule,
   'connect-config': ConnectConfigModule,
   'connect-reports': ConnectReportsModule,
-  'connect-manager': ConnectManagerModule
+  'connect-manager': ConnectManagerModule,
+  'menu-editor': MenuEditorModule
 } as const;
 
 export class ModuleManager {

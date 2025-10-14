@@ -12,6 +12,7 @@ import './config/env.config'; // Validate environment on startup
 import './config/service.manifest'; // Validate service manifest
 import { moduleManager } from './modules';
 import { MenuManager, createMenu } from './components/connect-menu';
+import './styles/old-modules.css'; // Styles for old module loaders
 
 // Add basic CSS for 1280×400px touchscreen
 const style = document.createElement('style');
@@ -252,6 +253,12 @@ style.textContent = `
     background: #555;
   }
   
+  /* Hide in-content page titles; use top bar instead */
+  .module-main-content .page-header h2,
+  .module-main-content .page-header h3 {
+    display: none;
+  }
+  
   /* Icon styles - simplified emoji system */
   .icon {
     display: inline-flex;
@@ -336,14 +343,26 @@ function setupNavigation() {
       const { item } = data;
       
       if (item.module) {
-        // Use clean path routing instead of hash
-        const routePath = item.route || `/${item.module}`;
+        // Define default routes for each module (first item from each column)
+        const moduleDefaults: Record<string, string> = {
+          'connect-id': '/connect-id/user/rfid',
+          'connect-data': '/connect-data/requests/search',
+          'connect-workshop': '/connect-workshop/requests/search',
+          'connect-reports': '/connect-reports/executed/week',
+          'connect-test': '/connect-test/rfid',
+          'connect-manager': '/connect-manager/scenarios/list',
+          'connect-config': '/connect-config/system/settings',
+          'menu-editor': '/menu-editor'
+        };
+        
+        // Use module-specific default route or fallback to basic route
+        const routePath = moduleDefaults[item.module] || item.route || `/${item.module}`;
         
         // Update browser history with clean path
         window.history.pushState({}, '', routePath);
         
         // Load module directly
-        loadModule(item.module, '');
+        handlePathChange();
       }
     }
   });
@@ -368,6 +387,35 @@ function handlePathChange() {
 
     // Normalize defaults for connect-workshop: ensure /section/method present
     if (moduleName === 'connect-workshop') {
+      // Reverse friendly aliases from URL to internal keys
+      const sectionAliasReverse: Record<string, string> = {
+        request: 'requests',
+        service: 'services',
+        transport: 'transport',
+        disposition: 'dispositions'
+      };
+      const methodAliasReverse: Record<string, string> = {
+        filter: 'search',
+        create: 'new-request'
+      };
+      if (moduleType) moduleType = sectionAliasReverse[moduleType] || moduleType;
+      if (method) method = methodAliasReverse[method] || method;
+
+      // If only module provided -> default to /requests/search
+      if (!moduleType) {
+        moduleType = 'requests';
+        method = 'search';
+        window.history.replaceState({}, '', `/${moduleName}/request/filter`);
+      }
+      // If section provided without method -> append /search
+      else if (moduleType && !method) {
+        method = 'search';
+        const friendlySection = Object.keys(sectionAliasReverse).find(k => sectionAliasReverse[k] === moduleType) || moduleType;
+        window.history.replaceState({}, '', `/${moduleName}/${friendlySection}/${method === 'search' ? 'filter' : method}`);
+      }
+    }
+    // Normalize defaults for connect-data: ensure /section/action present
+    else if (moduleName === 'connect-data') {
       // If only module provided -> default to /requests/search
       if (!moduleType) {
         moduleType = 'requests';
@@ -380,18 +428,49 @@ function handlePathChange() {
         window.history.replaceState({}, '', `/${moduleName}/${moduleType}/${method}`);
       }
     }
-    // Normalize defaults for connect-data: ensure /section/action present
-    else if (moduleName === 'connect-data') {
-      // If only module provided -> default to /dispositions/import
+    
+    // Normalize defaults for connect-config: ensure /section/subsection present
+    else if (moduleName === 'connect-config') {
+      // Reverse friendly aliases from URL to internal keys
+      const sectionAliasReverse: Record<string, string> = {
+        sys: 'system',
+        dev: 'devices',
+        sec: 'security'
+      };
+      const subsectionAliasReverse: Record<string, string> = {
+        perf: 'performance', net: 'network', upd: 'updates', mon: 'monitoring',
+        log: 'logs', diag: 'diagnostics', maint: 'maintenance', rfid: 'rfid-config',
+        qr: 'qr-config', bar: 'barcode-config', sens: 'sensors', io: 'io-ports',
+        cal: 'calibration', pwr: 'power', stor: 'storage', usr: 'users',
+        perm: 'permissions', bak: 'backup', secset: 'security-settings',
+        rpt: 'reports', lbl: 'labels'
+      };
+      if (moduleType) moduleType = sectionAliasReverse[moduleType] || moduleType;
+      if (method) method = subsectionAliasReverse[method] || method;
+      
+      // If only module provided -> default to /system/performance
       if (!moduleType) {
-        moduleType = 'dispositions';
-        method = 'import';
-        window.history.replaceState({}, '', `/${moduleName}/${moduleType}/${method}`);
+        moduleType = 'system';
+        method = 'performance';
+        window.history.replaceState({}, '', `/${moduleName}/sys/perf`);
       }
-      // If section provided without method -> append /import
+      // If section provided without subsection -> append default based on section
       else if (moduleType && !method) {
-        method = 'import';
-        window.history.replaceState({}, '', `/${moduleName}/${moduleType}/${method}`);
+        if (moduleType === 'system') method = 'performance';
+        else if (moduleType === 'devices') method = 'rfid-config';
+        else if (moduleType === 'security') method = 'users';
+        else method = 'performance';
+        
+        const friendlySection = Object.keys(sectionAliasReverse).find(k => sectionAliasReverse[k] === moduleType) || moduleType;
+        const friendlySubsection = Object.keys(subsectionAliasReverse).find(k => subsectionAliasReverse[k] === method) || method;
+        window.history.replaceState({}, '', `/${moduleName}/${friendlySection}/${friendlySubsection}`);
+      }
+    }
+    // Normalize defaults for connect-manager: ensure /action present
+    else if (moduleName === 'connect-manager') {
+      if (!moduleType) {
+        moduleType = 'scenarios';
+        window.history.replaceState({}, '', `/${moduleName}/${moduleType}`);
       }
     }
 
@@ -482,7 +561,7 @@ function updateModuleState(moduleName: string, moduleType?: string | null, metho
       
     case 'connect-config':
       // Update ConnectConfig state directly
-      const configElement = document.querySelector('.connect-config-layout');
+      const configElement = document.querySelector('.connect-config-compact');
       if (configElement) {
         const event = new CustomEvent('connectconfig:update-state', {
           detail: { section: moduleType, subsection: method }
@@ -508,6 +587,17 @@ function updateModuleState(moduleName: string, moduleType?: string | null, metho
       if (reportsElement) {
         const event = new CustomEvent('connectreports:update-state', {
           detail: { reportType: moduleType, view: method }
+        });
+        window.dispatchEvent(event);
+      }
+      break;
+    
+    case 'connect-manager':
+      // Update ConnectManager state directly
+      const managerElement = document.querySelector('.connect-manager-compact');
+      if (managerElement) {
+        const event = new CustomEvent('connectmanager:update-state', {
+          detail: { action: moduleType || 'scenarios' }
         });
         window.dispatchEvent(event);
       }
@@ -557,6 +647,9 @@ function loadModule(moduleName: string, moduleType?: string | null, method?: str
         // For manager: moduleType is action
         loadConnectManagerModule(container, moduleType);
         break;
+      case 'menu-editor':
+        loadMenuEditorModule(container);
+        break;
       default:
         container.innerHTML = `<div class="error">Unknown module: ${moduleName}</div>`;
     }
@@ -579,7 +672,8 @@ function showLoadingState(container: HTMLElement, moduleName: string) {
     'connect-data': 'ConnectData',
     'connect-config': 'ConnectConfig',
     'connect-reports': 'ConnectReports',
-    'connect-manager': 'ConnectManager'
+    'connect-manager': 'ConnectManager',
+    'menu-editor': 'Menu Editor'
   };
   
   const displayName = moduleNames[moduleName] || moduleName;
@@ -791,156 +885,171 @@ function loadConnectManagerModule(container: HTMLElement, action?: string | null
   });
 }
 
+function loadMenuEditorModule(container: HTMLElement) {
+  import('./modules/menu-editor/menu-editor.module').then(async () => {
+    const module = moduleManager.getModule('menu-editor');
+    const { MenuEditorView } = await import('./modules/menu-editor/menu-editor.view');
+    const view = new MenuEditorView(module as any);
+    
+    container.innerHTML = '';
+    const viewElement = view.render();
+    container.appendChild(viewElement);
+    
+  }).catch(error => {
+    container.innerHTML = `<div class="error">Failed to load Menu Editor module: ${error}</div>`;
+  });
+}
+
 export function oldLoadConnectReportsModule(container: HTMLElement) {
   container.innerHTML = `
-    <div class="reports-compact" style="height: 100%; overflow: hidden;">
-      <div class="compact-layout" style="display: flex; height: 365px; background: #f5f5f5;">
+    <div class="reports-compact">
+      <div class="compact-layout">
         <!-- Column 1: Report Types -->
-        <div class="menu-column" style="width: 120px; background: #2a2a2a; padding: 6px 4px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #1a1a1a;">
-          <h3 class="column-title" style="color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px;">Raporty</h3>
-          <button class="report-type-item active" data-type="executed" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
-            <span class="menu-icon" style="font-size: 13px;">✅</span>
-            <span class="menu-label" style="font-size: 10px; font-weight: 500;">Wykonane</span>
+        <div class="menu-column">
+          <h3 class="column-title">Raporty</h3>
+          <button class="report-type-item active" data-type="executed">
+            <span class="menu-icon">✅</span>
+            <span class="menu-label">Wykonane</span>
           </button>
-          <button class="report-type-item" data-type="planned" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 4px; border-radius: 5px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.2s; color: #ccc;">
-            <span class="menu-icon" style="font-size: 13px;">📅</span>
-            <span class="menu-label" style="font-size: 10px; font-weight: 500;">Planowane</span>
+          <button class="report-type-item" data-type="planned">
+            <span class="menu-icon">📅</span>
+            <span class="menu-label">Planowane</span>
           </button>
         </div>
 
         <!-- Column 2: Calendar Options (shown only for planned) -->
-        <div class="menu-column" id="calendar-column" style="width: 120px; background: #2a2a2a; padding: 6px 4px; overflow-y: auto; flex-shrink: 0; border-right: 1px solid #1a1a1a; display: none;">
-          <h3 class="column-title" style="color: #FFF; font-size: 9px; font-weight: 600; text-transform: uppercase; margin: 0 0 6px 0; padding: 4px; text-align: center; background: #1a1a1a; border-radius: 3px;">Widok</h3>
-          <button class="calendar-view-item active" data-view="week" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
-            <span class="menu-icon" style="font-size: 13px;">📅</span>
-            <span class="menu-label" style="font-size: 9px; font-weight: 500;">Tygodnie</span>
+        <div class="menu-column" id="calendar-column">
+          <h3 class="column-title">Widok</h3>
+          <button class="calendar-view-item active" data-view="week">
+            <span class="menu-icon">📅</span>
+            <span class="menu-label">Tygodnie</span>
           </button>
-          <button class="calendar-view-item" data-view="month" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
-            <span class="menu-icon" style="font-size: 13px;">🗓️</span>
-            <span class="menu-label" style="font-size: 9px; font-weight: 500;">Miesiące</span>
+          <button class="calendar-view-item" data-view="month">
+            <span class="menu-icon">🗓️</span>
+            <span class="menu-label">Miesiące</span>
           </button>
-          <button class="calendar-view-item" data-view="year" style="width: 100%; background: #3a3a3a; border: none; padding: 3px 4px; margin-bottom: 3px; border-radius: 4px; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 3px; transition: all 0.2s; color: #ccc;">
-            <span class="menu-icon" style="font-size: 13px;">📆</span>
-            <span class="menu-label" style="font-size: 9px; font-weight: 500;">Lata</span>
+          <button class="calendar-view-item" data-view="year">
+            <span class="menu-icon">📆</span>
+            <span class="menu-label">Lata</span>
           </button>
         </div>
 
         <!-- Main Content -->
-        <div class="main-content" style="flex: 1; display: flex; flex-direction: column; background: white; overflow: hidden;">
-          <div class="content-body" style="flex: 1; padding: 15px; overflow-y: auto;">
+        <div class="main-content">
+          <div class="content-body">
             <!-- Executed Reports -->
             <div id="executed-content" class="report-content active">
               <div class="reports-table-container">
                 <!-- Search and Filters -->
-                <div class="reports-search-section" style="background: #f8f9fa; padding: 1px; border-radius: 8px; margin-bottom: 15px;">
-                  <div class="search-row" style="display: flex; gap: 10px; margin-bottom: 10px;">
-                    <input type="text" id="reports-search" placeholder="Szukaj po urządzeniu, dacie, operatorze..." style="flex: 1; padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 12px;">
-                    <button id="reports-search-btn" style="padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; font-size: 12px;">🔍 Szukaj</button>
+                <div class="reports-search-section">
+                  <div class="search-row">
+                    <input type="text" id="reports-search" placeholder="Szukaj po urządzeniu, dacie, operatorze...">
+                    <button id="reports-search-btn">🔍 Szukaj</button>
                   </div>
-                  <div class="filters-row" style="display: flex; gap: 10px; flex-wrap: wrap;">
-                    <select id="status-filter" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px;">
+                  <div class="filters-row">
+                    <select id="status-filter">
                       <option value="">Wszystkie statusy</option>
                       <option value="success">✅ Pozytywne</option>
                       <option value="error">❌ Negatywne</option>
                       <option value="warning">⚠️ Ostrzeżenia</option>
                     </select>
-                    <select id="device-filter" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px;">
+                    <select id="device-filter">
                       <option value="">Wszystkie urządzenia</option>
                       <option value="pss-7000">PSS-7000</option>
                       <option value="pss-5000">PSS-5000</option>
                       <option value="pss-3000">PSS-3000</option>
                     </select>
-                    <select id="test-type-filter" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px;">
+                    <select id="test-type-filter">
                       <option value="">Wszystkie testy</option>
                       <option value="szczelnosc">Szczelność</option>
                       <option value="przeplyw">Przepływ</option>
                       <option value="funkcjonalny">Funkcjonalny</option>
                       <option value="kalibracja">Kalibracja</option>
                     </select>
-                    <select id="date-filter" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px;">
+                    <select id="date-filter">
                       <option value="">Wszystkie daty</option>
                       <option value="today">Dzisiaj</option>
                       <option value="week">Ostatni tydzień</option>
                       <option value="month">Ostatni miesiąc</option>
                       <option value="custom">Niestandardowy zakres</option>
                     </select>
-                    <input type="date" id="date-from" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; display: none;">
-                    <input type="date" id="date-to" style="padding: 6px; border: 1px solid #ddd; border-radius: 4px; font-size: 11px; display: none;">
+                    <input type="date" id="date-from">
+                    <input type="date" id="date-to">
                   </div>
                 </div>
 
                 <!-- Reports Table -->
-                <div class="reports-table-wrapper" style="background: white; border: 1px solid #e0e0e0; border-radius: 8px; overflow: hidden;">
-                  <table class="reports-table" style="width: 100%; border-collapse: collapse;">
-                    <thead style="background: #f8f9fa;">
+                <div class="reports-table-wrapper">
+                  <table class="reports-table">
+                    <thead>
                       <tr>
-                        <th style="padding: 12px 8px; text-align: left; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0; cursor: pointer;" data-sort="date">📅 Data/Czas ↕</th>
-                        <th style="padding: 12px 8px; text-align: left; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0; cursor: pointer;" data-sort="device">📱 Urządzenie ↕</th>
-                        <th style="padding: 12px 8px; text-align: left; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0; cursor: pointer;" data-sort="test">🧪 Testy ↕</th>
-                        <th style="padding: 12px 8px; text-align: left; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0; cursor: pointer;" data-sort="operator">👤 Operator ↕</th>
-                        <th style="padding: 12px 8px; text-align: left; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0; cursor: pointer;" data-sort="status">✅ Status ↕</th>
-                        <th style="padding: 12px 8px; text-align: center; font-size: 11px; font-weight: 600; color: #666; border-bottom: 1px solid #e0e0e0;">⚙️ Akcje</th>
+                        <th data-sort="date">📅 Data/Czas ↕</th>
+                        <th data-sort="device">📱 Urządzenie ↕</th>
+                        <th data-sort="test">🧪 Testy ↕</th>
+                        <th data-sort="operator">👤 Operator ↕</th>
+                        <th data-sort="status">✅ Status ↕</th>
+                        <th>⚙️ Akcje</th>
                       </tr>
                     </thead>
                     <tbody id="reports-table-body">
-                      <tr style="border-bottom: 1px solid #f0f0f0;">
-                        <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 17:30</td>
-                        <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-7000 #12345</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Szczelność, Przepływ, Funkcjonalny</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Jan K.</td>
-                        <td style="padding: 10px 8px;"><span style="background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-size: 10px;">✅ Pozytywny</span></td>
-                        <td style="padding: 10px 8px; text-align: center;">
-                          <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
-                          <button style="padding: 4px 8px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">📄 PDF</button>
-                          <button style="padding: 4px 8px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📧 Wyślij</button>
+                      <tr>
+                        <td>2025-10-08 17:30</td>
+                        <td>PSS-7000 #12345</td>
+                        <td>Szczelność, Przepływ, Funkcjonalny</td>
+                        <td>Jan K.</td>
+                        <td><span>✅ Pozytywny</span></td>
+                        <td>
+                          <button>👁️ Pokaż</button>
+                          <button>📄 PDF</button>
+                          <button>📧 Wyślij</button>
                         </td>
                       </tr>
-                      <tr style="border-bottom: 1px solid #f0f0f0;">
-                        <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 16:15</td>
-                        <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-5000 #67890</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Szczelność</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Anna N.</td>
-                        <td style="padding: 10px 8px;"><span style="background: #f8d7da; color: #721c24; padding: 3px 8px; border-radius: 4px; font-size: 10px;">❌ Negatywny</span></td>
-                        <td style="padding: 10px 8px; text-align: center;">
-                          <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
-                          <button style="padding: 4px 8px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">📄 PDF</button>
-                          <button style="padding: 4px 8px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📧 Wyślij</button>
+                      <tr>
+                        <td>2025-10-08 16:15</td>
+                        <td>PSS-5000 #67890</td>
+                        <td>Szczelność</td>
+                        <td>Anna N.</td>
+                        <td><span>❌ Negatywny</span></td>
+                        <td>
+                          <button>👁️ Pokaż</button>
+                          <button>📄 PDF</button>
+                          <button>📧 Wyślij</button>
                         </td>
                       </tr>
-                      <tr style="border-bottom: 1px solid #f0f0f0;">
-                        <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 15:45</td>
-                        <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-3000 #11111</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Kalibracja, Przepływ</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Piotr W.</td>
-                        <td style="padding: 10px 8px;"><span style="background: #fff3cd; color: #856404; padding: 3px 8px; border-radius: 4px; font-size: 10px;">⚠️ Ostrzeżenie</span></td>
-                        <td style="padding: 10px 8px; text-align: center;">
-                          <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
-                          <button style="padding: 4px 8px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">📄 PDF</button>
-                          <button style="padding: 4px 8px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📧 Wyślij</button>
+                      <tr>
+                        <td>2025-10-08 15:45</td>
+                        <td>PSS-3000 #11111</td>
+                        <td>Kalibracja, Przepływ</td>
+                        <td>Piotr W.</td>
+                        <td><span>⚠️ Ostrzeżenie</span></td>
+                        <td>
+                          <button>👁️ Pokaż</button>
+                          <button>📄 PDF</button>
+                          <button>📧 Wyślij</button>
                         </td>
                       </tr>
-                      <tr style="border-bottom: 1px solid #f0f0f0;">
-                        <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 14:20</td>
-                        <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-7000 #54321</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Funkcjonalny</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Jan K.</td>
-                        <td style="padding: 10px 8px;"><span style="background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-size: 10px;">✅ Pozytywny</span></td>
-                        <td style="padding: 10px 8px; text-align: center;">
-                          <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
-                          <button style="padding: 4px 8px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">📄 PDF</button>
-                          <button style="padding: 4px 8px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📧 Wyślij</button>
+                      <tr>
+                        <td>2025-10-08 14:20</td>
+                        <td>PSS-7000 #54321</td>
+                        <td>Funkcjonalny</td>
+                        <td>Jan K.</td>
+                        <td><span>✅ Pozytywny</span></td>
+                        <td>
+                          <button>👁️ Pokaż</button>
+                          <button>📄 PDF</button>
+                          <button>📧 Wyślij</button>
                         </td>
                       </tr>
-                      <tr style="border-bottom: 1px solid #f0f0f0;">
-                        <td style="padding: 10px 8px; font-size: 11px;">2025-10-08 13:10</td>
-                        <td style="padding: 10px 8px; font-size: 11px; font-weight: 600;">PSS-5000 #98765</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Szczelność, Kalibracja</td>
-                        <td style="padding: 10px 8px; font-size: 11px;">Anna N.</td>
-                        <td style="padding: 10px 8px;"><span style="background: #d4edda; color: #155724; padding: 3px 8px; border-radius: 4px; font-size: 10px;">✅ Pozytywny</span></td>
-                        <td style="padding: 10px 8px; text-align: center;">
-                          <button style="padding: 4px 8px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">👁️ Pokaż</button>
-                          <button style="padding: 4px 8px; background: #28a745; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px; margin-right: 4px;">📄 PDF</button>
-                          <button style="padding: 4px 8px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">📧 Wyślij</button>
+                      <tr>
+                        <td>2025-10-08 13:10</td>
+                        <td>PSS-5000 #98765</td>
+                        <td>Szczelność, Kalibracja</td>
+                        <td>Anna N.</td>
+                        <td><span>✅ Pozytywny</span></td>
+                        <td>
+                          <button>👁️ Pokaż</button>
+                          <button>📄 PDF</button>
+                          <button>📧 Wyślij</button>
                         </td>
                       </tr>
                     </tbody>
@@ -948,16 +1057,16 @@ export function oldLoadConnectReportsModule(container: HTMLElement) {
                 </div>
 
                 <!-- Pagination -->
-                <div class="reports-pagination" style="display: flex; justify-content: between; align-items: center; margin-top: 15px; padding: 10px; background: #f8f9fa; border-radius: 6px;">
-                  <div class="pagination-info" style="font-size: 11px; color: #666;">
+                <div class="reports-pagination">
+                  <div class="pagination-info">
                     Pokazano 1-5 z 47 raportów
                   </div>
-                  <div class="pagination-controls" style="display: flex; gap: 5px;">
-                    <button style="padding: 6px 10px; background: #6c757d; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;" disabled>⬅️ Poprzednia</button>
-                    <button style="padding: 6px 10px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">1</button>
-                    <button style="padding: 6px 10px; background: #f8f9fa; color: #333; border: 1px solid #ddd; border-radius: 3px; cursor: pointer; font-size: 10px;">2</button>
-                    <button style="padding: 6px 10px; background: #f8f9fa; color: #333; border: 1px solid #ddd; border-radius: 3px; cursor: pointer; font-size: 10px;">3</button>
-                    <button style="padding: 6px 10px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer; font-size: 10px;">Następna ➡️</button>
+                  <div class="pagination-controls">
+                    <button disabled>⬅️ Poprzednia</button>
+                    <button>1</button>
+                    <button>2</button>
+                    <button>3</button>
+                    <button>Następna ➡️</button>
                   </div>
                 </div>
               </div>
@@ -967,419 +1076,419 @@ export function oldLoadConnectReportsModule(container: HTMLElement) {
             <div id="planned-content" class="report-content">
               <!-- Weekly Calendar -->
               <div id="week-view" class="calendar-view active">
-                <div class="calendar-header" style="text-align: center; margin-bottom: 15px;">
-                  <h4 style="margin: 0; color: #333;">📅 Widok Tygodniowy - Październik 2025</h4>
+                <div class="calendar-header">
+                  <h4>📅 Widok Tygodniowy - Październik 2025</h4>
                 </div>
-                <div class="week-calendar" style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; background: #f0f0f0; padding: 10px; border-radius: 8px; max-height: 280px; overflow-y: auto;">
+                <div class="week-calendar">
                   <!-- Tydzień 1 -->
-                  <div class="day-header" style="background: #667eea; color: white; padding: 8px; text-align: center; font-size: 11px; font-weight: 600;">Pon</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 8px; text-align: center; font-size: 11px; font-weight: 600;">Wt</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 8px; text-align: center; font-size: 11px; font-weight: 600;">Śr</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 8px; text-align: center; font-size: 11px; font-weight: 600;">Czw</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 8px; text-align: center; font-size: 11px; font-weight: 600;">Pt</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 8px; text-align: center; font-size: 11px; font-weight: 600;">Sob</div>
-                  <div class="day-header" style="background: #667eea; color: white; padding: 8px; text-align: center; font-size: 11px; font-weight: 600;">Ndz</div>
+                  <div class="day-header">Pon</div>
+                  <div class="day-header">Wt</div>
+                  <div class="day-header">Śr</div>
+                  <div class="day-header">Czw</div>
+                  <div class="day-header">Pt</div>
+                  <div class="day-header">Sob</div>
+                  <div class="day-header">Ndz</div>
                   
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">7</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">8</span><br><span style="font-size: 8px; color: #28a745;">🔧 Serwis</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">9</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">10</span><br><span style="font-size: 8px; color: #dc3545;">🧪 Test</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">11</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">12</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">13</span></div>
+                  <div class="day-cell"><span>7</span></div>
+                  <div class="day-cell"><span>8</span><br><span>🔧 Serwis</span></div>
+                  <div class="day-cell"><span>9</span></div>
+                  <div class="day-cell"><span>10</span><br><span>🧪 Test</span></div>
+                  <div class="day-cell"><span>11</span></div>
+                  <div class="day-cell"><span>12</span></div>
+                  <div class="day-cell"><span>13</span></div>
                   
                   <!-- Tydzień 2 -->
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">14</span><br><span style="font-size: 8px; color: #17a2b8;">📋 Raport</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">15</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">16</span><br><span style="font-size: 8px; color: #28a745;">🔧 Serwis</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">17</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">18</span><br><span style="font-size: 8px; color: #dc3545;">🧪 Test</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">19</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">20</span></div>
+                  <div class="day-cell"><span>14</span><br><span>📋 Raport</span></div>
+                  <div class="day-cell"><span>15</span></div>
+                  <div class="day-cell"><span>16</span><br><span>🔧 Serwis</span></div>
+                  <div class="day-cell"><span>17</span></div>
+                  <div class="day-cell"><span>18</span><br><span>🧪 Test</span></div>
+                  <div class="day-cell"><span>19</span></div>
+                  <div class="day-cell"><span>20</span></div>
                   
                   <!-- Tydzień 3 -->
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">21</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">22</span><br><span style="font-size: 8px; color: #28a745;">🔧 Serwis</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">23</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">24</span><br><span style="font-size: 8px; color: #dc3545;">🧪 Test</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">25</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">26</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">27</span></div>
+                  <div class="day-cell"><span>21</span></div>
+                  <div class="day-cell"><span>22</span><br><span>🔧 Serwis</span></div>
+                  <div class="day-cell"><span>23</span></div>
+                  <div class="day-cell"><span>24</span><br><span>🧪 Test</span></div>
+                  <div class="day-cell"><span>25</span></div>
+                  <div class="day-cell"><span>26</span></div>
+                  <div class="day-cell"><span>27</span></div>
                   
                   <!-- Tydzień 4 -->
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">28</span><br><span style="font-size: 8px; color: #17a2b8;">📋 Raport</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">29</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">30</span><br><span style="font-size: 8px; color: #28a745;">🔧 Serwis</span></div>
-                  <div class="day-cell" style="background: white; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px;"><span style="font-weight: 600;">31</span></div>
-                  <div class="day-cell" style="background: #f8f9fa; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px; color: #999;"><span>1</span></div>
-                  <div class="day-cell" style="background: #f8f9fa; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px; color: #999;"><span>2</span></div>
-                  <div class="day-cell" style="background: #f8f9fa; padding: 6px; min-height: 50px; border: 1px solid #ddd; font-size: 10px; color: #999;"><span>3</span></div>
+                  <div class="day-cell"><span>28</span><br><span>📋 Raport</span></div>
+                  <div class="day-cell"><span>29</span></div>
+                  <div class="day-cell"><span>30</span><br><span>🔧 Serwis</span></div>
+                  <div class="day-cell"><span>31</span></div>
+                  <div class="day-cell"><span>1</span></div>
+                  <div class="day-cell"><span>2</span></div>
+                  <div class="day-cell"><span>3</span></div>
                 </div>
               </div>
 
               <!-- Monthly Tables -->
               <div id="month-view" class="calendar-view">
-                <div class="calendar-header" style="text-align: center; margin-bottom: 15px;">
-                  <h4 style="margin: 0; color: #333;">🗓️ Widok 3 Miesięcy - 2025</h4>
+                <div class="calendar-header">
+                  <h4>🗓️ Widok 3 Miesięcy - 2025</h4>
                 </div>
                 
                 <!-- Three Month Tables Container -->
-                <div class="three-months-container" style="display: flex; gap: 8px; justify-content: space-between;">
+                <div class="three-months-container">
                 
                   <!-- Previous Month -->
-                  <div class="month-table" style="flex: 1; background: white; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;">
-                    <div class="month-header" style="background: #f8f9fa; padding: 8px; text-align: center; font-size: 11px; font-weight: 600; color: #666;">
+                  <div class="month-table">
+                    <div class="month-header">
                       ← Wrzesień 2025
                     </div>
-                    <table style="width: 100%; border-collapse: collapse;">
+                    <table>
                       <thead>
-                        <tr style="background: #f1f3f4;">
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pn</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Wt</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Śr</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Cz</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pt</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Sb</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Nd</th>
+                        <tr>
+                          <th>Pn</th>
+                          <th>Wt</th>
+                          <th>Śr</th>
+                          <th>Cz</th>
+                          <th>Pt</th>
+                          <th>Sb</th>
+                          <th>Nd</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">1</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">2</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">3</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">4</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">5</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">6</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">7</td>
+                          <td>1</td>
+                          <td>2</td>
+                          <td>3</td>
+                          <td>4</td>
+                          <td>5</td>
+                          <td>6</td>
+                          <td>7</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">8</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">9</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">10<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">11</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">12</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">13</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">14</td>
+                          <td>8</td>
+                          <td>9</td>
+                          <td>10<div></div></td>
+                          <td>11</td>
+                          <td>12</td>
+                          <td>13</td>
+                          <td>14</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">15</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">16</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">17</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">18<div style="width: 3px; height: 3px; background: #dc3545; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">19</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">20</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">21</td>
+                          <td>15</td>
+                          <td>16</td>
+                          <td>17</td>
+                          <td>18<div></div></td>
+                          <td>19</td>
+                          <td>20</td>
+                          <td>21</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">22</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">23</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">24</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">25<div style="width: 3px; height: 3px; background: #17a2b8; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">26</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">27</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">28</td>
+                          <td>22</td>
+                          <td>23</td>
+                          <td>24</td>
+                          <td>25<div></div></td>
+                          <td>26</td>
+                          <td>27</td>
+                          <td>28</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">29</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">30</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
+                          <td>29</td>
+                          <td>30</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
                         </tr>
                       </tbody>
                     </table>
-                    <div style="padding: 4px; font-size: 8px; text-align: center; background: #f8f9fa; color: #666;">3 zaplanowane</div>
+                    <div>3 zaplanowane</div>
                   </div>
 
                   <!-- Current Month -->
-                  <div class="month-table" style="flex: 1; background: white; border: 2px solid #28a745; border-radius: 6px; overflow: hidden;">
-                    <div class="month-header" style="background: #28a745; padding: 8px; text-align: center; font-size: 11px; font-weight: 600; color: white;">
+                  <div class="month-table">
+                    <div class="month-header">
                       Październik 2025 (Aktualny)
                     </div>
-                    <table style="width: 100%; border-collapse: collapse;">
+                    <table>
                       <thead>
-                        <tr style="background: #f1f3f4;">
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pn</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Wt</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Śr</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Cz</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pt</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Sb</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Nd</th>
+                        <tr>
+                          <th>Pn</th>
+                          <th>Wt</th>
+                          <th>Śr</th>
+                          <th>Cz</th>
+                          <th>Pt</th>
+                          <th>Sb</th>
+                          <th>Nd</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #ccc;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #ccc;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">1</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">2<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">3</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">4</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">5</td>
+                          <td></td>
+                          <td></td>
+                          <td>1</td>
+                          <td>2<div></div></td>
+                          <td>3</td>
+                          <td>4</td>
+                          <td>5</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">6</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">7</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600; background: #fff3cd;">8<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">9</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">10<div style="width: 3px; height: 3px; background: #dc3545; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">11</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">12</td>
+                          <td>6</td>
+                          <td>7</td>
+                          <td>8<div></div></td>
+                          <td>9</td>
+                          <td>10<div></div></td>
+                          <td>11</td>
+                          <td>12</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">13</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">14<div style="width: 3px; height: 3px; background: #17a2b8; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">15</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">16<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">17</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">18</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">19</td>
+                          <td>13</td>
+                          <td>14<div></div></td>
+                          <td>15</td>
+                          <td>16<div></div></td>
+                          <td>17</td>
+                          <td>18</td>
+                          <td>19</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">20</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">21</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">22<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">23</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">24<div style="width: 3px; height: 3px; background: #dc3545; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">25</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">26</td>
+                          <td>20</td>
+                          <td>21</td>
+                          <td>22<div></div></td>
+                          <td>23</td>
+                          <td>24<div></div></td>
+                          <td>25</td>
+                          <td>26</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">27</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">28<div style="width: 3px; height: 3px; background: #17a2b8; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">29</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative; font-weight: 600;">30<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; font-weight: 600;">31</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; border: none;"></td>
+                          <td>27</td>
+                          <td>28<div></div></td>
+                          <td>29</td>
+                          <td>30<div></div></td>
+                          <td>31</td>
+                          <td></td>
+                          <td></td>
                         </tr>
                       </tbody>
                     </table>
-                    <div style="padding: 4px; font-size: 8px; text-align: center; background: #d4edda; color: #155724; font-weight: 600;">7 zaplanowanych</div>
+                    <div>7 zaplanowanych</div>
                   </div>
 
                   <!-- Next Month -->
-                  <div class="month-table" style="flex: 1; background: white; border: 1px solid #e0e0e0; border-radius: 6px; overflow: hidden;">
-                    <div class="month-header" style="background: #f8f9fa; padding: 8px; text-align: center; font-size: 11px; font-weight: 600; color: #666;">
+                  <div class="month-table">
+                    <div class="month-header">
                       Listopad 2025 →
                     </div>
-                    <table style="width: 100%; border-collapse: collapse;">
+                    <table>
                       <thead>
-                        <tr style="background: #f1f3f4;">
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pn</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Wt</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Śr</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Cz</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Pt</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Sb</th>
-                          <th style="padding: 4px; font-size: 9px; font-weight: 500; color: #666;">Nd</th>
+                        <tr>
+                          <th>Pn</th>
+                          <th>Wt</th>
+                          <th>Śr</th>
+                          <th>Cz</th>
+                          <th>Pt</th>
+                          <th>Sb</th>
+                          <th>Nd</th>
                         </tr>
                       </thead>
                       <tbody>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;"></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">1</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">2</td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td></td>
+                          <td>1</td>
+                          <td>2</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">3</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">4</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">5<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">6</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">7</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">8</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">9</td>
+                          <td>3</td>
+                          <td>4</td>
+                          <td>5<div></div></td>
+                          <td>6</td>
+                          <td>7</td>
+                          <td>8</td>
+                          <td>9</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">10</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">11</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">12<div style="width: 3px; height: 3px; background: #dc3545; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">13</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">14</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">15<div style="width: 3px; height: 3px; background: #17a2b8; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">16</td>
+                          <td>10</td>
+                          <td>11</td>
+                          <td>12<div></div></td>
+                          <td>13</td>
+                          <td>14</td>
+                          <td>15<div></div></td>
+                          <td>16</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">17</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; position: relative;">18<div style="width: 3px; height: 3px; background: #28a745; border-radius: 50%; position: absolute; top: 2px; right: 2px;"></div></td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">19</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">20</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">21</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">22</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">23</td>
+                          <td>17</td>
+                          <td>18<div></div></td>
+                          <td>19</td>
+                          <td>20</td>
+                          <td>21</td>
+                          <td>22</td>
+                          <td>23</td>
                         </tr>
                         <tr>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">24</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">25</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">26</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">27</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">28</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">29</td>
-                          <td style="padding: 3px; font-size: 8px; text-align: center; color: #999;">30</td>
+                          <td>24</td>
+                          <td>25</td>
+                          <td>26</td>
+                          <td>27</td>
+                          <td>28</td>
+                          <td>29</td>
+                          <td>30</td>
                         </tr>
                       </tbody>
                     </table>
-                    <div style="padding: 4px; font-size: 8px; text-align: center; background: #f8f9fa; color: #666;">4 zaplanowane</div>
+                    <div>4 zaplanowane</div>
                   </div>
                   
                 </div>
                 
-                <div style="margin-top: 10px; font-size: 10px; text-align: center;">
-                  <span style="color: #28a745;">● Serwis</span> | 
-                  <span style="color: #dc3545;">● Test</span> | 
-                  <span style="color: #17a2b8;">● Raport</span>
+                <div>
+                  <span>● Serwis</span> | 
+                  <span>● Test</span> | 
+                  <span>● Raport</span>
                 </div>
               </div>
 
               <!-- Yearly Calendar -->
               <div id="year-view" class="calendar-view">
-                <div class="calendar-header" style="text-align: center; margin-bottom: 15px;">
-                  <h4 style="margin: 0; color: #333;">📆 Widok Roczny - 2025</h4>
+                <div class="calendar-header">
+                  <h4>📆 Widok Roczny - 2025</h4>
                 </div>
-                <div class="year-months-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-height: 280px; overflow-y: auto;">
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #333;">Styczeń</div>
-                    <div style="font-size: 9px; color: #28a745; margin-bottom: 3px;">5 zaplanowanych</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
+                <div class="year-months-grid">
+                  <div class="month-mini-card">
+                    <div>Styczeń</div>
+                    <div>5 zaplanowanych</div>
+                    <div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #333;">Luty</div>
-                    <div style="font-size: 9px; color: #17a2b8; margin-bottom: 3px;">3 zaplanowane</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
+                  <div class="month-mini-card">
+                    <div>Luty</div>
+                    <div>3 zaplanowane</div>
+                    <div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #333;">Marzec</div>
-                    <div style="font-size: 9px; color: #28a745; margin-bottom: 3px;">7 zaplanowanych</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
+                  <div class="month-mini-card">
+                    <div>Marzec</div>
+                    <div>7 zaplanowanych</div>
+                    <div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #333;">Kwiecień</div>
-                    <div style="font-size: 9px; color: #6c757d; margin-bottom: 3px;">2 zaplanowane</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
+                  <div class="month-mini-card">
+                    <div>Kwiecień</div>
+                    <div>2 zaplanowane</div>
+                    <div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #333;">Maj</div>
-                    <div style="font-size: 9px; color: #28a745; margin-bottom: 3px;">6 zaplanowanych</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
+                  <div class="month-mini-card">
+                    <div>Maj</div>
+                    <div>6 zaplanowanych</div>
+                    <div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #333;">Czerwiec</div>
-                    <div style="font-size: 9px; color: #17a2b8; margin-bottom: 3px;">4 zaplanowane</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
+                  <div class="month-mini-card">
+                    <div>Czerwiec</div>
+                    <div>4 zaplanowane</div>
+                    <div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #333;">Lipiec</div>
-                    <div style="font-size: 9px; color: #28a745; margin-bottom: 3px;">8 zaplanowanych</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
+                  <div class="month-mini-card">
+                    <div>Lipiec</div>
+                    <div>8 zaplanowanych</div>
+                    <div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #333;">Sierpień</div>
-                    <div style="font-size: 9px; color: #6c757d; margin-bottom: 3px;">3 zaplanowane</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
+                  <div class="month-mini-card">
+                    <div>Sierpień</div>
+                    <div>3 zaplanowane</div>
+                    <div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #333;">Wrzesień</div>
-                    <div style="font-size: 9px; color: #28a745; margin-bottom: 3px;">5 zaplanowanych</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
+                  <div class="month-mini-card">
+                    <div>Wrzesień</div>
+                    <div>5 zaplanowanych</div>
+                    <div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px; border: 2px solid #667eea;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #667eea;">Październik</div>
-                    <div style="font-size: 9px; color: #28a745; margin-bottom: 3px;">9 zaplanowanych</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
+                  <div class="month-mini-card">
+                    <div>Październik</div>
+                    <div>9 zaplanowanych</div>
+                    <div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #333;">Listopad</div>
-                    <div style="font-size: 9px; color: #17a2b8; margin-bottom: 3px;">4 zaplanowane</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #dc3545; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
+                  <div class="month-mini-card">
+                    <div>Listopad</div>
+                    <div>4 zaplanowane</div>
+                    <div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
-                  <div class="month-mini-card" style="background: white; border: 1px solid #ddd; padding: 10px; text-align: center; border-radius: 6px;">
-                    <div style="font-weight: 600; font-size: 11px; margin-bottom: 5px; color: #333;">Grudzień</div>
-                    <div style="font-size: 9px; color: #6c757d; margin-bottom: 3px;">2 zaplanowane</div>
-                    <div style="display: flex; justify-content: center; gap: 1px; flex-wrap: wrap;">
-                      <div style="width: 4px; height: 4px; background: #28a745; margin: 0.5px;"></div>
-                      <div style="width: 4px; height: 4px; background: #17a2b8; margin: 0.5px;"></div>
+                  <div class="month-mini-card">
+                    <div>Grudzień</div>
+                    <div>2 zaplanowane</div>
+                    <div>
+                      <div></div>
+                      <div></div>
                     </div>
                   </div>
                 </div>
-                <div style="margin-top: 10px; font-size: 10px; text-align: center;">
-                  <span style="color: #28a745;">● Serwis</span> | 
-                  <span style="color: #dc3545;">● Test</span> | 
-                  <span style="color: #17a2b8;">● Raport</span>
+                <div>
+                  <span>● Serwis</span> | 
+                  <span>● Test</span> | 
+                  <span>● Raport</span>
                 </div>
               </div>
             </div>

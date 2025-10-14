@@ -97,12 +97,12 @@ export class ExecutedYearPage {
           <div class="chart-placeholder">
             <p>Wykres trendu wykonanych raportów w ciągu roku</p>
             <div class="chart-bars">
-              <div class="bar" style="height: 80px;"></div>
-              <div class="bar" style="height: 72px;"></div>
-              <div class="bar" style="height: 95px;"></div>
-              <div class="bar" style="height: 88px;"></div>
-              <div class="bar" style="height: 100px;"></div>
-              <div class="bar" style="height: 85px;"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
             </div>
           </div>
         </div>

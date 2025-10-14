@@ -15,20 +15,28 @@ import { StoragePage } from './devices/storage';
 import { CalibrationPage } from './devices/calibration';
 
 // Security pages
-import { SecuritySettingsPage } from './security/security';
+import { SecuritySettingsPage } from './security/settings';
 import { UsersPage } from './security/users';
 import { PermissionsPage } from './security/permissions';
 import { BackupPage } from './security/backup';
+import { LabelsPage } from './security/labels';
+import { ReportsPage } from './security/reports';
 
 // System pages
-import { SystemPage } from './system/system';
+import { SystemSettingsPage } from './system/settings';
 import { NetworkPage } from './system/network';
+import { PerformancePage } from './system/performance';
+import { UpdatesPage } from './system/updates';
+import { LogsPage } from './system/logs';
+import { MonitoringPage } from './system/monitoring';
+import { DiagnosticsPage } from './system/diagnostics';
+import { MaintenancePage } from './system/maintenance';
 
 export class ConnectConfigMenuController {
   private readonly menuStructure: ConnectConfigMenuStructure;
   private currentLevel1Active: string = 'connect-config';
   private currentLevel2Active: string = 'system-category';
-  private currentLevel3Active: string = 'system';
+  private currentLevel3Active: string = 'settings';
 
   // Page instances registry
   private readonly pageInstances: Map<string, any> = new Map();
@@ -55,10 +63,18 @@ export class ConnectConfigMenuController {
     this.pageInstances.set('UsersPage', new UsersPage());
     this.pageInstances.set('PermissionsPage', new PermissionsPage());
     this.pageInstances.set('BackupPage', new BackupPage());
+    this.pageInstances.set('LabelsPage', new LabelsPage());
+    this.pageInstances.set('ReportsPage', new ReportsPage());
     
     // Initialize system page instances
-    this.pageInstances.set('SystemPage', new SystemPage());
+    this.pageInstances.set('SystemSettingsPage', new SystemSettingsPage());
     this.pageInstances.set('NetworkPage', new NetworkPage());
+    this.pageInstances.set('PerformancePage', new PerformancePage());
+    this.pageInstances.set('UpdatesPage', new UpdatesPage());
+    this.pageInstances.set('LogsPage', new LogsPage());
+    this.pageInstances.set('MonitoringPage', new MonitoringPage());
+    this.pageInstances.set('DiagnosticsPage', new DiagnosticsPage());
+    this.pageInstances.set('MaintenancePage', new MaintenancePage());
     
   }
 

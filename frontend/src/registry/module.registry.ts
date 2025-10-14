@@ -101,6 +101,17 @@ export const MODULE_REGISTRY = {
     dependencies: [],
     features: ['scenario-management', 'activity-management', 'test-assignment', 'drag-drop'],
     route: '/connect-manager'
+  },
+  'menu-editor': {
+    name: 'menu-editor',
+    displayName: 'Menu Editor',
+    version: '1.0.0',
+    status: 'production',
+    path: '/src/modules/menu-editor',
+    icon: '🎨',
+    dependencies: [],
+    features: ['menu-design', 'visual-editor', 'route-config', 'live-preview'],
+    route: '/menu-editor'
   }
 } as const satisfies Record<string, ModuleDefinition>;
 

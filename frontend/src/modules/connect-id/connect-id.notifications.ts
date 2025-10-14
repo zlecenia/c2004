@@ -43,8 +43,8 @@ export class ConnectIdNotifications {
     `;
     
     notification.innerHTML = `
-      <div style="display: flex; align-items: center; gap: 8px;">
-        <span style="font-size: 16px;">${this.getNotificationIcon(type)}</span>
+      <div>
+        <span>${this.getNotificationIcon(type)}</span>
         <span>${message}</span>
       </div>
     `;

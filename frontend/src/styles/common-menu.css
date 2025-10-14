@@ -1,0 +1,147 @@
+/* frontend/src/styles/common-menu.css */
+
+/* Common styles for all module menu containers */
+.connect-config-menu-container,
+.connect-data-menu-container,
+.connect-manager-menu-container,
+.connect-test-menu-container,
+.connect-reports-menu-container,
+.connect-workshop-menu-container,
+.connect-id-menu-container {
+  background: #f8f9fa;
+  border-right: 1px solid #e9ecef;
+  overflow-y: auto;
+  min-width: 200px;
+}
+
+/* Specific width overrides */
+.connect-config-menu-container,
+.connect-test-menu-container {
+  width: 280px;
+}
+
+.connect-manager-menu-container {
+  width: 120px;
+}
+
+/* Responsive menu containers */
+@media (max-width: 768px) {
+  .connect-config-menu-container,
+  .connect-data-menu-container,
+  .connect-manager-menu-container,
+  .connect-test-menu-container,
+  .connect-reports-menu-container,
+  .connect-workshop-menu-container,
+  .connect-id-menu-container {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e9ecef;
+  }
+  
+  .module-with-menu {
+    flex-direction: column;
+  }
+}
+
+/* Common menu column styles */
+.menu-column {
+  padding: 8px;
+  border-right: 1px solid #dee2e6;
+}
+
+.menu-column:last-child {
+  border-right: none;
+}
+
+.column-title {
+  font-size: 12px;
+  font-weight: 600;
+  color: #6c757d;
+  text-transform: uppercase;
+  margin: 0 0 12px 0;
+  padding: 0 8px;
+}
+
+/* Common button styles for menu items */
+.section-item,
+.method-item,
+.subsection-item {
+  width: 100%;
+  padding: 8px 12px;
+  margin: 2px 0;
+  border: none;
+  background: transparent;
+  text-align: left;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #495057;
+  transition: all 0.2s ease;
+}
+
+.section-item:hover,
+.method-item:hover,
+.subsection-item:hover {
+  background: #e9ecef;
+  color: #212529;
+}
+
+.section-item.active,
+.method-item.active,
+.subsection-item.active {
+  background: #007bff;
+  color: white;
+}
+
+.menu-icon {
+  width: 20px;
+  height: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.menu-label {
+  flex: 1;
+  font-weight: 500;
+}
+
+/* Menu theme variants */
+.menu-theme-dark {
+  background: #343a40;
+  color: white;
+}
+
+.menu-theme-dark .section-item,
+.menu-theme-dark .method-item,
+.menu-theme-dark .subsection-item {
+  color: #f8f9fa;
+}
+
+.menu-theme-dark .section-item:hover,
+.menu-theme-dark .method-item:hover,
+.menu-theme-dark .subsection-item:hover {
+  background: #495057;
+}
+
+.menu-theme-dark .column-title {
+  color: #adb5bd;
+}
+
+/* Layout variants */
+.menu-layout-compact .section-item,
+.menu-layout-compact .method-item,
+.menu-layout-compact .subsection-item {
+  padding: 6px 10px;
+  font-size: 13px;
+}
+
+.menu-layout-spacious .section-item,
+.menu-layout-spacious .method-item,
+.menu-layout-spacious .subsection-item {
+  padding: 12px 16px;
+  font-size: 15px;
+}

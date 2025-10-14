@@ -1,22 +1,20 @@
-// frontend/src/modules/connect-config/pages/system/system/system.page.ts
+// frontend/src/modules/connect-config/pages/system/settings/settings.page.ts
 
-export interface SystemData {
+export interface SystemSettingsData {
   systemName: string;
   language: string;
   timezone: string;
   autoSaveInterval: number;
 }
 
-export class SystemPage {
-  private data: SystemData = {
+export class SystemSettingsPage {
+  private data: SystemSettingsData = {
     systemName: 'IdentificationSystem-C2004',
     language: 'Polski',
     timezone: 'Europe/Warsaw',
     autoSaveInterval: 5
   };
 
-  constructor() {
-  }
 
   public render(): string {
     return `
@@ -129,11 +127,11 @@ export class SystemPage {
     }, 3000);
   }
 
-  public getData(): SystemData {
+  public getData(): SystemSettingsData {
     return { ...this.data };
   }
 
-  public setData(newData: Partial<SystemData>): void {
+  public setData(newData: Partial<SystemSettingsData>): void {
     this.data = { ...this.data, ...newData };
   }
 

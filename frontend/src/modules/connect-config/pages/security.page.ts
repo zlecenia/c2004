@@ -337,7 +337,7 @@ export class SecurityPage {
         display: flex;
         align-items: center;
         gap: 16px;
-        padding: 12px 16px;
+        padding: 6px 6px;
         background: #f8f9fa;
         border-radius: 6px;
         border: 1px solid #e9ecef;

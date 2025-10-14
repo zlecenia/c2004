@@ -40,7 +40,7 @@ export class ConnectConfigMenuStructure {
             active: true,
             children: [
               // Level 3 - Specific sections
-              { id: 'system', name: 'System', level: 3, parentId: 'system-category', active: true, route: '/connect-config/system/system', pageClass: 'SystemPage' },
+              { id: 'settings', name: 'Ustawienia', level: 3, parentId: 'system-category', active: true, route: '/connect-config/system/settings', pageClass: 'SystemSettingsPage' },
               { id: 'network', name: 'Sieć', level: 3, parentId: 'system-category', route: '/connect-config/system/network', pageClass: 'NetworkPage' },
               { id: 'performance', name: 'Wydajność', level: 3, parentId: 'system-category', route: '/connect-config/system/performance', pageClass: 'PerformancePage' },
               { id: 'monitoring', name: 'Monitoring', level: 3, parentId: 'system-category', route: '/connect-config/system/monitoring', pageClass: 'MonitoringPage' },
@@ -76,7 +76,7 @@ export class ConnectConfigMenuStructure {
             parentId: 'connect-config',
             children: [
               // Level 3 - Security specific sections
-              { id: 'security', name: 'Bezpieczeństwo', level: 3, parentId: 'security-category', route: '/connect-config/security/security', pageClass: 'SecuritySettingsPage' },
+              { id: 'security-settings', name: 'Ustawienia', level: 3, parentId: 'security-category', route: '/connect-config/security/settings', pageClass: 'SecuritySettingsPage' },
               { id: 'users', name: 'Użytkownicy', level: 3, parentId: 'security-category', route: '/connect-config/security/users', pageClass: 'UsersPage' },
               { id: 'permissions', name: 'Uprawnienia', level: 3, parentId: 'security-category', route: '/connect-config/security/permissions', pageClass: 'PermissionsPage' },
               { id: 'backup', name: 'Backup', level: 3, parentId: 'security-category', route: '/connect-config/security/backup', pageClass: 'BackupPage' },

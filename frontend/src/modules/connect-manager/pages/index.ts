@@ -3,103 +3,97 @@ import { ScenariosPage } from './scenarios.page';
 import { ActivitiesPage } from './activities.page';
 import { TestTypesPage } from './test-types.page';
 
-// Page registry for connect-manager module
-export const ConnectManagerPages = {
-  'scenarios': ScenariosPage,
-  'activities': ActivitiesPage,
-  'test-types': TestTypesPage
-};
-
-// Page manager for connect-manager
 export class ConnectManagerPageManager {
-  private currentPage: string = 'scenarios';
   private container: HTMLElement | null = null;
-
-  constructor() {
-  }
+  private currentPage: string = 'scenarios';
+  private stylesAdded: boolean = false;
 
   initialize(container: HTMLElement): void {
     this.container = container;
+    this.addStyles();
   }
 
-  loadPage(section: string): void {
-    
-    if (!this.container) {
-      console.error('⚙️ ConnectManagerPageManager: No container set');
-      return;
-    }
-
-    const PageClass = ConnectManagerPages[section as keyof typeof ConnectManagerPages];
-    if (!PageClass) {
-      console.warn(`⚙️ ConnectManagerPageManager: Page ${section} not found, using default`);
-      this.loadDefaultPage();
-      return;
-    }
-
-    try {
-      const pageContent = PageClass.getContent();
-      const pageStyles = PageClass.getStyles();
-
-      this.container.innerHTML = pageContent;
-      this.injectPageStyles(pageStyles, section);
-      this.currentPage = section;
-
-      // Setup event listeners for pages that support it
-      if ('setupEventListeners' in PageClass && typeof PageClass.setupEventListeners === 'function') {
-        PageClass.setupEventListeners();
-      }
-
-    } catch (error) {
-      console.error(`❌ ConnectManagerPageManager: Error loading page ${section}:`, error);
-      this.loadErrorPage(section);
-    }
-  }
-
-  private loadDefaultPage(): void {
-    this.loadPage('scenarios');
-  }
-
-  private loadErrorPage(section: string): void {
+  loadPage(page: string): void {
     if (!this.container) return;
-    
-    this.container.innerHTML = `
-      <div class="page-content">
-        <div class="page-header">
-          <h2>❌ Błąd ładowania strony</h2>
-          <p>Nie można załadować strony: ${section}</p>
-        </div>
-      </div>
-    `;
+
+    this.currentPage = page;
+    let content = '';
+
+    switch(page) {
+      case 'scenarios':
+        content = ScenariosPage.getContent();
+        this.container.innerHTML = content;
+        // Attach event listeners after content is loaded
+        setTimeout(() => ScenariosPage.attachEventListeners(), 0);
+        break;
+      case 'activities':
+        content = ActivitiesPage.getContent();
+        this.container.innerHTML = content;
+        break;
+      case 'test-types':
+        content = TestTypesPage.getContent();
+        this.container.innerHTML = content;
+        break;
+      default:
+        content = `
+          <div class="page-content">
+            <div class="page-not-found">
+              <h2>❌ Strona nie znaleziona</h2>
+              <p>Sekcja "${page}" nie istnieje</p>
+            </div>
+          </div>
+        `;
+        this.container.innerHTML = content;
+    }
   }
 
-  private injectPageStyles(styles: string, section: string): void {
-    const existingStyle = document.getElementById(`connect-manager-page-styles-${this.currentPage}`);
-    if (existingStyle) {
-      existingStyle.remove();
-    }
+  private addStyles(): void {
+    if (this.stylesAdded) return;
 
-    const styleElement = document.createElement('style');
-    styleElement.id = `connect-manager-page-styles-${section}`;
-    styleElement.textContent = styles;
-    document.head.appendChild(styleElement);
+    const styles = document.createElement('style');
+    styles.id = 'connect-manager-page-styles';
+    styles.textContent = `
+      ${ScenariosPage.getStyles()}
+      ${ActivitiesPage.getStyles()}
+      ${TestTypesPage.getStyles()}
+      
+      /* Common styles */
+      .page-not-found {
+        padding: 40px;
+        text-align: center;
+      }
+      
+      .page-not-found h2 {
+        color: #dc3545;
+        margin-bottom: 10px;
+      }
+      
+      /* Drag and drop styles */
+      .drag-over {
+        background: #e7f3ff !important;
+        border-color: #007bff !important;
+      }
+      
+      .draggable {
+        cursor: move;
+      }
+      
+      .dragging {
+        opacity: 0.5;
+      }
+    `;
+
+    document.head.appendChild(styles);
+    this.stylesAdded = true;
   }
 
   getCurrentPage(): string {
     return this.currentPage;
   }
 
-  getAvailablePages(): string[] {
-    return Object.keys(ConnectManagerPages);
-  }
-
-  pageExists(section: string): boolean {
-    return section in ConnectManagerPages;
+  refresh(): void {
+    this.loadPage(this.currentPage);
   }
 }
 
-// Export page classes
-export {
-  ScenariosPage,
-  ActivitiesPage,
-  TestTypesPage
-};
+export { ScenariosPage, ActivitiesPage, TestTypesPage };

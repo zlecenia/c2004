@@ -200,11 +200,11 @@ export class ConnectReportsTemplates {
       <div class="stats-panel">
         <div class="stats-grid">
           <div class="stat-item">
-            <div class="stat-number" style="color: #dc3545;">7</div>
+            <div class="stat-number">7</div>
             <div class="stat-label">Przeterminowane</div>
           </div>
           <div class="stat-item">
-            <div class="stat-number" style="color: #dc3545;">3</div>
+            <div class="stat-number">3</div>
             <div class="stat-label">Krytyczne</div>
           </div>
           <div class="stat-item">
@@ -308,21 +308,21 @@ export class ConnectReportsTemplates {
               <div class="category-item">
                 <span class="category-label">🔧 Naprawy</span>
                 <div class="category-bar">
-                  <div class="category-fill" style="width: 45%"></div>
+                  <div class="category-fill"></div>
                 </div>
                 <span class="category-value">45%</span>
               </div>
               <div class="category-item">
                 <span class="category-label">⚙️ Konserwacja</span>
                 <div class="category-bar">
-                  <div class="category-fill" style="width: 30%"></div>
+                  <div class="category-fill"></div>
                 </div>
                 <span class="category-value">30%</span>
               </div>
               <div class="category-item">
                 <span class="category-label">🔍 Przeglądy</span>
                 <div class="category-bar">
-                  <div class="category-fill" style="width: 25%"></div>
+                  <div class="category-fill"></div>
                 </div>
                 <span class="category-value">25%</span>
               </div>
@@ -336,7 +336,7 @@ export class ConnectReportsTemplates {
   private static generateChartBars(): string {
     const values = [85, 92, 78, 96, 88, 91, 95, 87, 93, 89, 97, 84, 90, 86, 94];
     return values.map((value, index) => 
-      `<div class="chart-bar" style="height: ${value}%" title="Dzień ${index + 1}: ${value}%"></div>`
+      `<div class="chart-bar" title="Dzień ${index + 1}: ${value}%"></div>`
     ).join('');
   }
 }

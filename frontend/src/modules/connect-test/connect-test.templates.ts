@@ -61,7 +61,7 @@ export class ConnectTestTemplates {
       </div>
 
       <!-- Testing Section -->
-      <div id="testing-section" class="content-section" style="display: none;">
+      <div id="testing-section" class="content-section">
         ${this.getTestingContent()}
       </div>
     `;
@@ -91,7 +91,7 @@ export class ConnectTestTemplates {
         </div>
 
         <!-- QR Method -->
-        <div id="qr-method" class="method-content" style="display: none;">
+        <div id="qr-method" class="method-content">
           <div class="identification-display">
             <div class="qr-scanner">
               <div class="scanner-frame">
@@ -113,7 +113,7 @@ export class ConnectTestTemplates {
         </div>
 
         <!-- Barcode Method -->
-        <div id="barcode-method" class="method-content" style="display: none;">
+        <div id="barcode-method" class="method-content">
           <div class="identification-display">
             <div class="barcode-scanner">
               <div class="scanner-beam"></div>
@@ -129,7 +129,7 @@ export class ConnectTestTemplates {
         </div>
 
         <!-- Manual Method -->
-        <div id="manual-method" class="method-content" style="display: none;">
+        <div id="manual-method" class="method-content">
           <div class="identification-display">
             <div class="manual-input-container">
               <div class="input-icon">⌨️</div>
@@ -145,7 +145,7 @@ export class ConnectTestTemplates {
         </div>
 
         <!-- List Method -->
-        <div id="list-method" class="method-content" style="display: none;">
+        <div id="list-method" class="method-content">
           <div class="device-list-container">
             <div class="list-header">
               <h2>📋 Lista urządzeń</h2>
@@ -212,7 +212,7 @@ export class ConnectTestTemplates {
           </div>
 
           <div class="progress-bar">
-            <div class="progress-fill" id="progress-fill" style="width: 0%"></div>
+            <div class="progress-fill" id="progress-fill"></div>
           </div>
 
           <div class="activity-controls">

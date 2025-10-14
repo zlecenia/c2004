@@ -1,0 +1,693 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Scenario Builder - Connect Manager</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f8f9fa;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            color: #333;
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #666;
+            font-size: 14px;
+        }
+
+        .builder-container {
+            display: grid;
+            grid-template-columns: 1fr 350px;
+            gap: 20px;
+        }
+
+        .main-builder {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .sidebar {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: fit-content;
+        }
+
+        .scenario-name {
+            margin-bottom: 20px;
+        }
+
+        .scenario-name input {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .goal-section {
+            margin-bottom: 20px;
+            padding: 15px;
+            background: #f0f7ff;
+            border-radius: 8px;
+            border: 2px solid #007bff;
+        }
+
+        .goal-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .goal-label {
+            background: #007bff;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .goal-select {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        .task-container {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .task-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .task-label {
+            background: #28a745;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .sentence-builder {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            min-height: 45px;
+            border: 2px dashed #dee2e6;
+        }
+
+        .sentence-part {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .sentence-text {
+            color: #333;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .sentence-select {
+            padding: 6px 10px;
+            border: 2px solid #007bff;
+            border-radius: 4px;
+            background: white;
+            color: #007bff;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .sentence-input {
+            padding: 6px 10px;
+            border: 2px solid #28a745;
+            border-radius: 4px;
+            background: white;
+            color: #28a745;
+            font-weight: 600;
+            font-size: 14px;
+            width: 80px;
+            text-align: center;
+        }
+
+        .operator {
+            background: #ffc107;
+            color: #333;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 12px;
+        }
+
+        .add-task-btn, .add-condition-btn {
+            padding: 8px 16px;
+            border: 2px dashed #007bff;
+            background: white;
+            color: #007bff;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            margin-top: 10px;
+        }
+
+        .add-task-btn:hover, .add-condition-btn:hover {
+            background: #f0f7ff;
+        }
+
+        .examples-section {
+            margin-top: 20px;
+        }
+
+        .examples-header {
+            font-size: 14px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .example-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 4px;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: #666;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .example-item:hover {
+            background: #e3f2fd;
+            transform: translateX(5px);
+        }
+
+        .example-item strong {
+            color: #333;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .sidebar h3 {
+            font-size: 16px;
+            margin-bottom: 15px;
+            color: #333;
+        }
+
+        .element-library {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .library-section {
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+        }
+
+        .library-title {
+            font-size: 12px;
+            font-weight: 600;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+        }
+
+        .library-items {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .library-item {
+            padding: 6px 10px;
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 13px;
+            cursor: move;
+            transition: all 0.2s;
+        }
+
+        .library-item:hover {
+            border-color: #007bff;
+            background: #f0f7ff;
+        }
+
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 4px 8px;
+            border-radius: 3px;
+            cursor: pointer;
+            font-size: 12px;
+            margin-left: 10px;
+        }
+
+        .condition-group {
+            background: #fff5f5;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 10px;
+            border: 2px solid #dc3545;
+        }
+
+        .condition-label {
+            background: #dc3545;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: inline-block;
+        }
+
+        .preview-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 6px;
+        }
+
+        .preview-title {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .preview-code {
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #333;
+            white-space: pre-wrap;
+        }
+
+        .save-button {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            padding: 12px 24px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(40, 167, 69, 0.3);
+            transition: all 0.3s;
+        }
+
+        .save-button:hover {
+            background: #218838;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(40, 167, 69, 0.4);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎯 Budowanie Scenariuszy Testowych</h1>
+            <p>Twórz scenariusze testowe jako zdania logiczne z elementami Goal → Task → Function</p>
+        </div>
+
+        <div class="builder-container">
+            <div class="main-builder">
+                <div class="scenario-name">
+                    <input type="text" placeholder="Nazwa scenariusza..." value="Test szczelności C20">
+                </div>
+
+                <div class="goal-section" id="goal1">
+                    <div class="goal-header">
+                        <span class="goal-label">GOAL</span>
+                        <select class="goal-select">
+                            <option>Wytworzyć podciśnienie</option>
+                            <option>Sprawdzić szczelność</option>
+                            <option>Zmierzyć przepływ</option>
+                            <option>Przetestować ciśnienie</option>
+                        </select>
+                        <button class="delete-btn" onclick="deleteElement('goal1')">Usuń</button>
+                    </div>
+
+                    <div class="task-container">
+                        <div class="task-header">
+                            <span class="task-label">TASK 1</span>
+                        </div>
+                        <div class="sentence-builder">
+                            <div class="sentence-part">
+                                <span class="sentence-text">Włącz</span>
+                                <select class="sentence-select">
+                                    <option>pompę 1</option>
+                                    <option>pompę 2</option>
+                                    <option>sprężarkę</option>
+                                </select>
+                            </div>
+                            <span class="operator">AND</span>
+                            <div class="sentence-part">
+                                <span class="sentence-text">Włącz</span>
+                                <select class="sentence-select">
+                                    <option>zawór 1</option>
+                                    <option>zawór 2</option>
+                                    <option>zawór 3</option>
+                                </select>
+                            </div>
+                            <span class="operator">AND</span>
+                            <div class="sentence-part">
+                                <span class="sentence-text">Ustaw ciśnienie</span>
+                                <input type="text" class="sentence-input" value="10">
+                                <span class="sentence-text">mbar</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="condition-group">
+                        <span class="condition-label">IF</span>
+                        <div class="sentence-builder">
+                            <div class="sentence-part">
+                                <select class="sentence-select">
+                                    <option>czas</option>
+                                    <option>ciśnienie</option>
+                                    <option>temperatura</option>
+                                </select>
+                                <select class="sentence-select">
+                                    <option>></option>
+                                    <option><</option>
+                                    <option>=</option>
+                                </select>
+                                <input type="text" class="sentence-input" value="10">
+                                <span class="sentence-text">s</span>
+                            </div>
+                            <span class="operator">TO</span>
+                            <div class="sentence-part">
+                                <select class="sentence-select">
+                                    <option>niskie ciśnienie</option>
+                                    <option>wysokie ciśnienie</option>
+                                    <option>przepływ</option>
+                                </select>
+                                <select class="sentence-select">
+                                    <option>></option>
+                                    <option><</option>
+                                    <option>=</option>
+                                </select>
+                                <input type="text" class="sentence-input" value="10">
+                                <span class="sentence-text">mbar</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="condition-group">
+                        <span class="condition-label">ELSE</span>
+                        <div class="sentence-builder">
+                            <div class="sentence-part">
+                                <span class="sentence-text">ERROR</span>
+                                <input type="text" class="sentence-input" value="Nieszczelność" style="width: 150px;">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button class="add-task-btn" onclick="addTask()">+ Dodaj zadanie</button>
+                    <button class="add-condition-btn" onclick="addCondition()">+ Dodaj warunek</button>
+                </div>
+
+                <button class="add-task-btn" onclick="addGoal()" style="width: 100%;">+ Dodaj nowy cel (Goal)</button>
+
+                <div class="preview-section">
+                    <div class="preview-title">📝 Podgląd scenariusza:</div>
+                    <div class="preview-code" id="previewCode">
+SCENARIO: Test szczelności C20
+
+GOAL: Wytworzyć podciśnienie
+  TASK 1:
+    → Włącz [pompę 1] AND Włącz [zawór 1] AND Ustaw ciśnienie [10 mbar]
+    
+  IF [czas] [>] [10 s] TO [niskie ciśnienie] [>] [10 mbar]
+  ELSE ERROR "Nieszczelność"
+                    </div>
+                </div>
+            </div>
+
+            <div class="sidebar">
+                <h3>📚 Biblioteka elementów</h3>
+                
+                <div class="element-library">
+                    <div class="library-section">
+                        <div class="library-title">Obiekty</div>
+                        <div class="library-items">
+                            <div class="library-item">pompa 1</div>
+                            <div class="library-item">pompa 2</div>
+                            <div class="library-item">zawór 1</div>
+                            <div class="library-item">zawór 2</div>
+                            <div class="library-item">zawór 3</div>
+                            <div class="library-item">sprężarka</div>
+                            <div class="library-item">regulator</div>
+                        </div>
+                    </div>
+
+                    <div class="library-section">
+                        <div class="library-title">Funkcje</div>
+                        <div class="library-items">
+                            <div class="library-item">Włącz</div>
+                            <div class="library-item">Wyłącz</div>
+                            <div class="library-item">Ustaw</div>
+                            <div class="library-item">Zmierz</div>
+                            <div class="library-item">Sprawdź</div>
+                            <div class="library-item">Porównaj</div>
+                        </div>
+                    </div>
+
+                    <div class="library-section">
+                        <div class="library-title">Parametry</div>
+                        <div class="library-items">
+                            <div class="library-item">ciśnienie</div>
+                            <div class="library-item">temperatura</div>
+                            <div class="library-item">przepływ</div>
+                            <div class="library-item">czas</div>
+                            <div class="library-item">objętość</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="examples-section">
+                    <div class="examples-header">💡 Przykłady z bazy:</div>
+                    <div class="example-item" onclick="loadExample(1)">
+                        <strong>Test przepływu</strong>
+                        Włącz [pompę 2] → Zmierz [przepływ] > 100 l/min
+                    </div>
+                    <div class="example-item" onclick="loadExample(2)">
+                        <strong>Kontrola ciśnienia</strong>
+                        Ustaw [regulator] = 5 bar → Sprawdź [ciśnienie]
+                    </div>
+                    <div class="example-item" onclick="loadExample(3)">
+                        <strong>Test szczelności</strong>
+                        Włącz [zawór 1] AND [zawór 2] → IF [czas] > 60s
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <button class="save-button" onclick="saveScenario()">💾 Zapisz scenariusz</button>
+    </div>
+
+    <script>
+        // Symulacja bazy danych SQLite
+        const database = {
+            scenarios: [
+                {
+                    id: 1,
+                    name: 'Test szczelności C20',
+                    goals: [
+                        {
+                            name: 'Wytworzyć podciśnienie',
+                            tasks: [
+                                {
+                                    actions: ['Włącz pompę 1', 'Włącz zawór 1', 'Ustaw ciśnienie 10 mbar'],
+                                    conditions: [
+                                        { type: 'IF', expression: 'czas > 10s TO niskie ciśnienie > 10 mbar' },
+                                        { type: 'ELSE', expression: 'ERROR "Nieszczelność"' }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            objects: ['pompa 1', 'pompa 2', 'zawór 1', 'zawór 2', 'zawór 3', 'sprężarka', 'regulator'],
+            functions: ['Włącz', 'Wyłącz', 'Ustaw', 'Zmierz', 'Sprawdź', 'Porównaj'],
+            parameters: ['ciśnienie', 'temperatura', 'przepływ', 'czas', 'objętość']
+        };
+
+        let goalCounter = 1;
+        let taskCounter = 1;
+
+        function addGoal() {
+            goalCounter++;
+            const mainBuilder = document.querySelector('.main-builder');
+            const newGoal = document.createElement('div');
+            newGoal.className = 'goal-section';
+            newGoal.id = `goal${goalCounter}`;
+            newGoal.innerHTML = `
+                <div class="goal-header">
+                    <span class="goal-label">GOAL</span>
+                    <select class="goal-select">
+                        <option>Wytworzyć podciśnienie</option>
+                        <option>Sprawdzić szczelność</option>
+                        <option>Zmierzyć przepływ</option>
+                        <option>Przetestować ciśnienie</option>
+                    </select>
+                    <button class="delete-btn" onclick="deleteElement('goal${goalCounter}')">Usuń</button>
+                </div>
+                <button class="add-task-btn" onclick="addTask()">+ Dodaj zadanie</button>
+            `;
+            
+            const addGoalBtn = mainBuilder.querySelector('button[onclick="addGoal()"]');
+            mainBuilder.insertBefore(newGoal, addGoalBtn);
+            updatePreview();
+        }
+
+        function addTask() {
+            taskCounter++;
+            console.log('Adding new task');
+            updatePreview();
+        }
+
+        function addCondition() {
+            console.log('Adding new condition');
+            updatePreview();
+        }
+
+        function deleteElement(elementId) {
+            const element = document.getElementById(elementId);
+            if (element) {
+                element.remove();
+                updatePreview();
+            }
+        }
+
+        function loadExample(exampleId) {
+            console.log(`Loading example ${exampleId}`);
+            // Tu można załadować przykład z bazy
+            alert(`Ładowanie przykładu ${exampleId} z bazy danych...`);
+        }
+
+        function updatePreview() {
+            const scenarioName = document.querySelector('.scenario-name input').value;
+            const goals = document.querySelectorAll('.goal-section');
+            
+            let preview = `SCENARIO: ${scenarioName}\n\n`;
+            
+            goals.forEach((goal, index) => {
+                const goalSelect = goal.querySelector('.goal-select');
+                if (goalSelect) {
+                    preview += `GOAL: ${goalSelect.value}\n`;
+                    preview += `  TASK 1:\n`;
+                    preview += `    → Włącz [pompę 1] AND Włącz [zawór 1] AND Ustaw ciśnienie [10 mbar]\n`;
+                    preview += `    \n`;
+                    preview += `  IF [czas] [>] [10 s] TO [niskie ciśnienie] [>] [10 mbar]\n`;
+                    preview += `  ELSE ERROR "Nieszczelność"\n\n`;
+                }
+            });
+            
+            document.getElementById('previewCode').textContent = preview;
+        }
+
+        function saveScenario() {
+            const scenarioData = {
+                name: document.querySelector('.scenario-name input').value,
+                goals: [],
+                timestamp: new Date().toISOString()
+            };
+            
+            // Zbierz dane ze wszystkich celów i zadań
+            const goals = document.querySelectorAll('.goal-section');
+            goals.forEach(goal => {
+                const goalData = {
+                    name: goal.querySelector('.goal-select').value,
+                    tasks: []
+                };
+                // Tu dodać zbieranie zadań i warunków
+                scenarioData.goals.push(goalData);
+            });
+            
+            console.log('Saving scenario:', scenarioData);
+            
+            // Symulacja zapisu do bazy
+            database.scenarios.push(scenarioData);
+            
+            alert('✅ Scenariusz został zapisany!');
+        }
+
+        // Inicjalizacja drag & drop
+        document.addEventListener('DOMContentLoaded', function() {
+            const libraryItems = document.querySelectorAll('.library-item');
+            
+            libraryItems.forEach(item => {
+                item.addEventListener('dragstart', function(e) {
+                    e.dataTransfer.setData('text/plain', item.textContent);
+                    item.style.opacity = '0.5';
+                });
+                
+                item.addEventListener('dragend', function(e) {
+                    item.style.opacity = '';
+                });
+            });
+            
+            // Nasłuchiwanie zmian w formularzach
+            document.addEventListener('change', updatePreview);
+            document.addEventListener('input', updatePreview);
+        });
+    </script>
+</body>
+</html>
