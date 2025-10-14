@@ -55,7 +55,7 @@ export const mainNavigationConfig: MenuConfiguration = {
         },
         {
           id: 'connect-data',
-          label: 'ConnectData',
+          label: 'Connect Data',
           icon: '💾',
           module: 'connect-data',
           route: '/connect-data',
@@ -63,10 +63,18 @@ export const mainNavigationConfig: MenuConfiguration = {
         },
         {
           id: 'connect-config',
-          label: 'ConnectConfig',
+          label: 'Connect Config',
           icon: '⚙️',
           module: 'connect-config',
           route: '/connect-config',
+          action: 'navigate'
+        },
+        {
+          id: 'menu-editor',
+          label: 'Menu Editor',
+          icon: '🎨',
+          module: 'menu-editor',
+          route: '/menu-editor',
           action: 'navigate'
         }
       ]
@@ -91,7 +99,8 @@ export const connectDataMenuConfig: MenuConfiguration = {
           label: 'Zgłoszenia',
           icon: '📋',
           section: 'requests',
-          action: 'section-change'
+          action: 'section-change',
+          active: true
         },
         {
           id: 'services',
@@ -112,8 +121,7 @@ export const connectDataMenuConfig: MenuConfiguration = {
           label: 'Dyspozycje',
           icon: '💿',
           section: 'dispositions',
-          action: 'section-change',
-          active: true
+          action: 'section-change'
         }
       ]
     },
@@ -126,32 +134,16 @@ export const connectDataMenuConfig: MenuConfiguration = {
           id: 'search',
           label: 'Szukaj',
           icon: '🔍',
-          action: 'search'
+          method: 'search',
+          action: 'method-change',
+          active: true
         },
         {
           id: 'new-request',
           label: 'Dodaj',
           icon: '➕',
-          action: 'add-new'
-        },
-        {
-          id: 'export',
-          label: 'Export',
-          icon: '📊',
-          action: 'export'
-        },
-        {
-          id: 'import',
-          label: 'Import',
-          icon: '⬇️',
-          action: 'import',
-          active: true
-        },
-        {
-          id: 'sync',
-          label: 'Sync',
-          icon: '🔄',
-          action: 'sync'
+          method: 'add-new',
+          action: 'method-change'
         }
       ]
     }
@@ -184,21 +176,13 @@ export const connectReportsMenuConfig: MenuConfiguration = {
           icon: '📅',
           section: 'planned',
           action: 'report-type-change'
-        },
-        {
-          id: 'export',
-          label: 'Export',
-          icon: '💾',
-          section: 'export',
-          action: 'report-type-change'
         }
       ]
     },
     {
       id: 'view-options',
       title: 'Widok',
-      width: '120px',
-      // Make the column visible; MenuManager can still toggle a 3rd column dynamically
+      width: '140px',
       items: [
         {
           id: 'week',
@@ -217,38 +201,18 @@ export const connectReportsMenuConfig: MenuConfiguration = {
         },
         {
           id: 'year',
-          label: 'Rok',
-          icon: '🗓️',
+          label: 'Kwartał',
+          icon: '📊',
           method: 'year',
           action: 'view-change'
         },
         {
           id: 'custom',
-          label: 'Niestandardowy',
-          icon: '🎛️',
+          label: 'Filtruj',
+          icon: '🔍',
           method: 'custom',
           action: 'view-change'
-        },
-        {
-          id: 'planning',
-          label: 'Planowanie',
-          icon: '🗂️',
-          method: 'planning',
-          action: 'view-change'
         }
-      ]
-    },
-    {
-      id: 'planning-options',
-      title: 'Planowanie',
-      width: '160px',
-      visible: false,
-      // This column is auxiliary; it should not affect URL segments
-      contributesToRoute: false as any,
-      items: [
-        { id: 'assign', label: 'Przydziel', icon: '📝', action: 'plan-assign' },
-        { id: 'schedule', label: 'Harmonogram', icon: '📅', action: 'plan-schedule' },
-        { id: 'resources', label: 'Zasoby', icon: '⚙️', action: 'plan-resources' }
       ]
     }
   ]
@@ -361,7 +325,7 @@ export const connectManagerMenuConfig: MenuConfiguration = {
   layout: 'compact',
   columns: [
     {
-      id: 'manager-sections',
+      id: 'manager-sections-column',
       title: 'Manager',
       width: '120px',
       items: [
@@ -369,6 +333,7 @@ export const connectManagerMenuConfig: MenuConfiguration = {
           id: 'scenarios',
           label: 'Scenariusze',
           icon: '🧪',
+          section: 'scenarios',
           action: 'section-change',
           active: true
         },
@@ -376,13 +341,44 @@ export const connectManagerMenuConfig: MenuConfiguration = {
           id: 'activities',
           label: 'Czynności',
           icon: '📝',
+          section: 'activities',
           action: 'section-change'
         },
         {
           id: 'test-types',
           label: 'Rodzaj Testu',
           icon: '⏰',
+          section: 'test-types',
           action: 'section-change'
+        }
+      ]
+    },
+    {
+      id: 'manager-actions-column',
+      title: 'Akcje',
+      width: '140px',
+      items: [
+        {
+          id: 'list',
+          label: 'Lista',
+          icon: '📋',
+          method: 'list',
+          action: 'method-change',
+          active: true
+        },
+        {
+          id: 'new',
+          label: 'Nowy',
+          icon: '➕',
+          method: 'new',
+          action: 'method-change'
+        },
+        {
+          id: 'saved',
+          label: 'Zapisane',
+          icon: '💾',
+          method: 'saved',
+          action: 'method-change'
         }
       ]
     }
@@ -451,27 +447,6 @@ export const connectWorkshopMenuConfig: MenuConfiguration = {
           icon: '➕',
           method: 'new-request',
           action: 'method-change'
-        },
-        {
-          id: 'export',
-          label: 'Export',
-          icon: '📊',
-          method: 'export',
-          action: 'method-change'
-        },
-        {
-          id: 'import',
-          label: 'Import',
-          icon: '⬇️',
-          method: 'import',
-          action: 'method-change'
-        },
-        {
-          id: 'sync',
-          label: 'Sync',
-          icon: '🔄',
-          method: 'sync',
-          action: 'method-change'
         }
       ]
     }
@@ -519,6 +494,16 @@ export const connectConfigMenuConfig: MenuConfiguration = {
       title: 'Ustawienia',
       width: '160px',
       items: [
+        // System category items
+        {
+          id: 'settings',
+          label: 'Ustawienia',
+          icon: '⚙️',
+          section: 'system',
+          subsection: 'settings',
+          action: 'subsection-change',
+          parentCategory: 'system'
+        },
         {
           id: 'performance',
           label: 'Wydajność',
@@ -545,6 +530,170 @@ export const connectConfigMenuConfig: MenuConfiguration = {
           subsection: 'updates', 
           action: 'subsection-change',
           parentCategory: 'system'
+        },
+        {
+          id: 'monitoring',
+          label: 'Monitoring',
+          icon: '📊',
+          section: 'system',
+          subsection: 'monitoring',
+          action: 'subsection-change',
+          parentCategory: 'system'
+        },
+        {
+          id: 'logs',
+          label: 'Logi systemu',
+          icon: '📋',
+          section: 'system',
+          subsection: 'logs',
+          action: 'subsection-change',
+          parentCategory: 'system'
+        },
+        {
+          id: 'diagnostics',
+          label: 'Diagnostyka',
+          icon: '🔍',
+          section: 'system',
+          subsection: 'diagnostics',
+          action: 'subsection-change',
+          parentCategory: 'system'
+        },
+        {
+          id: 'maintenance',
+          label: 'Konserwacja',
+          icon: '🔧',
+          section: 'system',
+          subsection: 'maintenance',
+          action: 'subsection-change',
+          parentCategory: 'system'
+        },
+        // Device category items
+        {
+          id: 'rfid-config',
+          label: 'Konfiguracja RFID',
+          icon: '📡',
+          section: 'devices',
+          subsection: 'rfid-config',
+          action: 'subsection-change',
+          parentCategory: 'devices'
+        },
+        {
+          id: 'qr-config',
+          label: 'Konfiguracja QR',
+          icon: '📷',
+          section: 'devices',
+          subsection: 'qr-config',
+          action: 'subsection-change',
+          parentCategory: 'devices'
+        },
+        {
+          id: 'barcode-config',
+          label: 'Konfiguracja Barcode',
+          icon: '📊',
+          section: 'devices',
+          subsection: 'barcode-config',
+          action: 'subsection-change',
+          parentCategory: 'devices'
+        },
+        {
+          id: 'sensors',
+          label: 'Czujniki',
+          icon: '🌡️',
+          section: 'devices',
+          subsection: 'sensors',
+          action: 'subsection-change',
+          parentCategory: 'devices'
+        },
+        {
+          id: 'io-ports',
+          label: 'Porty I/O',
+          icon: '🔌',
+          section: 'devices',
+          subsection: 'io-ports',
+          action: 'subsection-change',
+          parentCategory: 'devices'
+        },
+        {
+          id: 'calibration',
+          label: 'Kalibracja',
+          icon: '⚖️',
+          section: 'devices',
+          subsection: 'calibration',
+          action: 'subsection-change',
+          parentCategory: 'devices'
+        },
+        {
+          id: 'power',
+          label: 'Zasilanie',
+          icon: '🔋',
+          section: 'devices',
+          subsection: 'power',
+          action: 'subsection-change',
+          parentCategory: 'devices'
+        },
+        {
+          id: 'storage',
+          label: 'Pamięć',
+          icon: '💾',
+          section: 'devices',
+          subsection: 'storage',
+          action: 'subsection-change',
+          parentCategory: 'devices'
+        },
+        // Security category items
+        {
+          id: 'security-settings',
+          label: 'Ustawienia',
+          icon: '🔐',
+          section: 'security',
+          subsection: 'settings',
+          action: 'subsection-change',
+          parentCategory: 'security'
+        },
+        {
+          id: 'users',
+          label: 'Użytkownicy',
+          icon: '👥',
+          section: 'security',
+          subsection: 'users',
+          action: 'subsection-change',
+          parentCategory: 'security'
+        },
+        {
+          id: 'permissions',
+          label: 'Uprawnienia',
+          icon: '🛡️',
+          section: 'security',
+          subsection: 'permissions',
+          action: 'subsection-change',
+          parentCategory: 'security'
+        },
+        {
+          id: 'backup',
+          label: 'Kopie bezpieczeństwa',
+          icon: '💾',
+          section: 'security',
+          subsection: 'backup',
+          action: 'subsection-change',
+          parentCategory: 'security'
+        },
+        {
+          id: 'reports',
+          label: 'Raporty bezp.',
+          icon: '📈',
+          section: 'security',
+          subsection: 'reports',
+          action: 'subsection-change',
+          parentCategory: 'security'
+        },
+        {
+          id: 'labels',
+          label: 'Etykiety',
+          icon: '🏷️',
+          section: 'security',
+          subsection: 'labels',
+          action: 'subsection-change',
+          parentCategory: 'security'
         }
       ]
     }
@@ -576,12 +725,12 @@ export const routeMenuMappings: RouteMenuMapping[] = [
   {
     route: '/connect-data',
     menuId: 'connect-data-menu',
-    activeItems: ['dispositions', 'import']
+    activeItems: ['requests', 'search']
   },
   {
     route: '/connect-reports', 
     menuId: 'connect-reports-menu',
-    activeItems: ['executed']
+    activeItems: ['executed', 'week']
   },
   {
     route: '/connect-test',
@@ -591,7 +740,7 @@ export const routeMenuMappings: RouteMenuMapping[] = [
   {
     route: '/connect-manager',
     menuId: 'connect-manager-menu',
-    activeItems: ['scenarios']
+    activeItems: ['scenarios', 'list']
   },
   {
     route: '/connect-config',

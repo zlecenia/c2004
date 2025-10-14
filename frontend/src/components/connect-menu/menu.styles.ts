@@ -35,9 +35,9 @@ export class ConnectMenuStyles {
 
       /* Sidebar Navigation */
       .sidebar-navigation {
-        width: 200px;
+        
         background: #2a2a2a;
-        padding: 12px 8px;
+        padding: 3px 6px;
         border-right: 1px solid #3a3a3a;
         height: 100%;
         overflow-y: auto;
@@ -62,7 +62,7 @@ export class ConnectMenuStyles {
 
       /* Menu Column */
       .menu-column {
-        width: 120px;
+        
         background: #2a2a2a;
         padding: 6px 4px;
         border-right: 1px solid #3a3a3a;
@@ -75,7 +75,7 @@ export class ConnectMenuStyles {
         border-right: none;
       }
 
-      .column-title {
+      .column-title, .sidebar-title {
         margin: 0 0 8px 0;
         font-size: 11px;
         font-weight: 600;
@@ -92,7 +92,7 @@ export class ConnectMenuStyles {
         background: #3a3a3a;
         border: 1px solid #4a4a4a;
         color: #ffffff;
-        padding: 12px 16px;
+        padding: 6px 6px;
         margin-bottom: 4px;
         border-radius: 6px;
         cursor: pointer;
@@ -137,20 +137,20 @@ export class ConnectMenuStyles {
         background: #3a3a3a;
         border: 1px solid #4a4a4a;
         color: #ffffff;
-        padding: 8px 6px;
-        margin-bottom: 2px;
+        padding: 4px 6px;
+        margin-bottom: 3px;
         border-radius: 4px;
         cursor: pointer;
         transition: all 0.2s ease;
         display: flex;
-        flex-direction: column;
+        flex-direction: row; /* icon left, text right */
         align-items: center;
-        text-align: center;
-        font-size: 10px;
+        justify-content: flex-start;
+        text-align: left;
+        font-size: 11px;
         width: 100%;
-        min-height: 50px;
-        justify-content: center;
-        gap: 4px;
+        min-height: 30px;
+        gap: 6px;
       }
 
       .menu-item:hover,
@@ -182,16 +182,19 @@ export class ConnectMenuStyles {
         display: flex;
         align-items: center;
         justify-content: center;
-        width: 18px;
-        height: 18px;
-        font-size: 16px;
+        width: 16px;
+        height: 16px;
+        font-size: 14px;
+        flex-shrink: 0;
       }
 
       /* Menu Labels */
       .menu-label {
         font-weight: 500;
         line-height: 1.2;
-        word-break: break-word;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
         max-width: 100%;
       }
 
@@ -239,7 +242,7 @@ export class ConnectMenuStyles {
         }
 
         .sidebar-navigation {
-          width: 180px;
+          
         }
       }
 
@@ -372,6 +375,12 @@ export class ConnectMenuStyles {
       .breadcrumb-active {
         color: #333;
         font-weight: 600;
+      }
+      .app-layout > div {
+        background-color: #2a2a2a;
+      }
+      .app-layout {
+        background-color: #2a2a2a;
       }
     `;
   }

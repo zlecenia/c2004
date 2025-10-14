@@ -9,6 +9,85 @@ export class MenuManager {
   private activeMenus: Map<string, ConnectMenuComponent> = new Map();
   private routeMappings: RouteMenuMapping[] = routeMenuMappings;
   private overridesLoaded = false;
+  // Friendly URL aliases for connect-workshop
+  private workshopSectionAlias: Record<string, string> = {
+    requests: 'request',
+    services: 'service',
+    transport: 'transport',
+    dispositions: 'disposition'
+  };
+  private workshopSectionAliasReverse: Record<string, string> = {
+    request: 'requests',
+    service: 'services',
+    transport: 'transport',
+    disposition: 'dispositions'
+  };
+  private workshopMethodAlias: Record<string, string> = {
+    search: 'filter',
+    'new-request': 'create'
+  };
+  private workshopMethodAliasReverse: Record<string, string> = {
+    filter: 'search',
+    create: 'new-request'
+  };
+  
+  // Friendly URL aliases for connect-config
+  private configSectionAlias: Record<string, string> = {
+    system: 'sys',
+    devices: 'dev', 
+    security: 'sec'
+  };
+  private configSectionAliasReverse: Record<string, string> = {
+    sys: 'system',
+    dev: 'devices',
+    sec: 'security'
+  };
+  private configSubsectionAlias: Record<string, string> = {
+    performance: 'perf',
+    network: 'net',
+    updates: 'upd',
+    monitoring: 'mon',
+    logs: 'log',
+    diagnostics: 'diag',
+    maintenance: 'maint',
+    'rfid-config': 'rfid',
+    'qr-config': 'qr',
+    'barcode-config': 'bar',
+    sensors: 'sens',
+    'io-ports': 'io',
+    calibration: 'cal',
+    power: 'pwr',
+    storage: 'stor',
+    users: 'usr',
+    permissions: 'perm',
+    backup: 'bak',
+    'security-settings': 'secset',
+    reports: 'rpt',
+    labels: 'lbl'
+  };
+  private configSubsectionAliasReverse: Record<string, string> = {
+    perf: 'performance',
+    net: 'network',
+    upd: 'updates',
+    mon: 'monitoring',
+    log: 'logs',
+    diag: 'diagnostics',
+    maint: 'maintenance',
+    rfid: 'rfid-config',
+    qr: 'qr-config',
+    bar: 'barcode-config',
+    sens: 'sensors',
+    io: 'io-ports',
+    cal: 'calibration',
+    pwr: 'power',
+    stor: 'storage',
+    usr: 'users',
+    perm: 'permissions',
+    bak: 'backup',
+    secset: 'security-settings',
+    rpt: 'reports',
+    lbl: 'labels'
+  };
 
   private constructor() {
     this.setupGlobalEventListeners();
@@ -126,7 +205,23 @@ export class MenuManager {
     const config = menu.getConfig();
     let matched = 0;
     config.columns.forEach((column: MenuColumn, index: number) => {
-      const seg = segments[index];
+      let seg = segments[index];
+      // Normalize friendly aliases for connect-workshop
+      if (mapping.route === '/connect-workshop' && seg) {
+        if (index === 0) {
+          seg = this.workshopSectionAliasReverse[seg] || seg;
+        } else if (index === 1) {
+          seg = this.workshopMethodAliasReverse[seg] || seg;
+        }
+      }
+      // Normalize friendly aliases for connect-config
+      if (mapping.route === '/connect-config' && seg) {
+        if (index === 0) {
+          seg = this.configSectionAliasReverse[seg] || seg;
+        } else if (index === 1) {
+          seg = this.configSubsectionAliasReverse[seg] || seg;
+        }
+      }
       if (!seg) return;
       const found = column.items.find((it: MenuItem) =>
         it.id === seg || it.section === seg || it.method === seg || it.subsection === seg || it.action === seg
@@ -341,7 +436,23 @@ export class MenuManager {
         segments.push(activeId);
         return;
       }
-      const seg = item.section || item.method || item.subsection || item.action || item.id;
+      let seg = item.section || item.method || item.subsection || item.action || item.id;
+      // Apply friendly aliases for connect-workshop
+      if (mapping.route === '/connect-workshop') {
+        if (item.section) {
+          seg = this.workshopSectionAlias[item.section] || item.section;
+        } else if (item.method) {
+          seg = this.workshopMethodAlias[item.method] || item.method;
+        }
+      }
+      // Apply friendly aliases for connect-config
+      if (mapping.route === '/connect-config') {
+        if (item.section) {
+          seg = this.configSectionAlias[item.section] || item.section;
+        } else if (item.subsection) {
+          seg = this.configSubsectionAlias[item.subsection] || item.subsection;
+        }
+      }
       segments.push(seg);
     });
     const base = mapping.route.endsWith('/') ? mapping.route.slice(0, -1) : mapping.route;

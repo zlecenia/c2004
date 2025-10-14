@@ -1,3 +1,12 @@
+- **Styles (compact menu items)**
+  - File: `frontend/src/components/connect-menu/menu.styles.ts`
+  - Column items are now compact, horizontal (icon left, label right), reduced padding and min-height.
+  - `menu.templates.ts` cleaned inline icon sizing.
+
+- **Backend Pydantic v1 compatibility**
+  - File: `backend/app/models/identification.py`
+  - Replaced `field_validator`/`ConfigDict` with v1 `@validator`/`class Config` and adjusted validator signature.
+
 # Refactoring Status (2025-10-14)
 
 This document captures the current status of the ongoing frontend refactor (menus, routing, page managers) and the Menu & Routing Designer groundwork.
@@ -21,9 +30,12 @@ This document captures the current status of the ongoing frontend refactor (menu
 - **Menu configuration**
   - File: `frontend/src/components/connect-menu/menu.config.ts`
   - Connect-Reports (`connectReportsMenuConfig`):
-    - Column `report-types`: executed | planned | export (uses `section`).
+    - Column `report-types`: executed | planned (removed export).
     - Column `view-options`: week | month | year | custom | planning (uses `method`).
     - Column `planning-options` (3rd column): initially hidden; `contributesToRoute: false`.
+  - Connect-Data (`connectDataMenuConfig`): removed Export/Import/Sync from `actions-column`. `search` is default active.
+  - Connect-Workshop (`connectWorkshopMenuConfig`): removed Export/Import/Sync from `actions-column` (now: search, new-request only).
+  - Route defaults: `/connect-data` now normalizes to `/connect-data/dispositions/search`.
 
 - **Connect-Reports view logic**
   - File: `frontend/src/modules/connect-reports/connect-reports.view.ts`
@@ -46,7 +58,11 @@ This document captures the current status of the ongoing frontend refactor (menu
 - **Main router updates**
   - File: `frontend/src/main.ts`
   - Correct intra-module updates for `connect-reports` (selector `.connect-reports-compact`) with `connectreports:update-state` payload `{ reportType, view }`.
-  - Listens for `routeChanged` and normalizes module URLs (connect-data defaults present).
+  - Connect-Workshop: friendly URL aliases added.
+    - URL → internal: `request|service|disposition` → `requests|services|dispositions`, `filter|create` → `search|new-request`.
+    - Internal → URL: `requests|services|dispositions` → `request|service|disposition`, `search|new-request` → `filter|create`.
+    - Defaults to `/connect-workshop/request/filter` when section/method missing.
+  - Listens for `routeChanged` and normalizes module URLs (connect-data + workshop defaults present).
 
 - **Dynamic Pages Registry**
   - File: `frontend/src/shared/dynamic-pages.registry.ts`

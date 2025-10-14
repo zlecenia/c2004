@@ -25,29 +25,32 @@ find frontend/src -name "*.ts" -exec sed -i '/console\.log/d' {} \;
 
 ### Console.log statements in source code
 - **Problem**: Remove console.log statements before production deployment
-- **Files Affected**: 2
+- **Files Affected**: 7
 - **Effort**: Low (30 min)
 - **Category**: Production
 
 **Files to Fix**:
-- ./frontend/src/tests/url-routing.test.js
-- ./frontend/src/tests/button-url-routing.test.js
+- ./frontend/src/modules/connect-reports/pages/index.ts
+- ./frontend/src/modules/connect-data/pages/index.ts
+- ./frontend/src/modules/connect-config/pages/index.ts
+- ./frontend/src/modules/connect-config/pages/example.usage.ts
+- ./frontend/src/modules/connect-config/pages/integration.example.ts
 
 **Solution**: find frontend/src -name "*.ts" -exec sed -i '/console\.log/d' {} \;
 
 ---
 ### TypeScript "any" types in source code
 - **Problem**: Replace "any" with proper type definitions
-- **Files Affected**: 12
+- **Files Affected**: 11
 - **Effort**: Medium (2-3 hours)
 - **Category**: Quality
 
 **Files to Fix**:
-- ./frontend/src/main.ts
 - ./frontend/src/components/connect-menu/menu.manager.ts
 - ./frontend/src/modules/connect-id/connect-id.service.ts
 - ./frontend/src/modules/connect-workshop/connect-workshop.service.ts
 - ./frontend/src/modules/connect-reports/connect-reports.module.ts
+- ./frontend/src/modules/connect-test/connect-test.service.ts
 
 **Solution**: Define proper interfaces and types
 
@@ -122,7 +125,7 @@ find frontend/src -name "*.ts" -exec sed -i '/console\.log/d' {} \;
 ---
 ### Direct DOM manipulation
 - **Problem**: Centralize DOM operations for better security
-- **Files Affected**: 34
+- **Files Affected**: 35
 - **Effort**: Medium (3-4 hours)
 
 **Solution**: Use framework patterns or dedicated DOM utils

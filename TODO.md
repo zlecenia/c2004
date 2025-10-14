@@ -74,4 +74,43 @@ Workflow w Connect Manager:
 
 Protokoół odbioru:
 specyfikacja:
+
 Dokumentacja:
+
+Dodaj Cyznność
+konfifguruj czynność, kryteria nazwe czynności
+
+Przykład interfejsu budowania zdań logicznych: Scenariuszy w oparciu o hierarchie: Goal-> Task-> Function, Obiect, Param 
+
+Scenariusz:
+  Goal: Czynność: Wytworzyć podciśnienie
+    Task: obiekt (pompy, zawory) do uruchomienia + Kryteria/Parametry (walidacja,zakresy) + Funkcje (uruchom, porownaj)
+      Function/Funkcje:
+        Uruchom: [pompe]
+        Zakres: [parametr][jednostka] [min] [max]
+
+Przykładowy scenariusz z Goal:
++ Włącz [pompe 1] AND Włącz [zawór 1] AND Włącz [zawór 3]  
++ IF [czas] [>] [10 s] TO [niskie ciśnienie] [>] [10 mbar] AND [czas] [<] [60 s] TO [niskie ciśnienie] [<] [20 mbar]
++ ELSE ERROR "Nieszczelność"
+
+Obiekt
+Kryteria
+Funkcje
+
+ 
+
+Wybór ciśnienia:
+niskie
+minimalne ciśnienie testu: ...
+[ ] Error po przekroczeniu 
+maksymalny ciśnienie testu: ...
+[ ] Error po przekroczeniu
+
+minimalny czas testu: ...
+[ ] Error po przekroczeniu
+maksymalny czas testu: ...
+[ ] Error po przekroczeniu
+uruchomienie: ...
+zaworu
+pompy

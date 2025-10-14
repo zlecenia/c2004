@@ -34,7 +34,7 @@ export class ConnectMenuTemplates {
     return `
       <button class="${buttonClass}${activeClass}${disabledClass}${customClass}" ${dataAttrs}>
         <span class="menu-icon">
-          <span class="icon" style="font-size: 18px; color: currentColor;">${item.icon}</span>
+          <span class="icon">${item.icon}</span>
         </span>
         <span class="menu-label">${item.label}</span>
       </button>
@@ -45,8 +45,11 @@ export class ConnectMenuTemplates {
    * Generate menu column HTML
    */
   static generateMenuColumn(column: MenuColumn): string {
-    const visibleStyle = column.visible === false ? ' style="display: none;"' : '';
-    const widthStyle = column.width ? ` style="width: ${column.width};"` : '';
+    // Build a single style attribute to avoid duplicates
+    const inlineStyles: string[] = [];
+    if (column.visible === false) inlineStyles.push('display: none;');
+    if (column.width) inlineStyles.push(`width: ${column.width};`);
+    const styleAttr = inlineStyles.length ? ` style="${inlineStyles.join(' ')}"` : '';
     const customClass = column.className ? ` ${column.className}` : '';
 
     const items = column.items
@@ -54,7 +57,7 @@ export class ConnectMenuTemplates {
       .join('\n');
 
     return `
-      <div class="menu-column${customClass}" id="${column.id}-column"${visibleStyle}${widthStyle}>
+      <div class="menu-column${customClass}" id="${column.id}-column"${styleAttr}>
         <h3 class="column-title">${column.title}</h3>
         ${items}
       </div>
