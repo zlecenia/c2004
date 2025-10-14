@@ -1,6 +1,7 @@
 # backend/app/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
 from app.config.settings import settings
 from app.api.v1.router import api_router
 from app.api.diagnostics import router as diagnostics_router
@@ -10,13 +11,24 @@ import logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Lifespan context manager
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup
+    logger.info(f"Starting {settings.SERVICE_NAME} v{settings.SERVICE_VERSION}")
+    logger.info(f"API Documentation: http://{settings.API_HOST}:{settings.API_PORT}/docs")
+    yield
+    # Shutdown
+    logger.info(f"Shutting down {settings.SERVICE_NAME}")
+
 # Create FastAPI app
 app = FastAPI(
     title=f"{settings.SERVICE_NAME.title()} Service",
     description="Identification Service API",
     version=settings.SERVICE_VERSION,
     docs_url="/docs",
-    redoc_url="/redoc"
+    redoc_url="/redoc",
+    lifespan=lifespan
 )
 
 # Add CORS middleware
@@ -42,16 +54,7 @@ async def root():
         "docs": "/docs"
     }
 
-# Startup event
-@app.on_event("startup")
-async def startup_event():
-    logger.info(f"Starting {settings.SERVICE_NAME} v{settings.SERVICE_VERSION}")
-    logger.info(f"API Documentation: http://{settings.API_HOST}:{settings.API_PORT}/docs")
-
-# Shutdown event
-@app.on_event("shutdown")
-async def shutdown_event():
-    logger.info(f"Shutting down {settings.SERVICE_NAME}")
+# Lifespan events are now handled by the lifespan context manager above
 
 if __name__ == "__main__":
     import uvicorn

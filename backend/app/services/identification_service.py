@@ -14,11 +14,11 @@ logger = logging.getLogger(__name__)
 
 class IdentificationService:
     """Service for handling identification operations"""
-    
+
     def __init__(self):
         # In a real implementation, this would connect to a database
         self.history: List[IdentificationResponse] = []
-    
+
     async def identify(
         self,
         type: IdentificationType,
@@ -29,13 +29,13 @@ class IdentificationService:
         Identify an entity based on type, value, and method
         """
         logger.info(f"Processing identification: type={type}, method={method}")
-        
+
         # Mock identification logic
         # In a real implementation, this would query a database
         if method == IdentificationMethod.RFID:
             if not value.startswith('RFID'):
                 raise ValueError("RFID values must start with 'RFID'")
-            
+
             name = "Jan K."
             id_prefix = "user"
         elif method == IdentificationMethod.QR:
@@ -47,7 +47,7 @@ class IdentificationService:
         else:  # manual
             name = "Manual Entry"
             id_prefix = "manual"
-        
+
         # Create response
         response = IdentificationResponse(
             id=f"{id_prefix}-{len(self.history) + 1:03d}",
@@ -61,13 +61,13 @@ class IdentificationService:
             },
             timestamp=datetime.now()
         )
-        
+
         # Store in history
         self.history.append(response)
-        
+
         logger.info(f"Identification successful: id={response.id}")
         return response
-    
+
     async def get_history(self, limit: int = 10) -> List[IdentificationResponse]:
         """Get identification history"""
         return self.history[-limit:] if limit > 0 else self.history

@@ -21,23 +21,23 @@ async def identify(
 ) -> IdentificationResponse:
     """
     Identify user, device, group, or test
-    
+
     - **type**: Type of identification (user, device, group, test)
     - **value**: Identification value (RFID, QR code, barcode, or manual input)
     - **method**: Method used for identification (rfid, qr, barcode, manual)
     """
     try:
         logger.info(f"Identification request: type={request.type}, method={request.method}")
-        
+
         result = await service.identify(
             type=request.type,
             value=request.value,
             method=request.method
         )
-        
+
         logger.info(f"Identification successful: id={result.id}")
         return result
-        
+
     except ValueError as e:
         logger.error(f"Validation error: {e}")
         raise HTTPException(status_code=400, detail=str(e))

@@ -1,5 +1,5 @@
 # backend/app/models/identification.py
-from pydantic import BaseModel, Field, validator
+from pydantic import BaseModel, Field, field_validator, ConfigDict
 from typing import Literal, Optional
 from datetime import datetime
 from enum import Enum
@@ -21,23 +21,25 @@ class IdentificationRequest(BaseModel):
     type: IdentificationType
     value: str = Field(..., min_length=1, max_length=100)
     method: IdentificationMethod
-    
-    @validator('value')
-    def validate_value(cls, v, values):
+
+    @field_validator('value')
+    @classmethod
+    def validate_value(cls, v, info):
         # Custom validation based on method
-        if 'method' in values:
-            if values['method'] == IdentificationMethod.RFID and not v.startswith('RFID'):
+        if info.data and 'method' in info.data:
+            if info.data['method'] == IdentificationMethod.RFID and not v.startswith('RFID'):
                 raise ValueError('RFID value must start with "RFID"')
         return v
-    
-    class Config:
-        schema_extra = {
+
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "type": "user",
                 "value": "RFID-12345",
                 "method": "rfid"
             }
         }
+    )
 
 class IdentificationResponse(BaseModel):
     """Response with identification result"""
@@ -47,9 +49,9 @@ class IdentificationResponse(BaseModel):
     method: IdentificationMethod
     metadata: dict = Field(default_factory=dict)
     timestamp: datetime = Field(default_factory=datetime.now)
-    
-    class Config:
-        schema_extra = {
+
+    model_config = ConfigDict(
+        json_schema_extra={
             "example": {
                 "id": "user-001",
                 "name": "Jan K.",
@@ -59,6 +61,7 @@ class IdentificationResponse(BaseModel):
                 "timestamp": "2025-10-08T10:30:00"
             }
         }
+    )
 
 class HealthCheckResponse(BaseModel):
     """Health check response"""
@@ -67,7 +70,7 @@ class HealthCheckResponse(BaseModel):
     version: str
     timestamp: datetime = Field(default_factory=datetime.now)
     checks: dict = Field(default_factory=dict)
-    
+
 class ErrorResponse(BaseModel):
     """Error response"""
     error: str

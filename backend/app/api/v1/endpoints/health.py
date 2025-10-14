@@ -13,14 +13,14 @@ async def health_check() -> HealthCheckResponse:
     Validates database, cache, and external dependencies
     """
     checks = {}
-    
+
     # Check database
     try:
         # Add actual database check here
         checks["database"] = "healthy"
     except Exception as e:
         checks["database"] = f"unhealthy: {e}"
-    
+
     # Check cache (if Redis enabled)
     if settings.REDIS_URL:
         try:
@@ -28,10 +28,10 @@ async def health_check() -> HealthCheckResponse:
             checks["cache"] = "healthy"
         except Exception as e:
             checks["cache"] = f"unhealthy: {e}"
-    
+
     # Determine overall status
     is_healthy = all(v == "healthy" for v in checks.values())
-    
+
     return HealthCheckResponse(
         status="healthy" if is_healthy else "unhealthy",
         service=settings.SERVICE_NAME,
