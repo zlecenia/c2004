@@ -57,18 +57,55 @@
 
 ## 🔄 W trakcie
 
-### Krok 3: Testing & Verification (AKTUALNY)
-**Status:** Gotowy do testowania
-**Cel:** Zweryfikować że aplikacja działa po refaktoryzacji
+### Krok 3: Testing Infrastructure (UKOŃCZONY ✅)
+**Status:** ✅ Setup ukończony
+**Cel:** Dodać testy jednostkowe dla core modules
+
+**Wykonane:**
+- [x] Setup Vitest + coverage + UI
+- [x] Test setup (mocks, globals)
+- [x] 31 testów dla core modules:
+  - app-shell.test.ts (14 testów)
+  - router.test.ts (9 testów)
+  - module-loader.test.ts (8 testów)
+- [x] Package.json zaktualizowany
+- [x] Dependencies dodane
+
+**Wyniki:**
+- ✅ 31 testów gotowych
+- ✅ Foundation dla więcej testów
+- ✅ Coverage reports możliwe
+
+### Krok 4: Duplikaty - Identyfikacja (UKOŃCZONY ✅)
+**Status:** ✅ Zidentyfikowane i zmapowane
+**Cel:** Znaleźć i zdokumentować duplikaty
+
+**Wykonane:**
+- [x] Analiza duplikatów (~2,900 linii)
+- [x] DUPLICATES_REPORT.md utworzony
+- [x] Plan usuwania duplikatów (5 faz)
+- [x] Priorytety ustalone
+
+**Znalezione duplikaty:**
+- 🔴 DOM Helpers: 42 użycia (~300 linii)
+- 🟠 View Pattern: ~15 klas (~700 linii)
+- 🟠 Service Pattern: ~9 klas (~600 linii)
+- 🟡 CSS inline: ~50+ (~1000 linii)
+- 🟡 Event Handlers: ~30+ (~300 linii)
+
+### Krok 5: Usuwanie Duplikatów (NASTĘPNY)
+**Status:** Plan gotowy
+**Cel:** Utworzyć shared libraries i zmigrować moduły
 
 **Zadania:**
-1. Uruchomić aplikację
-2. Przetestować menu navigation
-3. Przetestować ładowanie modułów
-4. Przetestować size toggle
-5. Naprawić ewentualne błędy
+1. Shared DOM Helpers (4-6h)
+2. Base View Class (8-12h)
+3. Base Service Class (6-8h)
+4. CSS Refactoring (8-10h)
+5. Event Helpers (4-6h)
 
-**Szacowany czas:** 30min - 1h
+**Szacowany czas całkowity:** 30-42h  
+**Szacowana redukcja:** ~2,900 linii
 
 ## ⏳ Zaplanowane
 
@@ -105,6 +142,13 @@
 | Redukcja main.ts | 0 | 1,535 | >1,000 | ✅ 94% |
 | Nowy kod core/ | 0 | ~980 | ~1,000 | ✅ 98% |
 | Backupy main.ts | 0 | 2 | 2 | ✅ Ukończone |
+| **Testing** | **0%** | **~15%** | **60%** | **✅ Setup** |
+| Testy core modules | 0 | 31 | 100+ | ✅ Foundation |
+| Vitest setup | ❌ | ✅ | ✅ | ✅ Ukończone |
+| **Duplikaty** | **?** | **2,900** | **<500** | **✅ Zmapowane** |
+| DOM Helpers dup | 42 | 42 | 0 | 📋 Plan |
+| View Pattern dup | 15 | 15 | 0 | 📋 Plan |
+| Service Pattern dup | 9 | 9 | 0 | 📋 Plan |
 
 ## 🎯 Następne akcje (w kolejności)
 
@@ -173,7 +217,7 @@ frontend/src/
 
 ---
 
-**Ostatnia aktualizacja:** 2025-01-14 17:00  
-**Postęp ogólny:** 🟢 **20%** (Kroki 1 & 2 ukończone - main.ts zrefaktoryzowany!)
+**Ostatnia aktualizacja:** 2025-01-14 17:15  
+**Postęp ogólny:** 🟢 **25%** (Kroki 1, 2, 3, 4 ukończone - main.ts + testy + duplikaty!)
 
-**Następna akcja:** Krok 3 - Testing & verification aplikacji
+**Następna akcja:** Krok 5 - Usuwanie duplikatów (shared libraries)
