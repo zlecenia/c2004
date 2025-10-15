@@ -495,6 +495,15 @@ export class MenuEditorView {
     this.refreshStructure();
   }
 
+  private setActiveItem(colIdx: number, itemIdx: number): void {
+    if (!this.currentConfig) return;
+    const column = this.currentConfig.columns[colIdx];
+    if (!column) return;
+    column.items.forEach((it, idx) => { it.active = (idx === itemIdx); });
+    this.markAsModified();
+    this.refreshStructure();
+  }
+
   private switchTab(tabName: string | null, container: HTMLElement): void {
     if (!tabName) return;
     
